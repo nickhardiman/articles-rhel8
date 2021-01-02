@@ -58,8 +58,8 @@ This prints the version and about 20 usage lines.
 
 Create a new database. 
 
-The location is specified in the config file, `@@{DBDIR}/aide.db.new.gz`  
-(the `@@{DBDIR}` part is an Aide variable).
+The location is specified in the config file, `+@@{DBDIR}/aide.db.new.gz+`  
+(the `+@@{DBDIR}+` part is an Aide variable).
 
 [source,console]
 ....
