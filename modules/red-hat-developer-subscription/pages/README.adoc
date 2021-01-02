@@ -1,10 +1,13 @@
-= artcles about the Red Hat Developer Subscription  
+= articles about the Red Hat Developer Subscription  
 Nick Hardiman 
 :source-highlighter: pygments
 :toc:
 :revdate: 01-01-2021
 
 
+
+[NOTE]
+====
 Not finished, let alone published.
 Please feel free to use, and all feedback is welcome. 
 
@@ -14,5 +17,116 @@ The docs cover activities like these.
 
 File content is https://asciidoctor.org/[ASCIIDoctor] markdown.
 Some diagrams created with http://asciiflow.com/[asciiflow] and converted to SVG files by https://github.com/asciitosvg/asciitosvg[asciitosvg]. 
+====
+
+
+What fun can be had with a free developer subscription?
+
+Here are 50 things to try, plus some info on the pre-requisites.
+
+* Install on a physical machine
+* Create a network of virtual machines on a physical machine.
+* Add containers to VMs. 
+* Set up developer environments. 
+
+
+
+== setting up  
+
+. link:developer-subscription-why.adoc[find out about a Red Hat Developer Subscription]
+. link:home-lab.adoc[build a home lab]
+
+== 50 things 
+
+. link:developer-subscription-sign-up.adoc[sign up for a Red Hat Developer Subscription] 
+
+=== firmware and OS 
+
+[start=2]
+. link:install-rhel8.adoc[install RHEL 8 (Red Hat Enterprise Linux version 8)]
+. link:boot-stages.adoc[boot-stages.adoc]
+. link:boot-bios.adoc[boot-bios.adoc]
+. link:boot-grub.adoc[boot-grub.adoc]
+. link:syspurpose.adoc[syspurpose.adoc]
+
+=== Red Hat services and CDN (Content Delivery Network)
+
+[start=7]
+. link:insights.adoc[insights.adoc]
+. errata (updates, bug fixes and security patches)
+. link:dnf.adoc[dnf.adoc] 
+. link:dnf-module.adoc[dnf-module.adoc] 
+
+=== virtual network and virtual machines 
+
+[start=11]
+. link:network.adoc[network.adoc]
+. link:network-build.adoc[network-build.adoc]
+. link:libvirt.adoc[libvirt.adoc]
+. link:libvirt-dnsmasq.adoc[libvirt-dnsmasq.adoc]
+. link:libvirt-second-network.adoc[libvirt-second-network.adoc]
+. link:libvirt-storage-pool.adoc[libvirt-storage-pool.adoc]
+. link:libvirt-storage-volume.adoc[libvirt-storage-volume.adoc]
+. link:libvirt-virtual-machine.adoc[libvirt-virtual-machine.adoc]
+. link:libvirt-second-disk.adoc[libvirt-second-disk.adoc]
+
+=== infrastructure 
+
+[start=20]
+. link:cockpit.adoc[cockpit.adoc]
+. link:chrony.adoc[chrony.adoc] 
+. link:chrony-service.adoc[chrony-service.adoc] 
+. link:journald.adoc[journald.adoc] 
+. link:dns-bind9.adoc[dns-bind9.adoc] 
+. link:kexec-kdump.adoc[kexec-kdump.adoc] 
+. journald
+
+=== security 
+
+[start=27]
+. link:aide.adoc[aide.adoc]
+. link:auditd.adoc[auditd.adoc]
+
+=== storage 
+
+[start=29]
+. link:luks.adoc[luks.adoc]
+. link:vdo.adoc[vdo.adoc]
+. link:swap.adoc[swap.adoc]
+. link:lvm.adoc[lvm.adoc]
+. link:nfs.adoc[nfs.adoc]
+
+=== cgroups
+
+[start=34]
+. link:cgroups.adoc[cgroups.adoc]
+. link:cgroup-apache.adoc[cgroup-apache.adoc]
+. link:cgroup-cpu.adoc[cgroup-cpu.adoc]
+. link:cgroup-memory.adoc[cgroup-memory.adoc]
+. link:cgroup-storage.adoc[cgroup-storage.adoc]
+
+=== developer 
+
+[start=39]
+. link:git.adoc[git.adoc]
+. link:git-hook.adoc[git-hook.adoc]
+. link:python.adoc[python.adoc]
+. link:python3-virtualenv.adoc[python3-virtualenv.adoc]
+
+=== automation  
+
+[start=43]
+. link:ansible-engine.adoc[ansible-engine.adoc]
+. link:ansible-guest-host.adoc[ansible-guest-host.adoc]
+. link:ansible-lint.adoc[ansible-lint.adoc]
+. link:ansible-molecule.adoc[ansible-molecule.adoc]
+
+=== container
+
+[start=47]
+. link:container-tools.adoc[container-tools.adoc]
+. link:container-buildah.adoc[container-buildah.adoc]
+. link:container-systemd.adoc[container-systemd.adoc]
+. link:container-llvm-toolset.adoc[container-systemd.adoc]
 
 

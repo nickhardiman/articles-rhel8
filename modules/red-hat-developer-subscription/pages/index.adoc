@@ -32,100 +32,100 @@ Here are 50 things to try, plus some info on the pre-requisites.
 
 == setting up  
 
-. link:developer-subscription-why.adoc[find out about a Red Hat Developer Subscription]
-. link:home-lab.adoc[build a home lab]
+. xref:developer-subscription-why.adoc[]
+. xref:home-lab.adoc[]
 
 == 50 things 
 
-. link:developer-subscription-sign-up.adoc[sign up for a Red Hat Developer Subscription] 
+. xref:developer-subscription-sign-up.adoc[] 
 
 === firmware and OS 
 
 [start=2]
-. link:install-rhel8.adoc[install RHEL 8 (Red Hat Enterprise Linux version 8)]
-. link:boot-stages.adoc[boot-stages.adoc]
-. link:boot-bios.adoc[boot-bios.adoc]
-. link:boot-grub.adoc[boot-grub.adoc]
-. link:syspurpose.adoc[syspurpose.adoc]
+. xref:install-rhel8.adoc[]
+. xref:boot-stages.adoc[]
+. xref:boot-bios.adoc[]
+. xref:boot-grub.adoc[]
+. xref:syspurpose.adoc[]
 
 === Red Hat services and CDN (Content Delivery Network)
 
 [start=7]
-. link:insights.adoc[insights.adoc]
+. xref:insights.adoc[]
 . errata (updates, bug fixes and security patches)
-. link:dnf.adoc[dnf.adoc] 
-. link:dnf-module.adoc[dnf-module.adoc] 
+. xref:dnf.adoc[] 
+. xref:dnf-module.adoc[] 
 
 === virtual network and virtual machines 
 
 [start=11]
-. link:network.adoc[network.adoc]
-. link:network-build.adoc[network-build.adoc]
-. link:libvirt.adoc[libvirt.adoc]
-. link:libvirt-dnsmasq.adoc[libvirt-dnsmasq.adoc]
-. link:libvirt-second-network.adoc[libvirt-second-network.adoc]
-. link:libvirt-storage-pool.adoc[libvirt-storage-pool.adoc]
-. link:libvirt-storage-volume.adoc[libvirt-storage-volume.adoc]
-. link:libvirt-virtual-machine.adoc[libvirt-virtual-machine.adoc]
-. link:libvirt-second-disk.adoc[libvirt-second-disk.adoc]
+. xref:network.adoc[]
+. xref:network-build.adoc[]
+. xref:libvirt.adoc[]
+. xref:libvirt-dnsmasq.adoc[]
+. xref:libvirt-second-network.adoc[]
+. xref:libvirt-storage-pool.adoc[]
+. xref:libvirt-storage-volume.adoc[]
+. xref:libvirt-virtual-machine.adoc[]
+. xref:libvirt-second-disk.adoc[]
 
 === infrastructure 
 
 [start=20]
-. link:cockpit.adoc[cockpit.adoc]
-. link:chrony.adoc[chrony.adoc] 
-. link:chrony-service.adoc[chrony-service.adoc] 
-. link:journald.adoc[journald.adoc] 
-. link:dns-bind9.adoc[dns-bind9.adoc] 
-. link:kexec-kdump.adoc[kexec-kdump.adoc] 
+. xref:cockpit.adoc[]
+. xref:chrony.adoc[] 
+. xref:chrony-service.adoc[] 
+. xref:journald.adoc[] 
+. xref:dns-bind9.adoc[] 
+. xref:kexec-kdump.adoc[] 
 . journald
 
 === security 
 
 [start=27]
-. link:aide.adoc[aide.adoc]
-. link:auditd.adoc[auditd.adoc]
+. xref:aide.adoc[]
+. xref:auditd.adoc[]
 
 === storage 
 
 [start=29]
-. link:luks.adoc[luks.adoc]
-. link:vdo.adoc[vdo.adoc]
-. link:swap.adoc[swap.adoc]
-. link:lvm.adoc[lvm.adoc]
-. link:nfs.adoc[nfs.adoc]
+. xref:luks.adoc[]
+. xref:vdo.adoc[]
+. xref:swap.adoc[]
+. xref:lvm.adoc[]
+. xref:nfs.adoc[]
 
 === cgroups
 
 [start=34]
-. link:cgroups.adoc[cgroups.adoc]
-. link:cgroup-apache.adoc[cgroup-apache.adoc]
-. link:cgroup-cpu.adoc[cgroup-cpu.adoc]
-. link:cgroup-memory.adoc[cgroup-memory.adoc]
-. link:cgroup-storage.adoc[cgroup-storage.adoc]
+. xref:cgroups.adoc[]
+. xref:cgroup-apache.adoc[]
+. xref:cgroup-cpu.adoc[]
+. xref:cgroup-memory.adoc[]
+. xref:cgroup-storage.adoc[]
 
 === developer 
 
 [start=39]
-. link:git.adoc[git.adoc]
-. link:git-hook.adoc[git-hook.adoc]
-. link:python.adoc[python.adoc]
-. link:python3-virtualenv.adoc[python3-virtualenv.adoc]
+. xref:git.adoc[]
+. xref:git-hook.adoc[]
+. xref:python.adoc[]
+. xref:python3-virtualenv.adoc[]
 
 === automation  
 
 [start=43]
-. link:ansible-engine.adoc[ansible-engine.adoc]
-. link:ansible-guest-host.adoc[ansible-guest-host.adoc]
-. link:ansible-lint.adoc[ansible-lint.adoc]
-. link:ansible-molecule.adoc[ansible-molecule.adoc]
+. xref:ansible-engine.adoc[]
+. xref:ansible-guest-host.adoc[]
+. xref:ansible-lint.adoc[]
+. xref:ansible-molecule.adoc[]
 
 === container
 
 [start=47]
-. link:container-tools.adoc[container-tools.adoc]
-. link:container-buildah.adoc[container-buildah.adoc]
-. link:container-systemd.adoc[container-systemd.adoc]
-. link:container-llvm-toolset.adoc[container-systemd.adoc]
+. xref:container-tools.adoc[]
+. xref:container-buildah.adoc[]
+. xref:container-systemd.adoc[]
+. xref:container-llvm-toolset.adoc[]
 
 
