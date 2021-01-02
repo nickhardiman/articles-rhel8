@@ -1,0 +1,20 @@
+.fedora on rpi4
+* xref:hardware.adoc[]
+* xref:firmware.adoc[]
+* xref:operating-system.adoc[]
+* xref:bash-shell.adoc[]
+* xref:sysadmin.adoc[]
+* xref:grow-partition.adoc[]
+
+. essentials 
+* xref:account.adoc[]
+* xref:storage.adoc[]
+* xref:ten-more-shells.adoc[]
+* xref:access-control.adoc[]
+* xref:ssh.adoc[]
+* xref:log.adoc[]
+
+. virtual machine 
+* xref:libvirt.adoc[]
+* xref:libvirt-virsh.adoc[]
+* xref:libvirt-virtual-machine.adoc[]

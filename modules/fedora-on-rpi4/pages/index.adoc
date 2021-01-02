@@ -9,30 +9,31 @@ I'm in the process of finding out how well Fedora works on an RPi4.
 It's not officially supported but it does work. 
 
 
-== possible reading order 
+== 100 things (ish) 
 
-. link:hardware.adoc[hardware.adoc]
-. link:firmware.adoc[firmware.adoc]
-. link:operating-system.adoc[operating-system.adoc]
-. link:bash-shell.adoc[bash-shell.adoc]
-. link:sysadmin.adoc[sysadmin.adoc]
-. link:grow-partition.adoc[grow-partition.adoc]
+. xref:hardware.adoc[]
+. xref:firmware.adoc[]
+. xref:operating-system.adoc[]
+. xref:bash-shell.adoc[]
+. xref:sysadmin.adoc[]
+. xref:grow-partition.adoc[]
 
 
-essentials 
+=== essentials 
 
-. link:account.adoc[account.adoc]
-. link:storage.adoc[storage.adoc]
-. link:ten-more-shells.adoc[shell.adoc]
+[start=7]
+. xref:account.adoc[]
+. xref:storage.adoc[]
+. xref:ten-more-shells.adoc[]
 . shell expansion  
 . file descriptor 
 . editor 
 . superuser 
-. link:access-control.adoc[access-control.adoc]
+. xref:access-control.adoc[]
 . process   https://fedoramagazine.org/inspect-manage-processes-ps/
 . daemon 
-. link:ssh.adoc[ssh.adoc]
-. link:log.adoc[log.adoc]
+. xref:ssh.adoc[]
+. xref:log.adoc[]
 . time 
 . network 
 . host 
@@ -41,29 +42,32 @@ essentials
 . rpm 
 . storage 
 
-system startup and shutdown 
+=== system startup and shutdown 
 
+[start=41]
 . shutdown 
 . boot-stages
 . boot-bios
 . boot-grub
 
-virtual machine 
+=== virtual machine 
 
+[start=45]
 . network
 . build your network
 . network-build
-. link:libvirt.adoc[libvirt.adoc]
-. link:libvirt-virsh.adoc[libvirt-virsh.adoc]
-. link:libvirt-virtual-machine.adoc[libvirt-virtual-machine.adoc]
+. xref:libvirt.adoc[]
+. xref:libvirt-virsh.adoc[]
+. xref:libvirt-virtual-machine.adoc[]
 . libvirt-dnsmasq
 . libvirt-second-network
 . libvirt-storage-pool
 . libvirt-storage-volume
 . libvirt-second-disk
 
-OS
+=== OS
 
+[start=56]
 . syspurpose
 . cockpit
 . auditd
@@ -75,8 +79,9 @@ OS
 . anaconda 
 . systemd 
 
-local storage
+=== local storage
 
+[start=66]
 . luks
 . vdo
 . swap
@@ -85,59 +90,67 @@ local storage
 . swap
 . stratis 
 
-network 
+=== network 
 
+[start=73]
 . IPv6 
 . teamed interface 
 . bridge 
 . NAT
 . DNS 
 
-network storage 
+=== network storage 
 
+[start=78]
 . file network nfs service 
 . file network nfs client 
 . automount 
 . iSCSI remote block storage 
 
-cgroups
+=== cgroups
 
+[start=82]
 . cgroups
 . cgroup-apache
 . cgroup-cpu
 . cgroup-memory
 . cgroup-storage
 
-code
+=== code
 
+[start=87]
 . git
 . git-hook
 . python
 . python3-virtualenv
 . regular expression 
 
-automation
+=== automation
 
+[start=92]
 . ansible-engine
 . ansible-guest-host
 . ansible-lint
 . ansible-molecule
 
-container
+=== container
 
+[start=96]
 . container-tools
 . container-buildah
 . container-systemd
 . container-systemd
 
-storage 
+=== storage 
 
+[start=100]
 . regular expression 
 . process schedule
 . process multitask
 
-security 
+=== security 
 
+[start=103]
 . MAC/SELinux
 . network firewall 
 . security kerberos 
@@ -145,11 +158,10 @@ security
 . file shared storage 
 . TLS 
 
-application 
+=== application 
 
+[start=109]
 . DB mariadb 
 . web apache 
 . web CGI 
-
-
 
