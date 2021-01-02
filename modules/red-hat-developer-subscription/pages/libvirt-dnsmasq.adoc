@@ -1,0 +1,439 @@
+= libvirt dnsmasq 
+Nick Hardiman 
+:source-highlighter: pygments
+:toc: 
+:revdate: 29-05-2020
+
+set a VM's domain name and IP address using dnsmasq
+
+.VMs use dnsmasq services 
+[a2s,libvirt-dnsmasq]
+....
+.-------------------------------------.  
+|                                     |
+|  host                               |
+|                                     |
+|   +----------+        +----------+  |
+|   |          |        |          |  |
+|   |  guest1  | DHCP   | dnsmasq  |  |
+|   |          +------->|          |  |
+|   |          |        |          |  |
+|   |          | DNS    |          |  |
+|   |          +------->|          |  |
+|   +----------+        +----------+  |
+.-------------------------------------.  
+....
+
+
+Set up a name and address for the new VM _guest1_. Use dnsmasq to fix the IP address _192.168.122.100_ and the 
+https://en.wikipedia.org/wiki/Fully_qualified_domain_name[FQDN (Fully Qualified Domain Name)] _guest1.lab.example.com_.
+
+RHEL 8 includes a complete system for managing VMs (virtual machines) - the KVM hypervisor, QEMU machine emulator and libvirt tools. 
+The libvirt daemon uses http://www.thekelleys.org.uk/dnsmasq/doc.html[dnsmasq] to provide 
+https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol[DHCP] 
+and https://en.wikipedia.org/wiki/Domain_Name_System[DNS] services. 
+This article configures dnsmasq to set a fixed IPv4 address and domain name for our new guest VM. 
+
+The default DHCP setup isn't great if you want to SSH to your new VM, because it takes some work to figure out what IPv4 address to use.  
+When the guest VM boots up, it is given the address 192.168.122...er...something. 
+The dnsmasq DHCP service assigns addresses from an IP pool, so the VM gets a random address from the range 192.168.122.0/24. 
+Instead of searching for the address after every boot, it's easier to assign a fixed IP address. 
+All we need to get started is the MAC address, and that was fixed by ``virt-install`` when the VM was created (``52:54:00:00:00:01``). 
+
+People remember names better than numbers. A fixed IP address is easier to use than a random IP address, and a DNS name is easier still.  
+Out of the box, dnsmasq reads names and addresses from the /etc/hosts file. 
+If _guest1.lab.example.com_ is in the hosts file, that would assign the name to the address.
+But this setup is more complicated - we want the name associated with the IP address, and the IP address associated with the MAC address. That requires adding details to two places, not one. 
+
+* the host's /etc/hosts file, so the host can look up the guest's name
+* the host's dnsmasq configuration, so guests can look up the name
+
+
+libvirtd controls the dnsmasq process, not systemd. 
+Running the command ``systemctl status dnsmasq`` says dnsmasq isn't running. 
+
+
+
+== network configuration 
+
+The dnsmasq server uses the config file at /var/lib/libvirt/dnsmasq/default.conf. This ``dhcp-range`` line tells dnsmasq what the IP pool is. 
+
+[source,console]
+....
+[nick@host ~]$ sudo grep dhcp-range /var/lib/libvirt/dnsmasq/default.conf
+dhcp-range=192.168.122.2,192.168.122.254
+[nick@host ~]$ 
+....
+
+This dnsmasq config file can't be edited directly because it's controlled by libvirt - any changes would be overwritten. 
+Instead, use ``virsh`` commands to add config. 
+
+libvirt writes that dnsmasq configuration after reading its own config.
+You can see libvirt's network settings using the ``virsh net-dumpxml`` command.
+There are about 20 lines of XML that define the network.
+These are all listed further down. Here's the address range config.  
+
+
+[source,console]
+....
+[nick@host ~]$ sudo virsh net-dumpxml default
+...
+    <dhcp>
+      <range start='192.168.122.2' end='192.168.122.254'/>
+    </dhcp>
+...
+[nick@host ~]$ 
+....
+
+
+== find the MAC address
+
+If you can't remember what the MAC address is, you can find it in a few places. 
+
+* On the host, search the VM's XML configuration.
+* On the host, search the IP neighbor table.
+* On the guest, display the interface's link layer settings.
+
+=== the VM's XML configuration
+
+On the host, search the VM's XML configuration.
+
+[source,console]
+....
+[nick@host ~]$ virsh dumpxml guest1 | grep 'mac address'
+      <mac address='52:54:00:00:00:01'/>
+[nick@host ~]$ 
+....
+
+=== the IP neighbor table
+
+On the host, search the IP neighbor table. 
+If you don't know what _ip neighbor_ table is_, the short answer is it's a replacement for _arp_. 
+Read https://www.redhat.com/sysadmin/arp-versus-ip[Linux networking: arp versus ip neighbour] to find out more.
+
+The neighbour table is little harder to decipher, because it includes MAC addresses from your local network as well as the libvirt network. 
+This neighbor table lists two interfaces.
+
+* *enp0s25*, the ethernet interface to the outside world
+* *virbr0*, libvirt's https://wiki.libvirt.org/page/VirtualNetworking[virtual network switch].
+
+Every VM that starts adds a line to this table. 
+Each VM interface is attached to a virbr0 interface.
+The table only has one line for _virbr0_, which makes it easy to spot which MAC address we want. 
+
+[source,console]
+....
+[nick@host ~]$ ip neighbor show
+192.168.122.111 dev virbr0 lladdr 52:54:00:00:00:1a REACHABLE
+10.0.1.46 dev enp0s25 lladdr a0:ce:c8:c8:2a:bf REACHABLE
+10.0.1.1 dev enp0s25 lladdr d8:30:62:47:55:e5 STALE
+[nick@host ~]$ 
+....
+
+=== the interface's link layer settings. 
+
+On the guest, display the interface's link layer settings.
+
+[source,console]
+....
+[nick@guest1 ~]$ ip link show eth0
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether 52:54:00:00:00:01 brd ff:ff:ff:ff:ff:ff
+[nick@guest1 ~]$ 
+....
+
+
+== find the IP address
+
+The IPv4 address gets stashed in a few places. 
+
+=== view the DHCP lease file 
+
+[source,console]
+....
+[nick@host ~]$ sudo cat /var/lib/libvirt/dnsmasq/virbr0.status 
+[
+  {
+    "ip-address": "192.168.122.27",
+    "mac-address": "52:54:00:00:00:01",
+    "hostname": "guest1",
+    "client-id": "01:52:54:00:00:00:01",
+    "expiry-time": 1590770614
+  }
+]
+[nick@host ~]$ 
+....
+
+
+=== use the virsh command
+
+Check the VM is running with the command ``virsh list --all``. 
+If it's running, dnsmasq has given it an IP address. 
+
+Each libvirt network has its own dnsmasq.
+Factory-fitted libvirt only has one network named _default_, so there is only one copy of dnsmasq running. 
+
+Find out how many networks are configured.
+
+[source,console]
+....
+[nick@host ~]$ sudo virsh net-list
+ Name                 State      Autostart     Persistent
+----------------------------------------------------------
+ default              active     yes           yes
+
+[nick@host ~]$ 
+....
+
+List all DHCP leases. 
+
+[source,console]
+....
+[nick@host ~]$ sudo virsh net-dhcp-leases default
+[sudo] password for nick: 
+ Expiry Time          MAC address        Protocol  IP address                Hostname        Client ID or DUID
+-------------------------------------------------------------------------------------------------------------------
+ 2020-05-29 18:11:36  52:54:00:00:00:01  ipv4      192.168.122.27/24         guest1          01:52:54:00:00:00:01
+
+[nick@host ~]$ 
+....
+
+
+=== view the arp table 
+
+A slightly harder way of finding the IP address is to use the VM's MAC address and the arp command. 
+
+. Run ``arp -an``.
+. Search the arp results for the line containing the MAC address. 
+
+
+== assign a name and address
+
+Add an XML tag to the network's configuration.
+
+
+
+=== add the lab.example.com domain 
+
+Add the domain _lab.example.com_ before adding the name _guest1.lab.example.com_.
+
+dnsmasq has a security feature that ignores DNS domains it doesn't recognize. 
+The default configuration has no domain, so adding a full FQDN for the VM (_guest1.lab.example.com_) won't work. Journalctl would show an error like this. 
+
+[source,console]
+....
+May 29 18:17:15 host.lab.example.com dnsmasq-dhcp[2380]: Ignoring domain lab.example.com for DHCP host name guest1
+....
+
+Add a domain by editing the XML configuration and adding the line ``<domain name='lab.example.com' localOnly='yes'/>``.
+
+Adding a domain is a little painful, both because editing XML is never fun, and because the network must be stopped and started after this edit to pick up the configuration change. 
+
+
+[source,console]
+....
+[nick@host ~]$ sudo virsh net-edit default
+....
+
+virsh fires up the vi editor. 
+Add the _domain_ line. 
+
+[source,xml]
+....
+<network>
+  <name>default</name>
+  <uuid>df3899c4-85ed-4742-a2b6-3ef57346f165</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:74:ca:3c'/>
+  <domain name='lab.example.com' localOnly='yes'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.122.2' end='192.168.122.254'/>
+      <host mac='52:54:00:00:00:01' name='guest1.lab.example.com' ip='192.168.122.100'/>
+    </dhcp>
+  </ip>
+</network>
+....
+
+Save and exit. 
+
+Restart the network. Check its state before and after - it changes from _inactive_ to _active_. 
+
+[source,console]
+....
+Network default XML configuration edited.
+
+[nick@host ~]$ sudo virsh net-destroy default
+Network default destroyed
+
+[nick@host ~]$ sudo virsh net-list --all
+ Name                 State      Autostart     Persistent
+----------------------------------------------------------
+ default              inactive   yes           yes
+
+[nick@host ~]$ 
+[nick@host ~]$ sudo virsh net-start default
+Network default started
+
+[nick@host ~]$ 
+[nick@host ~]$ sudo virsh net-list --all
+ Name                 State      Autostart     Persistent
+----------------------------------------------------------
+ default              active     yes           yes
+
+[nick@host ~]$ 
+....
+
+Virsh updates the dnsmasq config.
+
+[source,console]
+....
+[nick@host ~]$ sudo grep lab.example.com /var/lib/libvirt/dnsmasq/default.conf
+local=/lab.example.com/
+domain=lab.example.com
+[nick@host ~]$ 
+....
+
+
+
+=== add the FQDN and IPv4 address to libvirt's config
+
+Use virsh net-update, which doesn't require a network restart. 
+The command contains the line of XML to be added. 
+The name in the _name_ attribute matches the hostname set by the ``virt-customize`` command.
+The ``--live`` and ``--config`` options make sure both the current configuration and the stored config are updated.
+
+[source,console]
+....
+sudo virsh net-update default add ip-dhcp-host \
+    "<host  mac='52:54:00:00:00:01' name='guest1.lab.example.com' ip='192.168.122.100' />" \
+    --live \
+    --config
+....
+
+Add the host line. 
+
+[source,console]
+....
+[nick@host ~]$ sudo virsh net-update default add ip-dhcp-host "<host mac='52:54:00:00:00:01' name='guest1.lab.example.com' ip='192.168.122.100' />" --live --config
+Updated network default persistent config and live state
+[nick@host ~]$ 
+....
+
+You can remove this line by replacing ``add`` with ``delete``. 
+
+
+=== add the FQDN and IPv4 address to the host 
+
+Libvirt knows about your new machine, but your host machine has no idea.
+
+Add a line to /etc/hosts. 
+
+[source,console]
+....
+[nick@host ~]$ sudo bash -c 'echo "192.168.122.100 guest1 guest1.lab.example.com" >> /etc/hosts'
+[nick@host ~]$ 
+....
+
+
+== check your work 
+
+=== watch the activity log
+
+When the _guest1_ VM starts, it uses DHCP to obtain an IP address.
+The guest VM starts by broadcasting a 'looking for DHCP server' message and gets an answer from dnsmasq on the host machine. 
+You can see the conversation taking place using ``journalctl``.
+
+[source,console]
+....
+[nick@host ~]$ journalctl -f
+...
+May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPREQUEST(virbr0) 192.168.122.27 52:54:00:00:00:01
+May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPNAK(virbr0) 192.168.122.27 52:54:00:00:00:01 static lease available
+May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPDISCOVER(virbr0) 192.168.122.27 52:54:00:00:00:01
+May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPOFFER(virbr0) 192.168.122.100 52:54:00:00:00:01
+May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPREQUEST(virbr0) 192.168.122.100 52:54:00:00:00:01
+May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPACK(virbr0) 192.168.122.100 52:54:00:00:00:01 guest1
+....
+
+
+=== start the VM 
+
+Check whether guest1 is running with ``virsh dominfo guest1``.
+Stop the guest VM with ``virsh shutdown guest1``. 
+Start with ``virsh shutdown guest1``.
+
+
+
+=== resolve the name 
+
+dnsmasq only listens to the libvirt network interface. 
+
+[source,console]
+....
+[nick@host ~]$ host guest1 192.168.122.1
+Using domain server:
+Name: 192.168.122.1
+Address: 192.168.122.1#53
+Aliases: 
+
+guest1.lab.example.com has address 192.168.122.100
+[nick@host ~]$ 
+....
+
+Can the host find it?
+
+[source,console]
+....
+[nick@host ~]$ ping -c1 guest1
+PING guest1 (192.168.122.100) 56(84) bytes of data.
+64 bytes from guest1 (192.168.122.100): icmp_seq=1 ttl=64 time=0.226 ms
+
+--- guest1 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.226/0.226/0.226/0.000 ms
+[nick@host ~]$ 
+....
+
+
+=== connect using SSH
+
+[source,console]
+....
+[nick@host ~]$ ssh guest1
+The authenticity of host 'guest1 (192.168.122.100)' can't be established.
+ECDSA key fingerprint is SHA256:JcjI8AIHkUvat0qdM1OqDPzY0jughZC5ZOuU/uvApmk.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'guest1,192.168.122.100' (ECDSA) to the list of known hosts.
+nick@guest1's password: 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Fri May 29 12:15:41 2020
+[nick@guest1 ~]$ 
+....
+
+Disconnect. 
+
+[source,console]
+----
+[nick@guest1 ~]$ exit
+logout
+Connection to 192.168.122.218 closed.
+[nick@host ~]$ 
+----
+
+== automate 
+
+This is obviously a massive PITA.
+Use ansible.
+
+Check 
+https://www.richardwalker.dev/guides/ansible_libvirtlabs/

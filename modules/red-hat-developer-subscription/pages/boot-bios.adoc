@@ -1,0 +1,121 @@
+= boot bios
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+:revdate: 18-08-2020
+
+What happens when booting a VM, from start to login prompt.
+
+Much of the boot process doesn't apply to virtual machines. 
+Virtual machines don't have any hardware, let alone power hardware, 
+but a VM management system will emulate some parts. 
+For instance, a graphical system will display a power button to turn on a VM, and an https://en.wikipedia.org/wiki/Advanced_Configuration_and_Power_Interface[ACPI] command can turn off a VM. 
+
+
+
+== firmware initializes hardware 
+
+The host machine is made up of many physical devices, like memory, network interface and communication bus. 
+Many of these are driven by firmware. 
+Firmware is low-level software that controls hardware. 
+Firmware is called low-level software because, in a technology stack diagram, it is literally lower down.
+A technology stack diagram looks something like this. 
+
+* data
+* application 
+* operating system 
+* firmware 
+* hardware
+
+Boot loader firmware manages the computer start-up process, and device firmware initializes devices that make up the computer.
+The start-up process is automatic, so there is no need for most people to understand what's happening. 
+
+The boot loader firmware carries out many jobs, like these.
+* runs the https://en.wikipedia.org/wiki/Power-on_self-test[POST (Power-on self-test)]
+* trains memory
+* searches for option ROMs (extra firmware included with some devices)
+* displays a control panel
+* finds devices that can boot an OS
+* starts the next stage of booting
+
+Firmware starts before many devices work, so it's not stored on a disk. Instead, some kind of non-volatile memory on the motherboard stores the first firmware program.
+
+
+=== boot first stage
+
+Many types of firmware exist to manage the boot process. 
+There are many different products for general purpose computers like PCs, and many more for special purpose computers like network equipment and storage devices. 
+Most of it is proprietary, treated as IP (Intellectual Property) and kept secret by hardware vendors. 
+
+Usually there's a chain of programs to run. The first program is often tiny, and does little more than figure out how to load the next much bigger program.
+
+* The CPU loads the first part of the boot loader program, executes the first command, and does what it's told.  
+* The first boot loader does its work, loads the next program from storage, and finishes. 
+* The next program does its work, and hands over to another program in the chain.
+
+New PC firmware works with the UEFI specification, and older PC firmware works with the BIOS specification. 
+
+
+=== BIOS 
+
+
+Guest virtual machines get an open source product called https://seabios.org/SeaBIOS[SeaBIOS] by default. 
+The QEMU hypervisor includes this BIOS. 
+
+For instance, when the BIOS hands over to GRUB, it first loads a tiny 
+https://www.gnu.org/software/grub/manual/grub/html_node/Images.html[boot.img] file from the 
+https://en.wikipedia.org/wiki/Master_boot_record[MBR (Master Boot Record)] - that's the 512 byte sector at the very start of the disk. This boot image is a program that does nothing except kick off the next GRUB program. There isn't enough room in the MBR to store anything interesting. 
+
+
+=== UEFI 
+
+The physical host machine probably uses UEFI, unless its several years old. 
+
+not using EFI
+
+[source,console]
+----
+[nick@guest1 ~]$ ls /sys/firmware/efi
+ls: cannot access '/sys/firmware/efi': No such file or directory
+[nick@guest1 ~]$ 
+[nick@guest1 ~]$ efibootmgr 
+EFI variables are not supported on this system.
+[nick@guest1 ~]$ 
+----
+
+
+
+== boot second stage 
+
+These chain-loaded programs are firmware - low-level device management software. 
+
+In the virtual machines, BIOS starts GRUB. 
+
+
+=== GRUB  
+
+There are a few GRUB programs, run in this sequence.
+
+* The BIOS loads a tiny 
+https://www.gnu.org/software/grub/manual/grub/html_node/Images.html[boot.img] file from the MBR (the very start of the disk). This boot image is a program that does nothing except kick off the next GRUB program. There isn't enough room in the MBR to store anything interesting. 
+
+
+[source,console]
+----
+[nick@guest3 ~]$ sudo parted -l
+[sudo] password for nick: 
+Model: Virtio Block Device (virtblk)
+Disk /dev/vda: 12.9GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags: 
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  2097kB  1049kB               primary  bios_grub
+ 2      2097kB  107MB   105MB   fat16        primary  boot, esp
+ 3      107MB   12.9GB  12.8GB  xfs          primary
+
+
+[nick@guest3 ~]$ 
+----
+

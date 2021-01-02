@@ -1,0 +1,209 @@
+= libvirt on RPi4
+Nick Hardiman 
+:source-highlighter: pygments
+:toc: 
+:revdate: 18-11-2020
+
+
+The https://libvirt.org/[libvirt] project provides a virtualization management system. 
+
+
+
+
+libvirt-daemon manages the virtualization. 
+The version is a https://libvirt.org/news.html[couple years old]. 
+
+
+== before 
+
+Minimal image does not have any libvirt components.
+
+systemd service libvirtd is running. 
+This created a couple network devices - 
+a bridge devices named virbr0 
+a https://en.wikipedia.org/wiki/TUN/TAP[TUN/TAP] network interface named virbr0-nic, 
+used by the bridge. 
+
+Run ``nmcli device status`` to see network devices.
+There is no bridge.  
+
+[source,console]
+----
+[root@host1 ~]# nmcli device status
+DEVICE         TYPE      STATE         CONNECTION         
+eth0           ethernet  connected     Wired connection 1 
+wlan0          wifi      disconnected  --                 
+p2p-dev-wlan0  wifi-p2p  disconnected  --                 
+lo             loopback  unmanaged     --                 
+[root@host1 ~]# 
+----
+
+
+== find libvirt  
+
+It's not a module. 
+
+[source,console]
+----
+[root@host1 ~]# dnf module list
+Fedora 33 openh264 (From Cisco) - aarch64                                3.4 kB/s | 990  B     00:00    
+Fedora Modular 33 - aarch64                                              190 kB/s |  20 kB     00:00    
+Fedora Modular 33 - aarch64                                              264 kB/s | 172 kB     00:00    
+Fedora Modular 33 - aarch64 - Updates                                    147 kB/s |  19 kB     00:00    
+Fedora Modular 33 - aarch64 - Updates                                    1.3 MB/s | 2.3 MB     00:01    
+Fedora 33 - aarch64 - Updates                                            174 kB/s |  17 kB     00:00    
+Fedora 33 - aarch64 - Updates                                            1.5 MB/s |  13 MB     00:08    
+Fedora 33 - aarch64                                                      169 kB/s |  20 kB     00:00    
+Fedora 33 - aarch64                                                      508 kB/s | 1.6 MB     00:03    
+Fedora Modular 33 - aarch64
+Name                Stream   Profiles                      Summary                                                                  
+ant                 1.10     default [d]                   Java build tool                                                          
+avocado             latest   default [d], minimal          Framework with tools and libraries for Automated Testing                 
+avocado-vt          latest   common                        Avocado Virt Test Plugin                                                 
+...(over 100 of these)...
+swig                4.0      complete, default [d]         Connects C/C++/Objective C to some high-level programming languages      
+tomcat              master   default                       Apache Servlet/JSP Engine, RI for Servlet 4.0/JSP 2.3 API                
+varnish             6.0      default                       Varnish HTTP cache                                                       
+
+Hint: [d]efault, [e]nabled, [x]disabled, [i]nstalled
+[root@host1 ~]# 
+----
+
+
+== install the libvirt package. 
+
+https://docs.fedoraproject.org/en-US/quick-docs/getting-started-with-virtualization/
+https://fedoraproject.org/wiki/Architectures/ARM/HowToQemu
+
+dnf groupinstall virtualization
+dnf install qemu-system-arm
+systemctl start libvirtd 
+
+No need to run ``dnf install libvirt``? 
+This installs about 90 packages. 
+All included in group? 
+What about ``qemu-kvm``?
+
+
+[source,console]
+----
+[root@host1 ~]# yum install qemu-system-arm
+Fedora 33 openh264 (From Cisco) - aarch64       829  B/s | 2.5 kB     00:03    
+Fedora Modular 33 - aarch64                      61 kB/s | 3.2 MB     00:53    
+Fedora Modular 33 - aarch64 - Updates            43 kB/s | 2.3 MB     00:55    
+Fedora 33 - aarch64 - Updates                    38 kB/s |  13 MB     05:44    
+Fedora 33 - aarch64                              62 kB/s |  67 MB     18:17    
+Dependencies resolved.
+================================================================================
+ Package                   Architecture Version               Repository   Size
+================================================================================
+Installing:
+ qemu-system-arm           aarch64      2:5.1.0-5.fc33        fedora       13 k
+Installing dependencies:
+ qemu-system-arm-core      aarch64      2:5.1.0-5.fc33        fedora      3.9 M
+
+Transaction Summary
+================================================================================
+Install  2 Packages
+
+Total download size: 3.9 M
+Installed size: 15 M
+Is this ok [y/N]: 
+----
+
+
+
+
+== start the libvirt daemon 
+
+The libvirt daemon is not running. 
+
+[source,console]
+----
+[nick@rpi4 ~]$ systemctl status libvirtd
+● libvirtd.service - Virtualization daemon
+     Loaded: loaded (/usr/lib/systemd/system/libvirtd.service; enabled; vendor preset: enabled)
+     Active: inactive (dead)
+TriggeredBy: ● libvirtd-ro.socket
+             ● libvirtd-admin.socket
+             ● libvirtd.socket
+       Docs: man:libvirtd(8)
+             https://libvirt.org
+[nick@rpi4 ~]$ 
+----
+
+
+I may have this confused. 
+It is enabled, but can't start without something qemu provides? 
+
+[source,console]
+----
+[root@host1 ~]# systemctl status --no-pager -l libvirtd 
+● libvirtd.service - Virtualization daemon
+     Loaded: loaded (/usr/lib/systemd/system/libvirtd.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2020-11-20 18:11:16 GMT; 46s ago
+TriggeredBy: ● libvirtd-ro.socket
+             ● libvirtd-admin.socket
+             ● libvirtd.socket
+       Docs: man:libvirtd(8)
+             https://libvirt.org
+   Main PID: 13105 (libvirtd)
+      Tasks: 19 (limit: 32768)
+     Memory: 17.0M
+        CPU: 693ms
+     CGroup: /system.slice/libvirtd.service
+             ├─13105 /usr/sbin/libvirtd --timeout 120
+             ├─13213 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/default.conf --leasefile-ro --dhcp-script=/usr/libexec/libvirt_leaseshelper
+             └─13214 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/default.conf --leasefile-ro --dhcp-script=/usr/libexec/libvirt_leaseshelper
+
+Nov 20 18:11:16 rpi4 systemd[1]: Started Virtualization daemon.
+Nov 20 18:11:17 rpi4 dnsmasq[13213]: started, version 2.82 cachesize 150
+Nov 20 18:11:17 rpi4 dnsmasq[13213]: compile time options: IPv6 GNU-getopt DBus no-UBus no-i18n IDN2 DHCP DHCPv6 no-Lua TFTP no-conntrack ipset auth DNSSEC loop-detect inotify dumpfile
+Nov 20 18:11:17 rpi4 dnsmasq-dhcp[13213]: DHCP, IP range 192.168.122.2 -- 192.168.122.254, lease time 1h
+Nov 20 18:11:17 rpi4 dnsmasq-dhcp[13213]: DHCP, sockets bound exclusively to interface virbr0
+Nov 20 18:11:17 rpi4 dnsmasq[13213]: reading /etc/resolv.conf
+Nov 20 18:11:17 rpi4 dnsmasq[13213]: using nameserver 127.0.0.53#53
+Nov 20 18:11:17 rpi4 dnsmasq[13213]: read /etc/hosts - 2 addresses
+Nov 20 18:11:17 rpi4 dnsmasq[13213]: read /var/lib/libvirt/dnsmasq/default.addnhosts - 0 addresses
+Nov 20 18:11:17 rpi4 dnsmasq-dhcp[13213]: read /var/lib/libvirt/dnsmasq/default.hostsfile
+[root@host1 ~]# 
+----
+
+
+
+== check 
+
+The /dev/ directory has a new character device. 
+You can tell it's a character device because the long list starts with a "c".
+
+[source,console]
+----
+[nick@rpi4 ~]$ ls -l /dev/kvm 
+crw-rw-rw-. 1 root kvm 10, 232 Sep 30 01:00 /dev/kvm
+[nick@rpi4 ~]$ 
+----
+
+An Intel system has a kvm kernel module, but this ARM system doesn't. 
+
+A new interface virbr0 appears in nmcli's list of devices.  
+This is a bridge - a kind of internal layer 2 switch that connects virtual machines to the physical network.
+
+systemd service libvirtd is running. 
+This created a couple network devices - 
+a bridge devices named virbr0 
+a https://en.wikipedia.org/wiki/TUN/TAP[TUN/TAP] network interface named virbr0-nic, 
+used by the bridge. 
+network interface virbr0-nic doesn't handle traffic. 
+The only job of this interface is to provide a MAC address that doesn't change. 
+https://www.redhat.com/archives/libvirt-users/2012-September/msg00038.html
+
+[source,console]
+----
+[nick@rpi4 ~]$ nmcli con show
+NAME                UUID                                  TYPE      DEVICE 
+Wired connection 1  b8265e30-441b-3ee9-a547-9d675b065fe9  ethernet  eth0   
+virbr0              2c3ccfd7-882c-4ddb-84b1-4b594955fb1e  bridge    virbr0 
+enp1s0              83d67bc4-4398-454c-8bf8-602edb3bb501  ethernet  --     
+[nick@rpi4 ~]$ 
+----
+

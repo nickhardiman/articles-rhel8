@@ -1,0 +1,921 @@
+= libvirt test network notes
+Nick Hardiman <nick@redhat.com>
+:source-highlighter: pygments
+:toc: 
+:revdate: 03-08-2020
+
+This may be repeated in the libvirt docs. 
+
+Three types of machine. 
+The workstation and host1 are physical, guests are virtual. 
+They can be the same machine, like a well-endowed PC, or two seperate machines, like a chromebook and headless server machine. 
+
+. workstation - physical machine, contains developer tools.
+. host - physical machine, contains hypervisor, libvirt, libguestfs. There's only one, host1.
+. guest - virtual machine, runs Red Hat apps, all located on host1.
+
+This page collects all the config and commands required to set up the libvirt test network. 
+
+It's out of date, and it's all manual. 
+It needs an overhaul and replacing with ansible plays. 
+
+
+== accounts 
+
+User accounts are insecure. 
+Nothing private is stored on these hosts. 
+All guests have these accounts, similar to the RHU test labs.  
+Every account has the same key pair (~/.ssh/id_rsa and ~/.ssh/id_rsa.pub)
+
+user account
+
+* name: nick 
+* password: Password;1
+
+application account 
+
+* name: admin 
+* password: redhat1!
+
+
+
+== commands to run on host1
+
+
+=== networks 
+
+[source,console]
+----
+for N in default private1
+do
+  sudo virsh net-destroy $N
+  sudo virsh net-undefine $N
+  sudo virsh net-define --file net-$N.xml
+  sudo virsh net-autostart $N
+  sudo virsh net-start $N
+done
+# check
+sudo virsh net-list --all
+----
+
+
+=== XML for default network 
+
+Everything in libvirt is defined in XML documents. 
+The `virsh net-define --file` command reads an XML file to create a network. 
+
+This XML has: 
+
+* bridge with fixed MAC address and IP address
+* DHCP server records (<host mac='52:54:00:00:00:02' ... />), so it can hand these out to the guests. 
+* DNS server records (<host ... name='satellite1.lab.example.com' ip='192.168.122.2'/>), so it knows about them too 
+* DNS domain, a safety check -  server won't deal with names from other domains
+* DHCP server IP pool (<range start='192.168.122.2' end='192.168.122.254'/>), for other guests
+* NAT port forwarding, IP masquerade for Internet access 
+
+.net-default.xml 
+[source,XML]
+----
+<network>
+  <name>default</name>
+  <uuid>df3899c4-85ed-4742-a2b6-3ef57346f165</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:00:00:01'/>
+  <domain name='lab.example.com' localOnly='yes'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.122.2' end='192.168.122.254'/>
+      <host mac='52:54:00:00:00:02' name='satellite1.lab.example.com' ip='192.168.122.2'/>
+      <host mac='52:54:00:00:00:03' name='ansiblet1.lab.example.com'  ip='192.168.122.3'/>
+      <host mac='52:54:00:00:00:04' name='guest1.lab.example.com'     ip='192.168.122.4'/>
+      <host mac='52:54:00:00:00:05' name='guest2.lab.example.com'     ip='192.168.122.5'/>
+      <host mac='52:54:00:00:00:06' name='guest3.lab.example.com'     ip='192.168.122.6'/>
+    </dhcp>
+  </ip>
+</network>  
+----
+
+
+=== XML for private1 network 
+
+.net-private1.xml 
+[source,XML]
+----
+<network>
+  <name>private1</name>
+</network>
+----
+
+
+
+
+
+=== bridge ACL  
+
+[source,bash]
+----
+sudo sh -c "echo 'allow virbr1' >> /etc/qemu-kvm/bridge.conf"
+----
+
+./etc/qemu-kvm/bridge.conf 
+[source,XML]
+----
+allow virbr0
+allow virbr1
+----
+
+
+=== storage pool
+
+[source,bash]
+----
+# use a directory for the image pool
+POOL=guest_images
+POOL_DIR=/home/nick/libvirt/$POOL
+
+mkdir $POOL_DIR
+# create storage pool
+virsh pool-define --file pool-$POOL.xml
+virsh pool-start $POOL
+virsh pool-autostart $POOL
+# check
+virsh pool-list --all
+----
+
+pool-guest_images.xml
+
+[source,XML]
+----
+<pool type="dir">
+  <name>guest_images</name>
+  <target>
+    <path>/home/nick/libvirt/guest_images</path>
+  </target>
+</pool>
+----
+
+
+This bit turned out to be pointless. 
+libvirt sets the SELinux context of an image it uses. 
+
+[source,bash]
+----
+# Change the label to ``virt_image_t``
+# 
+sudo semanage fcontext -a -t virt_image_t "$POOL_DIR(/.*)?"
+sudo restorecon -Rv $POOL_DIR
+----
+
+
+
+=== disk images
+
+* rhel-8.2-x86_64-kvm.qcow2
+
+RHEL 8 
+https://access.redhat.com/downloads/content/479/ver=/rhel---8/8.2/x86_64/product-software
+
+file is 1.1G, is sparse 
+/dev/sda3 partition is 9.9G
+
+
+=== libvirt group access 
+
+Allow group access to libvirt's communication socket 
+ /var/run/libvirt/libvirt-sock.
+Add to a libvirt group. 
+
+More research required.
+This makes ansible virt module work,
+not sure why yet, shouldnt be necessary. 
+Why add privileged host access that should be provided with _become_ root?
+Does Packagekit interfere? 
+
+Requires these changes. 
+
+./etc/libvirt/libvirtd.conf 
+[source,bash]
+----
+# UNIX socket access controls
+#
+
+# Set the UNIX domain socket group ownership. This can be used to
+# allow a 'trusted' set of users access to management capabilities
+# without becoming root.
+#
+# This is restricted to 'root' by default.
+unix_sock_group = "libvirt"
+...
+# If not using PolicyKit and setting group ownership for access
+# control, then you may want to relax this too.
+unix_sock_rw_perms = "0770"
+----
+
+Add config. Requires restart? 
+Add group members.
+
+[source,bash]
+----
+echo '#--------' >> /etc/libvirt/libvirtd.conf
+echo 'unix_sock_group = "libvirt"' >> /etc/libvirt/libvirtd.conf
+echo 'unix_sock_rw_perms = "0770"' >> /etc/libvirt/libvirtd.conf
+groupadd libvirt
+for NAME in nick 
+do
+  usermod -a -G libvirt $NAME
+done 
+----
+
+
+
+
+== commands to create each guest 
+
+I defined a whole bunch of variables for each machine, then 
+ran the same commands. 
+
+
+[source,bash]
+----
+POOL=guest_images
+POOL_DIR=/home/nick/libvirt/$POOL
+----
+
+=== config for each guest 
+
+
+==== guest1
+
+* image takes up most space
+* VM has most memory
+* two IFs, connected to lab.example.com and private.example.com
+* memory - 14G: 14336M, 13G: 1024 * 13 = 13312, 12G: 12288
+
+[source,bash]
+----
+[root@host1 libvirt]# virsh dumpxml guest1 | grep -i memory
+  <memory unit='KiB'>12582912</memory>
+  <currentMemory unit='KiB'>12582912</currentMemory>
+[root@host1 libvirt]# 
+----
+
+Change machine memory.
+
+[source,bash]
+----
+# While machine is off 
+[root@host1 libvirt]# virsh setmaxmem guest1 14G --config
+[root@host1 libvirt]# virsh setmem guest1 14G --config
+[root@host1 libvirt]# virsh dumpxml guest1 | grep -i memory
+  <memory unit='KiB'>14680064</memory>
+  <currentMemory unit='KiB'>14680064</currentMemory>
+[root@host1 libvirt]# 
+----
+                1024 (M in G) * 14 G =    14336 M
+1024 (K in M) * 1024 (M in G) * 14 G = 14680064 K
+
+ 
+
+[source,bash]
+----
+HOST=guest1
+IMAGE=$HOST.qcow2
+VIRT_RESIZE_OPTIONS="--expand /dev/sda3 rhel-8.2-x86_64-kvm.qcow2 $IMAGE"
+CPUS=2
+MEMORY=4092
+DISK_SIZE=20G
+IF1_MAC=52:54:00:00:00:02
+IF1_IP=192.168.122.2
+IF1_DOMAIN=lab.example.com
+IF1_BRIDGE=virbr0
+IF2_MAC=52:54:00:00:01:02
+IF2_IP=192.168.152.2
+IF2_DOMAIN=private.example.com
+IF2_BRIDGE=virbr1
+OS_VARIANT=rhel8.2
+----
+
+
+
+
+==== guest2
+
+* image takes up most space
+* VM has most memory
+* two IFs, connected to lab.example.com and private.example.com
+
+[source,bash]
+----
+HOST=guest2
+IMAGE=$HOST.qcow2
+VIRT_RESIZE_OPTIONS="--expand /dev/sda3 rhel-8.2-x86_64-kvm.qcow2 $IMAGE"
+CPUS=2
+MEMORY=1024
+DISK_SIZE=20G
+IF1_MAC=52:54:00:00:01:02
+IF1_IP=192.168.152.2
+IF1_DOMAIN=private.example.com
+IF1_BRIDGE=virbr1
+IF2_MAC=
+IF2_IP=
+IF2_DOMAIN=
+IF2_BRIDGE=
+OS_VARIANT=rhel8.2
+----
+
+
+==== guest3
+
+* image takes up most space
+* VM has most memory
+* two IFs, connected to lab.example.com and private.example.com
+
+[source,bash]
+----
+HOST=guest3
+IMAGE=$HOST.qcow2
+VIRT_RESIZE_OPTIONS="--expand /dev/sda3 rhel-8.2-x86_64-kvm.qcow2 $IMAGE"
+CPUS=2
+MEMORY=1024
+DISK_SIZE=20G
+IF1_MAC=52:54:00:00:01:03
+IF1_IP=192.168.152.3
+IF1_DOMAIN=private.example.com
+IF1_BRIDGE=virbr1
+IF2_MAC=
+IF2_IP=
+IF2_DOMAIN=
+IF2_BRIDGE=
+OS_VARIANT=rhel8.2
+----
+
+
+
+=== copy the image 
+
+[source,bash]
+----
+# make a bigger copy of the downloaded image
+cd $POOL_DIR
+echo virsh vol-create-as $POOL $IMAGE $DISK_SIZE
+virsh vol-create-as $POOL $IMAGE $DISK_SIZE
+echo virt-resize $VIRT_RESIZE_OPTIONS 
+virt-resize $VIRT_RESIZE_OPTIONS
+----
+
+back out with 
+
+[source,bash]
+----
+# virsh vol-delete --pool guest_images --vol guest1.qcow2
+----
+
+customize image 
+
+[source,bash]
+----
+# cloud-init package installed in rhel7 image, but not 8
+# harmless for rhel8 
+virt-customize \
+  --add           $POOL_DIR/$IMAGE \
+  --root-password password:'Password;1' \
+  --uninstall     cloud-init  \
+  --hostname      $HOST.$IF1_DOMAIN \
+  --timezone      'Europe/London' \
+  --selinux-relabel
+----
+
+`--selinux-relabel` option - 
+_virt-customize_ messes SELinux permissions. 
+`systemctl status systemd-hostnamed` 
+shows service is dead. 
+It fails to start because file /etc/machine-info type should be hostname_etc_t
+virt-customize changes SELinux file type to *unlabeled_t*.
+
+fix
+
+`restorecon -Rv /etc/machine-info`
+
+
+[source,bash]
+----
+#
+[nick@guest1 ~]$ hostnamectl
+Failed to query system properties: Message recipient disconnected from message bus without replying
+[nick@guest1 ~]$ 
+[nick@guest1 ~]$ ls -lZ /etc/machine-info 
+-rw-r--r--. 1 root root system_u:object_r:unlabeled_t:s0 43 Jun 22 10:24 /etc/machine-info
+[nick@guest1 ~]$ 
+[nick@guest1 ~]$ cat /etc/machine-info 
+PRETTY_HOSTNAME=guest1.private.example.com
+[nick@guest1 ~]$ 
+[nick@guest1 ~]$ # fix
+[nick@guest1 ~]$ sudo  restorecon  /etc/machine-info
+----
+
+ 
+
+
+=== create a VM 
+
+create VM using disk image
+
+[source,bash]
+----
+if [ -z $IF2_IP ] ; then 
+  virt-install   \
+    --network    bridge:${IF1_BRIDGE},mac=$IF1_MAC   \
+    --name       $HOST   \
+    --memory     $MEMORY \
+    --vcpus      $CPUS \
+    --disk       $POOL_DIR/$IMAGE  \
+    --os-variant $OS_VARIANT \
+    --import   \
+    --graphics   none   \
+    --noautoconsole
+else 
+  virt-install   \
+    --network    bridge:${IF1_BRIDGE},mac=$IF1_MAC   \
+    --network    bridge:${IF2_BRIDGE},mac=$IF2_MAC   \
+    --name       $HOST   \
+    --memory     $MEMORY \
+    --vcpus      $CPUS \
+    --disk       $POOL_DIR/$IMAGE  \
+    --os-variant $OS_VARIANT \
+    --import   \
+    --graphics   none   \
+    --noautoconsole
+fi
+----
+
+use the console 
+
+[source,bash]
+----
+virsh console $HOST
+^]
+----
+
+
+
+=== add host DNS 
+
+This is for convenience only. 
+These lines allow easy SSH from the host machine. 
+dnsmasq also reads these when it starts, which can cause problems eg. 
+Satellite install gets upset when a reverse DNS check 
+matches _g1_, not  _guest1.lab.example.com_.
+
+/etc/hosts
+
+[source,bash]
+----
+192.168.122.2    g1      guest1 guest1.lab.example.com
+----
+
+
+
+=== add key login 
+
+[source,bash]
+----
+ssh-copy-id guest1
+ssh guest1
+----
+
+[source,bash]
+----
+for HOST in guest2 guest3 
+do
+  ssh-copy-id $HOST
+done
+----
+
+
+== commands to run on all guests 
+
+
+=== timezone
+
+US timezone (America/New_York) built into these minimal images. 
+
+[source,bash]
+----
+[root@guest1 ~]# timedatectl status
+      Local time: Mon 2020-07-06 07:14:12 EDT
+  Universal time: Mon 2020-07-06 11:14:12 UTC
+        RTC time: Mon 2020-07-06 11:14:11
+       Time zone: America/New_York (EDT, -0400)
+     NTP enabled: yes
+NTP synchronized: yes
+ RTC in local TZ: no
+      DST active: yes
+ Last DST change: DST began at
+                  Sun 2020-03-08 01:59:59 EST
+                  Sun 2020-03-08 03:00:00 EDT
+ Next DST change: DST ends (the clock jumps one hour backwards) at
+                  Sun 2020-11-01 01:59:59 EDT
+                  Sun 2020-11-01 01:00:00 EST
+[root@guest1 ~]# 
+[root@guest1 ~]# ls -l /etc/localtime 
+lrwxrwxrwx. 1 root root 38 Feb 25 11:24 /etc/localtime -> ../usr/share/zoneinfo/America/New_York
+[root@guest1 ~]# 
+----
+
+Change build. 
+A job for libguestfs - add this to virt-customize
+
+--timezone 'Europe/London'
+
+Change running image.
+Or systemd-firstboot?
+https://www.freedesktop.org/software/systemd/man/timedatectl.html
+
+[source,bash]
+----
+timedatectl set-timezone 'Europe/London'
+----
+
+
+=== add user account
+
+Two admin accounts 
+
+[source,bash]
+----
+for NAME in nick nick
+do
+  useradd $NAME
+  usermod -a -G wheel $NAME
+  echo 'Password;1' | passwd --stdin $NAME
+done 
+----
+
+
+== guest-specific commands 
+
+
+=== add swap
+
+[source,bash]
+----
+# Add 4G swap 
+# 1024 K in M * 1024 M in G * 4 G = 4194304
+SWAPFILE=/var/cache/swap
+dd if=/dev/zero of=/var/cache/swap bs=1024 count=4194304
+chmod 0600 $SWAPFILE
+# Setup the swap file with the command:
+mkswap $SWAPFILE
+# To enable the swap file immediately but not automatically at boot time:
+swapon $SWAPFILE
+# To enable it at boot time, edit /etc/fstab to include the following entry:
+echo "$SWAPFILE swap swap defaults 0 0" >> /etc/fstab
+----
+
+
+=== guest1 network
+
+rhel8
+
+* IF1 is defined with DHCP.
+* IF2 is defined but doesn't work. 
+
+[source,bash]
+----
+CON_NAME='Wired connection 1'
+IF2_IP=192.168.152.2
+nmcli connection modify "$CON_NAME" ipv4.addresses $IF2_IP/24
+nmcli connection modify "$CON_NAME" ipv4.method    manual
+nmcli connection up "$CON_NAME" 
+----
+
+
+=== guest2, guest3 
+
+rhel8
+
+* IF1 is defined but doesn't work.
+
+[source,bash]
+----
+CON_NAME='System eth0'
+nmcli connection modify "$CON_NAME" ipv4.addresses 192.168.152.3/24
+nmcli connection modify "$CON_NAME" ipv4.method    manual
+nmcli connection modify "$CON_NAME" ipv4.gateway   192.168.122.2
+nmcli connection up "$CON_NAME" 
+----
+
+
+
+
+== more commands that may come in handy
+
+
+=== first network interface - add static IP address 
+
+[source,bash]
+----
+virsh console $HOST
+# only root login works 
+
+CON_NAME='System eth0'
+IF1_IP=192.168.152.2
+nmcli con mod "$CON_NAME" ipv4.addresses $IF1_IP
+nmcli con mod "$CON_NAME" ipv4.method    manual
+nmcli connection modify "$CON_NAME" ipv4.routes 192.168.152.0/24 
+
+nmcli con up "$CON_NAME"
+----
+
+
+=== second network interface - add static IP address
+
+RHEL 7 only 
+
+RHEL 8 automatically defines new connection config named 'Wired connection 1'
+
+[source,bash]
+----
+virsh console $HOST
+# only root login works 
+
+CON_NAME='Wired connection 1'
+IF2_IP=192.168.152.3
+#
+# don't do this if second connection is already defined.
+EXISTS=$(nmcli con show "$CON_NAME")
+if [ -z "$EXISTS" ]; then  
+  nmcli con add type ethernet con-name "$CON_NAME" ifname eth1
+fi
+nmcli connection modify "$CON_NAME" ipv4.addresses $IF2_IP/24
+nmcli connection modify "$CON_NAME" ipv4.method    manual
+#nmcli connection modify "$CON_NAME" ipv4.routes 192.168.152.0/24 
+# add default route on capsule1 and isolatedn1
+nmcli connection modify "$CON_NAME" ipv4.gateway 192.168.152.2
+# add default route on guest4, 5 and 6
+nmcli connection modify "$CON_NAME" ipv4.gateway 192.168.162.2
+nmcli connection up "$CON_NAME"
+----
+
+
+=== second network interface - add to running machine 
+
+I figured out how to add a second IF with two --network  options
+(see above) so this is no longer required. 
+
+
+[source,bash]
+----
+virsh attach-interface $HOST \
+   --type   bridge \
+   --source virbr1 \
+   --mac    $IF2_MAC \
+   --model  virtio \
+   --live  \
+   --config 
+# check
+virsh domiflist $HOST
+----
+
+
+=== allow console from cockpit
+
+! broken. 
+
+Cockpit has a _console_ button, which 
+should open a Spice remote viewer. 
+
+It doesn't work, partly because of the way I create guest_images
+and partly some other problem. 
+
+tried this on host, no luck.
+
+[source,bash]
+----
+firewall-cmd --add-port=5900-5910/tcp --zone libvirt 
+firewall-cmd --add-port=5900-5910/tcp --zone libvirt --permanent 
+[source,bash]
+----
+
+Missing this? 
+
+[source,bash]
+----
+[root@host1 libvirt]# virsh dumpxml lee-kerker.lab.example.com
+...
+  <graphics type='spice' port='5900' autoport='yes' listen='0.0.0.0'>
+    <listen type='address' address='0.0.0.0'/>
+  </graphics>
+----
+
+
+=== stop a guest you're logged into  
+
+[source,bash]
+----
+sudo systemctl poweroff
+----
+
+
+
+=== start guests in the default network
+
+[source,bash]
+----
+for HOST in guest1; do 
+  sudo virsh start $HOST
+done
+----
+
+
+
+=== stop guests in the default network
+
+Similar to the _start_ command, but the opposite of start is _shutdown_.
+replace 
+  `sudo virsh start $HOST`
+with 
+  `sudo virsh shutdown $HOST`.
+
+
+=== start guests in the isolated network
+
+For isolated node tests 
+
+[source,bash]
+----
+for HOST in guest2 guest3; do 
+  sudo virsh start $HOST
+done
+----
+
+
+=== control guests with cgroups 
+
+https://www.redhat.com/files/summit/session-assets/2017/S103870-Demystifying-systemd.pdf
+Slices, Scopes, Services
+
+* Slice – Unit type for creating the cgroup hierarchy for resource management.
+* Scope – Organizational unit that groups a daemon’s worker processes.
+* Service – Process or group of processes controlled by systemd
+
+On the host, each machine process gets its own scope. 
+All the slices are in the machine slice. 
+
+[source,bash]
+----
+[nick@host1 ~]$ systemd-cgls 
+Control group /:
+-.slice
+├─user.slice
+...
+└─machine.slice
+  ├─machine-qemu\x2d2\x2dansiblet1.scope
+  │ └─5789 /usr/libexec/qemu-kvm -name guest=ansiblet1,debug-threads=on -S -object secret,id=masterKey0,format=raw,file=/var/lib/libvirt/qemu/domai>
+  ├─machine-qemu\x2d1\x2dsatellite1.scope
+  │ └─5691 /usr/libexec/qemu-kvm -name guest=satellite1,debug-threads=on -S -object secret,id=masterKey0,format=raw,file=/var/lib/libvirt/qemu/doma>
+  ├─machine-qemu\x2d4\x2disolatedn1.scope
+  │ └─5956 /usr/libexec/qemu-kvm -name guest=isolatedn1,debug-threads=on -S -object secret,id=masterKey0,format=raw,file=/var/lib/libvirt/qemu/doma>
+  └─machine-qemu\x2d3\x2dguest1.scope
+    └─5880 /usr/libexec/qemu-kvm -name guest=guest1,debug-threads=on -S -object secret,id=masterKey0,format=raw,file=/var/lib/libvirt/qemu/domain-3>
+[nick@host1 ~]$ 
+----
+
+No priorities set. 
+
+Run `systemd-cgls` to see `machine-qemu\x2d2\x2dansiblet1.scope` in the tree of slices, scopes and VMs. 
+That `x2d` is unicode hexadecimal for a normal hyphen (hyphen-minus). 
+
+
+[source,bash]
+----
+[nick@host1 ~]$ systemctl show --all machine-qemu\x2d2\x2dansiblet1.scope | grep Weight
+CPUWeight=[not set]
+StartupCPUWeight=[not set]
+IOWeight=[not set]
+StartupIOWeight=[not set]
+BlockIOWeight=[not set]
+StartupBlockIOWeight=[not set]
+[nick@host1 ~]$ 
+----
+
+
+
+
+
+== checks 
+
+=== guest 
+
+[source,bash]
+----
+ping -c3 192.168.122.1 # unreachable from private2
+ping -c3 192.168.152.1 # doesn't exist 
+# guest2 and 3 can reach its gateway IF
+ping -c3 192.168.122.2 
+# guest2 and 3 can't reach host1 gateway
+ping -c3 192.168.122.1
+ip neighbor
+----
+
+test access to host1 libvirt 
+
+[source,bash]
+----
+virsh -c qemu+ssh://root@192.168.122.1/system list
+----
+
+
+
+=== host 
+
+guest list 
+
+[source,bash]
+----
+virsh list --all
+----
+
+guest interfaces 
+
+[source,bash]
+----
+for HOST in guest1 guest2 guest3 
+do
+  virsh domiflist $HOST
+done
+----
+
+
+firewall 
+
+[source,bash]
+----
+[root@host1 ~]# firewall-cmd --list-all --zone=libvirt
+libvirt (active)
+  target: ACCEPT
+  icmp-block-inversion: no
+  interfaces: virbr0 virbr1 virbr2
+  sources: 
+  services: dhcp dhcpv6 dns ssh tftp
+  ports: 
+  protocols: icmp ipv6-icmp
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+	rule priority="32767" reject
+[root@host1 ~]# 
+----
+
+
+
+
+
+== workstation 
+
+If running a seperate workstation, there is more config to set up. 
+
+=== from workstation to host1
+
+Present these web consoles to the workstation
+
+* satellite web console 
+* ansible tower web console 
+* cockpit web console
+
+
+
+==== cockpit web console 
+
+Workstation web browser can get to host1 console, and host1 can access all the VMs on the default network. 
+
+Find the host1 IP address. 
+
+Open the cockpit console.  https://10.0.1.40:9090/
+
+
+
+==== /etc/hosts 
+
+Add a line for those web pages that might link using the server name.
+Or where you want a meaningful host name, not an IP address. 
+
+[source,bash]
+----
+MacBook-Pro:~ nick$ cat /etc/hosts
+...
+127.0.0.1	g1 guest1 guest1.lab.example.com
+MacBook-Pro:~ nick$ 
+----
+
+
+
+
+

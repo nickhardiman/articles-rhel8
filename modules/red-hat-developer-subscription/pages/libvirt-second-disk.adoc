@@ -1,0 +1,92 @@
+= libvirt second disk 
+Nick Hardiman 
+:source-highlighter: pygments
+:toc: 
+:revdate: 01-07-2020
+
+
+
+Add a second disk to a libvirt guest.
+
+
+== create a disk 
+
+in host 
+
+[source,XML]
+----
+cd /home/nick/libvirt/guest_images/
+qemu-img create -f qcow2 -o preallocation=full second-disk.qcow2  5G
+----
+
+in guest 
+find current disk name 
+[source,XML]
+----
+df 
+----
+
+in host
+
+temporary, does not survive reboots 
+
+[source,XML]
+----
+sudo virsh attach-disk guest1 /home/nick/libvirt/guest_images/second-disk.qcow2 vdb --cache none
+----
+
+persistent
+[source,bash]
+----
+sudo virsh attach-disk guest1 \
+  --source /home/nick/libvirt/guest_images/second-disk.qcow2 \
+  --target vdb \
+  --persistent
+adds this xml
+----
+
+[source,XML]
+----
+  <disk type='file' device='disk'>
+    <driver name='qemu' type='raw'/>
+    <source file='/home/nick/libvirt/guest_images/second-disk.qcow2'/>
+    <backingStore/>
+    <target dev='vdb' bus='virtio'/>
+    <alias name='virtio-disk1'/>
+    <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+  </disk>
+----
+
+
+== use the disk 
+
+in guest 
+
+Format the new disk.
+
+[source,XML]
+----
+sudo su -
+fdisk -l
+fdisk /dev/vdb # create new primary partition, fill device  
+mkfs.xfs /dev/vdb1
+----
+
+Copy /var/www/ content.
+
+[source,XML]
+----
+mount -t xfs /dev/vdb1 /mnt
+cp -rp /var/www/* /mnt/
+umount /mnt
+----
+
+Mount the new disk.
+
+temporary mount
+[source,XML]
+----
+mount -t xfs /dev/vdb1 /var/www
+restorecon -rv /var/www/
+[source,XML]
+----

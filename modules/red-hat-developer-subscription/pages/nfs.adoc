@@ -1,0 +1,218 @@
+= NFS
+Nick Hardiman
+:source-highlighter: pygments
+:toc: 
+:revdate: 05-12-2020
+
+
+
+== install 
+
+?
+
+== configure  
+
+/etc/nfs.conf 
+
+[source,console]
+----
+[nick@guest1 ~]$ grep -v -E '^#' /etc/nfs.conf 
+[general]
+[exportfs]
+[gssd]
+use-gss-proxy=1
+[lockd]
+[mountd]
+[nfsdcltrack]
+[nfsd]
+[statd]
+[sm-notify]
+[nick@guest1 ~]$ 
+----
+
+set a variable 
+
+[source,console]
+----
+[nick@guest1 ~]$ sudo nfsconf --set nfsd vers4.2 y
+[sudo] password for nick: 
+[nick@guest1 ~]$ 
+----
+
+[source,console]
+----
+[nick@guest1 ~]$ grep -v -E '^#' /etc/nfs.conf 
+...
+[nfsd]
+vers4.2 = y
+[statd]
+[sm-notify]
+[nick@guest1 ~]$ 
+----
+
+
+== systemd  
+
+[source,console]
+----
+[root@helper pv1]# systemctl status nfs-server
+● nfs-server.service - NFS server and services
+   Loaded: loaded (/usr/lib/systemd/system/nfs-server.service; enabled; vendor preset: disabled)
+  Drop-In: /run/systemd/generator/nfs-server.service.d
+           └─order-with-mounts.conf
+   Active: active (exited) since Tue 2020-10-20 02:47:34 PDT; 7h ago
+  Process: 1477 ExecStart=/bin/sh -c if systemctl -q is-active gssproxy; then systemctl reload gssproxy ; fi (code=exited, status=0/SUCCESS)
+  Process: 1420 ExecStart=/usr/sbin/rpc.nfsd (code=exited, status=0/SUCCESS)
+  Process: 1414 ExecStartPre=/usr/sbin/exportfs -r (code=exited, status=0/SUCCESS)
+ Main PID: 1477 (code=exited, status=0/SUCCESS)
+
+Oct 20 02:47:33 helper systemd[1]: Starting NFS server and services...
+Oct 20 02:47:34 helper systemd[1]: Started NFS server and services.
+[root@helper pv1]# 
+----
+
+== make directories to share 
+
+[source,console]
+----
+[root@helper ~]# mkdir /var/nfs
+[root@helper ~]# 
+[root@helper ~]# cd /var/nfs
+[root@helper nfs]# 
+[root@helper nfs]# mkdir pv1
+[root@helper nfs]# mkdir pv2
+[root@helper nfs]# mkdir pv3
+[root@helper nfs]# 
+----
+
+[source,console]
+----
+[root@helper nfs]# ls -l
+total 0
+drwxr-xr-x. 2 root root 6 Oct 20 09:15 pv1
+drwxr-xr-x. 2 root root 6 Oct 20 09:15 pv2
+drwxr-xr-x. 2 root root 6 Oct 20 09:15 pv3
+[root@helper ~]# 
+[root@helper nfs]# chmod 777 *
+[root@helper nfs]# 
+----
+
+Add config for the new exports. 
+
+[source,console]
+----
+[root@helper nfs]# vi /etc/exports
+
+/export	*(rw,sync,root_squash)
+/var/nfs/pv1	*(rw,sync,root_squash)
+/var/nfs/pv2	*(rw,sync,root_squash)
+/var/nfs/pv3	*(rw,sync,root_squash)
+[root@helper pv1]# 
+----
+
+Tell the NFS service about the new exports.
+
+[source,console]
+----
+[root@helper pv1]# exportfs -ra
+[root@helper pv1]# 
+----
+
+Check.
+
+[source,console]
+----
+[root@helper pv1]# exportfs 
+/export       	<world>
+/var/nfs/pv1  	<world>
+/var/nfs/pv2  	<world>
+/var/nfs/pv3  	<world>
+[root@helper pv1]#
+----
+
+== open the firewall 
+
+NFS v3 and v4 ports 
+
+* 111/tcp 
+* 2049/tcp 
+* 20048/tcp 
+
+
+[source,console]
+----
+[root@helper pv1]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp1s0
+  sources: 
+  services: cockpit dhcpv6-client ssh
+  ports: 67/udp 53/tcp 53/udp 443/tcp 80/tcp 8080/tcp 6443/tcp 6443/udp 22623/tcp 22623/udp 9000/tcp 69/udp 111/tcp 2049/tcp 20048/tcp 50825/tcp 53248/tcp
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+	
+[root@helper pv1]# 
+----
+
+[source,console]
+----
+[nick@host2 ~]$ ping helper
+PING helper.ocp4.example.com (192.168.7.77) 56(84) bytes of data.
+64 bytes from api.ocp4.example.com (192.168.7.77): icmp_seq=1 ttl=64 time=0.189 ms
+64 bytes from api.ocp4.example.com (192.168.7.77): icmp_seq=2 ttl=64 time=0.175 ms
+^C
+--- helper.ocp4.example.com ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 62ms
+rtt min/avg/max/mdev = 0.175/0.182/0.189/0.007 ms
+[nick@host2 ~]$ 
+----
+
+== mount an export 
+
+[source,console]
+----
+[nick@host2 ~]$ ls /mnt
+[nick@host2 ~]$ 
+----
+Not that way!
+
+[source,console]
+----
+[nick@host2 ~]$ mount helper:/var/nfs/pv1 /mnt
+mount: only root can do that
+[nick@host2 ~]$ 
+----
+
+This way.
+
+[source,console]
+----
+[nick@host2 ~]$ sudo mount helper:/var/nfs/pv1 /mnt
+[sudo] password for nick: 
+[nick@host2 ~]$ 
+----
+
+Check.
+
+[source,console]
+----
+[nick@host2 ~]$ df 
+Filesystem            1K-blocks      Used Available Use% Mounted on
+...
+helper:/var/nfs/pv1    51089408   3995648  47093760   8% /mnt
+[nick@host2 ~]$ 
+----
+
+Unmount. 
+
+[source,console]
+----
+[nick@host2 ~]$ sudo umount /mnt
+[nick@host2 ~]$ 
+----
+

@@ -1,0 +1,201 @@
+= register with Red Hat Insights 
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+
+
+Get advice from Insights 
+
+Register the workstation with https://www.redhat.com/en/technologies/management/insights[Red Hat Insights]. Can be configured at install time?
+
+https://access.redhat.com/documentation/en-us/red_hat_insights/2020-04/html/client_configuration_guide_for_red_hat_insights/index
+
+https://www.redhat.com/en/blog/redefining-rhel-introduction-red-hat-insights
+
+https://www.redhat.com/en/blog/expanding-management-operational-and-security-risks-new-red-hat-insights
+
+
+When you SSH to your fresh install, you see this MOTD (Message Of The Day).
+If you're on the Gnome desktop, you can only see these messages by looking at their files - ``cat /etc/motd.d/*``.
+
+[source,console]
+----
+workstation:~ nick$ ssh 10.0.1.4
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Thu May 14 17:29:53 2020 from 10.0.1.3
+[nick@host ~]$ 
+----
+
+Message from here 
+
+[source,console]
+----
+[nick@host ~]$ sudo cat /etc/insights-client/insights-client.motd 
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+[nick@host ~]$ 
+----
+
+Register.
+
+[source,console]
+----
+[nick@host ~]$ sudo insights-client --register
+[sudo] password for nick: 
+You successfully registered 935ced68-ab82-4da8-a902-6fdd73b3c0e0 to account 5341919.
+Successfully registered host host.lab.example.com
+Automatic scheduling for Insights has been enabled.
+Starting to collect Insights data for host.lab.example.com
+----
+
+After a few seconds, Insights is done.
+
+[source,console]
+----
+Uploading Insights data.
+Successfully uploaded report from host.lab.example.com to account 5341919.
+View the Red Hat Insights console at https://cloud.redhat.com/insights/
+[nick@host ~]$ 
+----
+
+https://access.redhat.com/solutions/2462091
+the insights-client creates a /etc/insights-client/machine-id file, which contains a UUID that uniquely identifies a particular RHEL system with the Insights back end. If two systems have the same UUID, information from the system that reported last will be visible.
+
+This doesn't match what web console says.
+
+[source,console]
+----
+[nick@host ~]$ cat /etc/insights-client/machine-id
+ed025aea-c063-43c7-a891-3f9a24c4dfb9[nick@host ~]$ 
+[nick@host ~]$ 
+----
+
+
+[source,console]
+----
+[nick@host ~]$ sudo insights-client --status
+System is registered locally via .registered file. Registered at 2020-06-01T18:17:53.296845
+Insights API confirms registration.
+[nick@host ~]$ 
+----
+
+
+[source,console]
+----
+[nick@host ~]$ sudo insights-client --show-results
+Error: no report found. Run insights-client --check-results to update the report cache: [Errno 2] No such file or directory: '/var/lib/insights/insights-details.json'
+[nick@host ~]$ 
+----
+
+
+[source,console]
+----
+[nick@host ~]$ sudo insights-client --check-results 
+[nick@host ~]$ 
+----
+
+
+[source,console]
+----
+[nick@host ~]$ sudo insights-client --show-results
+[
+ {
+  "rule": {
+   "rule_id": "hardening_cups_enabled|HARDENING_CUPS_ENABLED_4",
+...
+   "has_playbook": false
+  }
+ }
+]
+[nick@host ~]$ 
+----
+
+
+== systemd service
+
+insights-client.service is activated by insights-client.timer
+
+no point starting? 
+
+[source,console]
+----
+[nick@host ~]$ sudo systemctl start insights-client.service
+[nick@host ~]$ sudo systemctl status insights-client.service
+● insights-client.service - Insights Client
+   Loaded: loaded (/usr/lib/systemd/system/insights-client.service; static; ven>
+   Active: active (running) since Mon 2020-06-01 18:29:26 BST; 8s ago
+     Docs: man:insights-client(8)
+  Process: 10091 ExecStartPost=/bin/bash -c echo 1G >/dev/null 2>&1 > /sys/fs/c>
+  Process: 10090 ExecStartPost=/bin/bash -c echo 2G >/dev/null 2>&1 > /sys/fs/c>
+ Main PID: 10089 (insights-client)
+    Tasks: 2 (limit: 300)
+   Memory: 40.3M (limit: 2.0G)
+   CGroup: /system.slice/insights-client.service
+           ├─10089 /usr/libexec/platform-python /usr/bin/insights-client --retr>
+           └─10117 /usr/libexec/platform-python /usr/lib/python3.6/site-package>
+
+Jun 01 18:29:26 host.lab.example.com systemd[1]: Starting Insights Client...
+Jun 01 18:29:26 host.lab.example.com systemd[1]: Started Insights Client.
+[nick@host ~]$ 
+----
+
+
+== web console 
+
+View the web site.
+https://cloud.redhat.com/insights/
+
+Log in with your developer account. 
+
+Take the tour.
+
+==== Optimize IT performance
+
+Insights can help you avoid unplanned downtime and easily track usage and configuration.
+
+*Advisor* formerly "Insights"
+
+Respond to configuration recommendations and take necessary action at scale.
+
+*Drift* formerly "Drift Analysis"
+
+Track RHEL system configuration over time and compare differences to standard baselines and other systems.
+
+*Subscription Watch* New
+
+Efficiently monitor your Red Hat subscription usage - with confidence.
+
+==== Manage your security and compliance
+
+Secure your infrastructure by managing vulnerabilities, tracking cybersecurity regulatory compliance, and creating custom policies.
+
+*Vulnerability* New
+
+View and triage CVEs that Insights identifies your systems may be exposed to.
+
+*Compliance* New
+
+For regulated industries, keep your systems compliant with standard security policies by triaging, remediating, and reporting issues.
+
+*Policies* New
+
+Use self-defined policies to monitor your RHEL configurations with instant or daily alerts.
+
+==== Resolve operational issues quickly
+
+Fix issues and patch systems from Insights with Ansible Playbooks.
+
+*Remediations*
+
+Create remediation playbooks for issues you choose.
+
+Red Hat Smart Management with Satellite subscribers can run playbooks directly from Insights.
+
+*Patch* New
+
+Keep your RHEL configurations standardized by patching consistently - regardless of what footprints your systems are in.

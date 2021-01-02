@@ -1,0 +1,118 @@
+= storage
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+:revdate: 26-10-2020
+
+
+== storage device 
+
+
+The micro-SD card is the storage device. 
+The OS gives this a special file in the /dev/ directory. 
+
+[source,bash]
+----
+[nick@host1 ~]$ ls /dev/mmcblk1*
+/dev/mmcblk1  /dev/mmcblk1p1  /dev/mmcblk1p2  /dev/mmcblk1p3
+[nick@host1 ~]$ 
+----
+
+The partitions use 5GB of storage. 
+The rest is free. 
+
+[source,bash]
+----
+[nick@host1 ~]$ sudo fdisk -l /dev/mmcblk1
+[sudo] password for nick: 
+Sorry, try again.
+[sudo] password for nick: 
+Disk /dev/mmcblk1: 59.48 GiB, 63864569856 bytes, 124735488 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0xcf32e326
+
+Device         Boot   Start      End Sectors  Size Id Type
+/dev/mmcblk1p1 *       2048  1230847 1228800  600M  6 FAT16
+/dev/mmcblk1p2      1230848  3327999 2097152    1G 83 Linux
+/dev/mmcblk1p3      3328000 10485759 7157760  3.4G 83 Linux
+[nick@host1 ~]$ 
+----
+
+
+
+== partitions 
+
+
+* /dev/mmcblk1p1 is the EFI partition. 
+* /dev/mmcblk1p2 is the Linux boot partition
+* /dev/mmcblk1p3 is the root partition.
+
+
+
+== filesystem
+
+The partitions are formatted with two different file systems. 
+
+https://en.wikipedia.org/wiki/File_Allocation_Table[FAT16] (File Allocation Table system with 16 bit entries) is an old file system that stretches way back to the days of MS-DOS and the IBM PC AT in the 1980s.
+
+https://en.wikipedia.org/wiki/Ext4[ext4] (fourth extended filesystem) is a Linux file system and has been around about 10 years. 
+If you're wondering what it extended, that'll be the https://en.wikipedia.org/wiki/MINIX_file_system[Minix file system]. 
+Minix is an OS built decades ago as a teaching aid. It is a forerunner of Linux. 
+
+And anyway, why is it filesystem? What's wrong with two words, "file system"? 
+
+* /dev/mmcblk1p1 is formatted as FAT16 (File Allocation Table system with 16 bit entries), an old file system that stretches way back to the days of MS-DOS and the IBM PC AT in the 1980s. EFI system partitions are always formatted as FAT. 
+* /dev/mmcblk1p2 is formatted as ext4. 
+* /dev/mmcblk1p3 is also formatted as ext4. 
+
+These aren't the only three filesystems used on your machine. 
+If you enter the command _mount_, you will see about 20 lines with many more types of filesystem: sysfs, proc, devtmpfs, devpts, cgroup2, pstore, efivarfs, bpf, tracefs, configfs, selinuxfs, autofs, mqueue, hugetlbfs and debugfs.
+What can they all mean? 
+And there are even more listed in the file /proc/filesystems.
+
+
+[source,bash]
+----
+[nick@host1 ~]$ mount
+sysfs on /sys type sysfs (rw,nosuid,nodev,noexec,relatime,seclabel)
+proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)
+devtmpfs on /dev type devtmpfs (rw,nosuid,noexec,seclabel,size=3967832k,nr_inodes=991958,mode=755)
+...(lots more lines)...
+/dev/mmcblk1p2 on /boot type ext4 (rw,relatime,seclabel)
+/dev/mmcblk1p1 on /boot/efi type vfat (rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=ascii,shortname=winnt,errors=remount-ro)
+tmpfs on /run/user/1000 type tmpfs (rw,nosuid,nodev,relatime,seclabel,size=802664k,nr_inodes=200666,mode=700,uid=1000,gid=1000)
+[nick@host1 ~]$ 
+[nick@host1 ~]$ cat /proc/filesystems 
+nodev	sysfs
+nodev	tmpfs
+nodev	bdev
+...
+	    btrfs
+nodev	pstore
+	    vfat
+[nick@host1 ~]$ 
+----
+
+These are temporary filesystems that store files in memory rather than the SD card. For instance, /proc and all the files in it ceases to exist when the computer is switched off. 
+These temporary filesystems are useful for some specialised work of sharing data, interacting with the kernel 
+
+If you want to play with more filesystems that do store files permanently, there are many to choose from including xfs, the Red Hat Enterprise Linux default; iso9660, one for CD-ROMs; and NFS, the Network File System. 
+
+
+== mount points 
+
+The first partition on the disk has to hold the EFI system. 
+It's mounted on the directory /boot/efi. 
+
+[source,bash]
+----
+[nick@host1 ~]$ mount | grep mmcblk1
+/dev/mmcblk1p3 on / type ext4 (rw,relatime,seclabel)
+/dev/mmcblk1p2 on /boot type ext4 (rw,relatime,seclabel)
+/dev/mmcblk1p1 on /boot/efi type vfat (rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=ascii,shortname=winnt,errors=remount-ro)
+[nick@host1 ~]$ 
+----
+

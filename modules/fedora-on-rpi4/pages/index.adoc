@@ -1,0 +1,155 @@
+= Fedora on a Raspberry Pi 4
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+:revdate: 01-01-2021
+
+
+I'm in the process of finding out how well Fedora works on an RPi4. 
+It's not officially supported but it does work. 
+
+
+== possible reading order 
+
+. link:hardware.adoc[hardware.adoc]
+. link:firmware.adoc[firmware.adoc]
+. link:operating-system.adoc[operating-system.adoc]
+. link:bash-shell.adoc[bash-shell.adoc]
+. link:sysadmin.adoc[sysadmin.adoc]
+. link:grow-partition.adoc[grow-partition.adoc]
+
+
+essentials 
+
+. link:account.adoc[account.adoc]
+. link:storage.adoc[storage.adoc]
+. link:ten-more-shells.adoc[shell.adoc]
+. shell expansion  
+. file descriptor 
+. editor 
+. superuser 
+. link:access-control.adoc[access-control.adoc]
+. process   https://fedoramagazine.org/inspect-manage-processes-ps/
+. daemon 
+. link:ssh.adoc[ssh.adoc]
+. link:log.adoc[log.adoc]
+. time 
+. network 
+. host 
+. archive 
+. file copy 
+. rpm 
+. storage 
+
+system startup and shutdown 
+
+. shutdown 
+. boot-stages
+. boot-bios
+. boot-grub
+
+virtual machine 
+
+. network
+. build your network
+. network-build
+. link:libvirt.adoc[libvirt.adoc]
+. link:libvirt-virsh.adoc[libvirt-virsh.adoc]
+. link:libvirt-virtual-machine.adoc[libvirt-virtual-machine.adoc]
+. libvirt-dnsmasq
+. libvirt-second-network
+. libvirt-storage-pool
+. libvirt-storage-volume
+. libvirt-second-disk
+
+OS
+
+. syspurpose
+. cockpit
+. auditd
+. chrony
+. chrony-service
+. dnf
+. dnf-module
+. journald
+. anaconda 
+. systemd 
+
+local storage
+
+. luks
+. vdo
+. swap
+. partition 
+. mount 
+. swap
+. stratis 
+
+network 
+
+. IPv6 
+. teamed interface 
+. bridge 
+. NAT
+. DNS 
+
+network storage 
+
+. file network nfs service 
+. file network nfs client 
+. automount 
+. iSCSI remote block storage 
+
+cgroups
+
+. cgroups
+. cgroup-apache
+. cgroup-cpu
+. cgroup-memory
+. cgroup-storage
+
+code
+
+. git
+. git-hook
+. python
+. python3-virtualenv
+. regular expression 
+
+automation
+
+. ansible-engine
+. ansible-guest-host
+. ansible-lint
+. ansible-molecule
+
+container
+
+. container-tools
+. container-buildah
+. container-systemd
+. container-systemd
+
+storage 
+
+. regular expression 
+. process schedule
+. process multitask
+
+security 
+
+. MAC/SELinux
+. network firewall 
+. security kerberos 
+. file exclusive storage 
+. file shared storage 
+. TLS 
+
+application 
+
+. DB mariadb 
+. web apache 
+. web CGI 
+
+
+

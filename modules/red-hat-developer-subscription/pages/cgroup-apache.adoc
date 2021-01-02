@@ -1,0 +1,242 @@
+= Apache for cgroup experiments
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+:revdate: 01-07-2020
+
+Install Apache.
+
+Torture Apache with cgroups. 
+Set up a couple modules to provide information. 
+
+
+== install 
+
+[source,bash]
+----
+dnf install httpd mod_ssl 
+----
+
+Copies executables, logs, content and config. 
+Config includes many systemd files.
+
+
+== systemd unit httpd.service
+
+
+[source,bash]
+----
+[root@guest1 ~]# ls -1d /usr/lib/systemd/system/httpd*
+/usr/lib/systemd/system/httpd.service
+/usr/lib/systemd/system/httpd@.service
+/usr/lib/systemd/system/httpd.service.d
+/usr/lib/systemd/system/httpd.socket
+/usr/lib/systemd/system/httpd.socket.d
+[root@guest1 ~]# 
+----
+
+View the unit configuration. 
+
+[source,bash]
+----
+[root@guest1 ~]# systemctl cat httpd.service
+# /usr/lib/systemd/system/httpd.service
+# See httpd.service(8) for more information on using the httpd service.
+
+# Modifying this file in-place is not recommended, because changes
+# will be overwritten during package upgrades.  To customize the
+# behaviour, run "systemctl edit httpd" to create an override unit.
+
+# For example, to pass additional options (such as -D definitions) to
+# the httpd binary at startup, create an override unit (as is done by
+# systemctl edit) and enter the following:
+
+#       [Service]
+#       Environment=OPTIONS=-DMY_DEFINE
+
+[Unit]
+Description=The Apache HTTP Server
+Wants=httpd-init.service
+After=network.target remote-fs.target nss-lookup.target httpd-init.service
+Documentation=man:httpd.service(8)
+
+[Service]
+Type=notify
+Environment=LANG=C
+
+ExecStart=/usr/sbin/httpd $OPTIONS -DFOREGROUND
+ExecReload=/usr/sbin/httpd $OPTIONS -k graceful
+# Send SIGWINCH for graceful stop
+KillSignal=SIGWINCH
+KillMode=mixed
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+
+[root@guest1 ~]# 
+----
+
+
+== configure 
+
+Start. 
+
+[source,bash]
+----
+systemctl start httpd.service 
+systemctl enable httpd.service 
+/etc/systemd/system/multi-user.target.wants/httpd.service → /usr/lib/systemd/system/httpd.service
+----
+
+
+
+== server-info module
+
+View Apache's configuration. 
+
+See setup in 
+https://httpd.apache.org/docs/2.4/mod/mod_info.html[server-info] page. 
+This must be enabled with extra config. 
+
+./etc/httpd/conf.d/server-info.conf
+[source,bash]
+----
+<Location "/server-info">
+    SetHandler server-info
+</Location>
+----
+
+
+== server-status module 
+
+View Apache's status. 
+
+The https://httpd.apache.org/docs/2.4/mod/mod_status.html[status page] 
+must be enabled with extra config. 
+
+./etc/httpd/conf.d/server-status.conf
+[source,bash]
+----
+<Location "/server-status">
+    SetHandler server-status
+</Location>
+----
+
+
+== MPM (Multi-Processing Module)
+
+This provides tuning 
+https://httpd.apache.org/docs/2.4/mod/mpm_common.html[directives] 
+like StartServers, MaxClients and ThreadsPerChild. 
+
+
+[source,bash]
+----
+[root@guest1 conf.d]# httpd -M | grep mpm
+ mpm_event_module (shared)
+[root@guest1 conf.d]# 
+----
+
+Apache runs half a dozen processes. 
+One parent, four children. 
+Each child has many threads. 
+
+[source,bash]
+----
+[root@guest1 ~]# pstree -cT 3337
+httpd─┬─httpd
+      ├─httpd
+      ├─httpd
+      ├─httpd
+      └─httpd
+[root@guest1 ~]# 
+[nick@guest1 ~]$ ps -fC httpd
+UID          PID    PPID  C STIME TTY          TIME CMD
+root        4596       1  0 14:10 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND
+apache      4597    4596  0 14:10 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND
+apache      4598    4596  3 14:10 ?        00:00:10 /usr/sbin/httpd -DFOREGROUND
+apache      4599    4596  3 14:10 ?        00:00:08 /usr/sbin/httpd -DFOREGROUND
+apache      4600    4596  3 14:10 ?        00:00:08 /usr/sbin/httpd -DFOREGROUND
+apache      4815    4596  3 14:11 ?        00:00:07 /usr/sbin/httpd -DFOREGROUND
+[nick@guest1 ~]$ 
+----
+
+
+
+== cgroup system.slice
+
+The systemd unit httpd.service is in the cgroup system.slice.
+
+[source,bash]
+----
+[nick@guest1 ~]$ systemd-cgls  --unit  httpd.service
+Unit httpd.service (/system.slice/httpd.service):
+├─4596 /usr/sbin/httpd -DFOREGROUND
+├─4597 /usr/sbin/httpd -DFOREGROUND
+├─4598 /usr/sbin/httpd -DFOREGROUND
+├─4599 /usr/sbin/httpd -DFOREGROUND
+├─4600 /usr/sbin/httpd -DFOREGROUND
+└─4815 /usr/sbin/httpd -DFOREGROUND
+[nick@guest1 ~]$ 
+----
+
+Process numbers are stored. 
+
+[source,bash]
+----
+[nick@guest1 ~]$ ls /sys/fs/cgroup/systemd/system.slice/httpd.service/
+cgroup.clone_children  cgroup.procs  notify_on_release  tasks
+[nick@guest1 ~]$ 
+[nick@guest1 ~]$ cat /sys/fs/cgroup/memory/system.slice/httpd.service/cgroup.procs
+4596
+4597
+4598
+4599
+4600
+4815
+[nick@guest1 ~]$ 
+----
+
+
+== benchmark Apache 
+
+Create a 1MB file. 
+
+[source,bash]
+----
+head -c 1000000 /dev/urandom > /var/www/html/random.bin
+----
+Start top in a different terminal.
+
+Use 
+https://httpd.apache.org/docs/2.4/programs/ab.html[ab (apache benchmark)].
+
+[source,bash]
+----
+ab -c5  -n 10000 https://192.168.122.4/random.bin
+----
+
+Run top. 
+
+top says the CPU is working flat out. 
+ab is using the most CPU, and apache is using what's left.
+ 
+[source,bash]
+----
+top - 14:06:31 up 11:26,  2 users,  load average: 1.65, 1.08, 0.48
+Tasks: 124 total,   3 running, 121 sleeping,   0 stopped,   0 zombie
+%Cpu0  : 77.7 us, 19.3 sy,  0.0 ni,  0.0 id,  0.0 wa,  0.7 hi,  2.3 si,  0.0 st
+MiB Mem :   1323.0 total,    560.0 free,    219.3 used,    543.7 buff/cache
+MiB Swap:      0.0 total,      0.0 free,      0.0 used.    891.1 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+   4546 root      20   0   36216   6444   5368 R  35.5   0.5   0:03.41 ab
+   4265 apache    20   0 1486416  21308   9832 S  16.6   1.6   0:11.59 httpd
+   4264 apache    20   0 1355232  19684   9896 S  16.3   1.5   0:09.69 httpd
+   4263 apache    20   0 1355244  19544   9892 S  14.6   1.4   0:08.84 httpd
+   4479 apache    20   0 1355196  19728   9896 S  13.0   1.5   0:09.48 httpd
+...
+----
+
+

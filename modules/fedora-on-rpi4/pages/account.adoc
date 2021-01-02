@@ -1,0 +1,70 @@
+= account 
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+:revdate: 19-10-2020
+
+
+/etc/passwd 
+/etc/shadow 
+/etc/group
+wheel
+password policy 
+
+
+https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/basic-system-configuration/Managing_Users_and_Groups/
+https://docs.fedoraproject.org/en-US/Fedora/12/html/Deployment_Guide/s2-users-add.html
+
+
+Not the Fedora Account System 
+https://fedoramagazine.org/set-up-single-sign-on-for-fedora-project-services/
+https://fedoramagazine.org/getting-set-up-with-fedora-project-services/
+https://github.com/fedora-infra/fas
+
+
+
+
+== create a user account
+
+[source,bash]
+----
+$NAME=fatima
+useradd $NAME
+----
+
+Set a password. 
+
+[source,bash]
+----
+passwd --stdin $NAME
+----
+
+
+Give the account administrative access. 
+
+[source,bash]
+----
+usermod -a -G wheel $NAME
+----
+
+Create a few accounts. 
+Gvie them all the same password. 
+
+[source,bash]
+----
+cat names.txt 
+user1
+user2 
+user3
+
+for NAME in $(cat names.txt)
+do
+  useradd $NAME
+  echo 'Password;1' | passwd --stdin $NAME
+done 
+----
+
+== delete a user account 
+
+
+

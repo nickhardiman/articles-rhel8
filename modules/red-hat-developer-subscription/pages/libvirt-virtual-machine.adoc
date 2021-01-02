@@ -1,0 +1,379 @@
+
+= libvirt virtual machine 
+Nick Hardiman 
+:source-highlighter: pygments
+:toc: 
+:revdate: 29-05-2020
+
+
+Create a VM using a storage volume.  
+
+.physical machine and virtual machine 
+[a2s,libvirt-virtual-machine]
+....
+.------------------.
+|                  |
+|  host            |
+|                  |   
+|   +----------+   |    
+|   |          |   |  
+|   |  guest1  |---+--> Internet
+|   |          |   |   
+|   +----------+   |  
+.------------------.  
+....
+
+
+
+
+
+== virtualization components that are already installed  
+
+Many qemu and libvirt-daemon packages are already installed. 
+The  https://www.redhat.com/en/topics/virtualization/what-is-KVM[KVM (Kernel-based Virtual Machine) hypervisor] is built into Linux. 
+Run ``lsmod | grep kvm`` to see the kernel modules.
+
+QEMU handles hardware emulation for virtual machines.
+libvirt provides a management interface to QEMU. 
+Libvirt is used by the https://www.redhat.com/en/technologies/virtualization/enterprise-virtualization[RHV (Red Hat Virtualization)] 
+system, and RHV's upstream open-source project https://www.ovirt.org/[oVirt].
+
+
+libvirt-daemon manages the virtualization. 
+
+systemd service libvirtd is running. 
+This created a couple network devices - 
+a bridge devices named virbr0 
+a https://en.wikipedia.org/wiki/TUN/TAP[TUN/TAP] network interface named virbr0-nic, 
+used by the bridge. 
+network interface virbr0-nic doesn't handle traffic. 
+The only job of this interface is to provide a MAC address that doesn't change. 
+https://www.redhat.com/archives/libvirt-users/2012-September/msg00038.html
+
+[source,console]
+----
+[nick@host ~]$ nmcli device status
+DEVICE      TYPE      STATE      CONNECTION 
+enp0s25     ethernet  connected  enp0s25    
+wlp3s0      wifi      connected  my wifi   
+virbr0      bridge    connected  virbr0     
+lo          loopback  unmanaged  --         
+virbr0-nic  tun       unmanaged  --         
+[nick@host ~]$ 
+----
+
+
+
+
+== prereqs 
+
+. laptop  
+. Fresh RHEL 8 install 
+. developer subscription 
+. storage pool, nicks_images
+. storage volume, guest1.qcow2
+ 
+
+== install 
+
+Edit disk image with qemu-img. 
+View VM's desktop with virt-viewer?
+Add a bridge with brctl? or bridge? or nmcli?
+
+
+
+Install libvirt client tools.
+
+The virt module provides most of the tools. 
+Couple more from the appstream repository, virt-viewer, cockpit-machines 
+
+[source,console]
+----
+[nick@host ~]$ sudo dnf module list virt 
+Updating Subscription Management repositories.
+Last metadata expiration check: 0:16:21 ago on Thu 14 May 2020 17:14:06 BST.
+Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+Name         Stream              Profiles           Summary                     
+virt         rhel [d][e]         common [d]         Virtualization module       
+
+Hint: [d]efault, [e]nabled, [x]disabled, [i]nstalled
+[nick@host ~]$ 
+----
+
+The virt module doesn't include everything used in this article. 
+The ``virt-resize`` command comes from the libguestfs-tools package, and  ``virt-install`` from the virt-install package. 
+
+Install all packages. 
+
+[source,console]
+----
+sudo dnf module install virt
+sudo dnf install libguestfs-tools
+sudo dnf install virt-install
+----
+
+
+
+== create a virtual machine 
+
+Create a VM using a ready-made disk image (guest-images/guest1.qcow2). This is not the same as using an install ISO - the OS is already installed. 
+
+A new VM can be created using a command like ``virsh define my-machine.xml``, 
+similar to the way a storage pool can be created using ``virsh pool-define storage-pool.xml``.
+But the XML configuration that defines a virtual machine is complicated. 
+It's easier to use the ``virt-install`` command to do the hard work. 
+
+This ``virt-install`` command creates a virtual machine with 2 CPUs, 1536 MB memory and the disk we created.
+
+[source,console]
+----
+  virt-install \
+    --network bridge:virbr0,mac=52:54:00:00:00:01 \
+    --name guest1 \
+    --boot uefi  \
+    --disk guest-images/guest1.qcow2 \
+    --os-variant rhel8.0 \
+    --import \
+    --graphics none \
+    --noautoconsole
+----
+
+This command creates a _guest domain_. In https://libvirt.org/goals.html[libvirt terminology], this command creates a domain on the node, which translates as a new guest machine running on the host machine.  
+
+If you're wondering about the odd-looking MAC address ``52:54:00:00:00:01``, it's not one you'd find in public - it's a https://en.wikipedia.org/wiki/MAC_address#Universal_vs._local[locally administered address]. 
+
+[source,console]
+----
+[nick@host ~]$ virt-install  --network bridge:virbr0,mac=52:54:00:00:00:01  --name guest1  --disk guest-images/guest1.qcow2  --os-variant rhel8.0  --import  --graphics none  --noautoconsole
+Using rhel8.0 default --memory 1536
+
+Starting install...
+Domain creation completed.
+[nick@host ~]$ 
+----
+
+
+== use the console 
+
+Connect to the console with the command ``virsh console guest1``.
+
+It may take a few seconds for boot-up to finish. 
+The login prompt may not appear until you hit the ``Enter`` key. 
+
+[source,console]
+----
+[nick@host ~]$ virsh console guest1
+Connected to domain guest1
+Escape character is ^]
+(Enter)
+Red Hat Enterprise Linux 8.2 (Ootpa)
+Kernel 4.18.0-193.el8.x86_64 on an x86_64
+
+Activate the web console with: systemctl enable --now cockpit.socket
+
+guest1 login: 
+----
+
+Log in. This password was set by customizing the guest1 KVM image.
+
+* user: root
+* password: x%5ckA-1
+
+Does this machine know it's virtual? 
+Oh yes. 
+
+[source,console]
+----
+[root@guest1 ~]# dmesg | grep virtual
+[    0.000000] Booting paravirtualized kernel on KVM
+[    1.263237] systemd[1]: Detected virtualization kvm.
+[    4.411466] systemd[1]: Detected virtualization kvm.
+[root@guest1 ~]# 
+----
+
+Log out. ``exit``
+
+Disconnect from the console. ``ctrl`` + ``]``
+
+[source,console]
+----
+guest1 login:  ^]
+[nick@host ~]$ 
+----
+
+
+== stop the VM
+
+Stop the new VM with the command ``virsh shutdown guest1``. 
+This is a graceful shutdown, like running ``systemctl poweroff``.
+
+If you want to pull the plug, use ``virsh destroy guest1``.
+
+[source,console]
+....
+[nick@host ~]$ virsh shutdown guest1
+Domain guest1 is being shutdown
+
+[nick@host ~]$ 
+[nick@host ~]$ virsh list --all
+ Id    Name                           State
+----------------------------------------------------
+ -     guest1                         shut off
+
+[nick@host ~]$ 
+....
+
+
+== restart the VM
+
+Restart the new VM with the command ``virsh start guest1``.
+
+This ``virsh start`` command runs a huge ``qemu-kvm`` command with dozens of options. 
+You can see it by running ``ps -fwwwC qemu-kvm``.
+
+[source,console]
+....
+[nick@host ~]$ virsh start guest1
+Domain guest1 started
+
+[nick@host ~]$ 
+[nick@host ~]$ virsh list
+ Id    Name                           State
+----------------------------------------------------
+ 1     guest1                         running
+
+[nick@host ~]$ 
+....
+
+
+== SSH to the VM
+
+Check the VM is running with the command ``virsh list --all`` 
+
+The VM gets its IP address by asking for a DHCP lease. 
+A _dnsmasq_ application running on the host provides the DHCP service. 
+
+Find  the virsh network and list all DHCP leases. 
+The new VM IP address is in this list. 
+Factory-fitted libvirt only has one network named _default_, and there is only one VM running. 
+
+[source,console]
+....
+[nick@host ~]$ sudo virsh net-list
+ Name                 State      Autostart     Persistent
+----------------------------------------------------------
+ default              active     yes           yes
+
+[nick@host ~]$ 
+[nick@host ~]$ sudo virsh net-dhcp-leases default
+ Expiry Time          MAC address        Protocol  IP address                Hostname        Client ID or DUID
+-------------------------------------------------------------------------------------------------------------------
+ 2020-05-27 19:31:43  52:54:00:f1:b6:01  ipv4      192.168.122.218/24        guest1          01:52:54:00:f1:b6:01
+
+[nick@host ~]$ 
+....
+
+Connect. 
+
+[source,console]
+....
+[nick@host ~]$ ssh 192.168.122.218
+The authenticity of host '192.168.122.218 (192.168.122.218)' can't be established.
+ECDSA key fingerprint is SHA256:JcjI8AIHkUvat0qdM1OqDPzY0jughZC5ZOuU/uvApmk.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.122.218' (ECDSA) to the list of known hosts.
+nick@192.168.122.218's password: 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Wed May 27 13:26:47 2020
+[nick@guest1 ~]$ 
+....
+
+Disconnect. 
+
+[source,console]
+----
+[nick@guest1 ~]$ exit
+logout
+Connection to 192.168.122.218 closed.
+[nick@host ~]$ 
+----
+
+A slightly harder way of finding the IP address is to use the VM's MAC address and the arp command. 
+
+. Save the XML configuration with ``virsh dumpxml guest1 > guest1.xml``.
+. Find 'mac address' in this file. 
+. Run ``arp -an``.
+. Search the arp results for the line containing the MAC address. 
+
+
+
+== delete the VM
+
+Delete the new VM with the command  ``virsh destroy guest1``.
+
+Power off the machine and remove its configuration. 
+
+[source,console]
+....
+[nick@host ~]$ virsh destroy guest1
+Domain guest1 destroyed
+
+[nick@host ~]$ 
+[nick@host ~]$ virsh undefine guest1
+Domain guest1 has been undefined
+
+[nick@host ~]$ 
+[nick@host ~]$ virsh list --all
+ Id    Name                           State
+----------------------------------------------------
+
+[nick@host ~]$ 
+....
+
+
+== a few sysadmin tasks
+
+Use RHSM (Red Hat Subscription Manager) to https://access.redhat.com/solutions/253273[register and subscribe] your new VM.
+
+[source,console]
+----
+sudo subscription-manager register --username <username> --password <password> --auto-attach
+----
+
+Update packages.
+
+[source,console]
+----
+sudo dnf update
+----
+
+Create a user. 
+
+[source,console]
+----
+sudo useradd nick
+sudo usermod -a -G wheel nick
+sudo passwd nick
+----
+
+Turn the lights off when you're done. 
+
+[source,console]
+----
+sudo systemctl poweroff
+----
+
+
+
+== automate 
+
+Next step is to automate the process. 
+It's great to know how to manually build a VM. 
+When things go wrong - and things always go wrong in IT - you need this knowledge to locate and fix the problem. 
+But it's a bad idea to carry on building manually. 
+No two machines will be alike. 
+

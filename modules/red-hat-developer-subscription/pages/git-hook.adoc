@@ -1,0 +1,74 @@
+= git hook 
+Nick Hardiman <nick@redhat.com>
+:source-highlighter: pygments
+:toc:
+:revdate: 03-06-2020
+
+Add a git server-side post-receive hook.
+
+This runs after the commit process - after content is added to or removed from  the repo. 
+
+!!! shouldn't this use post-receive, not post-update?
+
+
+== write a bash script
+
+[source,console]
+....
+[nick@guest1 ~]$ cd /var/git/content1.git/hooks
+[nick@guest1 hooks]$
+[nick@guest1 hooks]$ vi post-update
+....
+
+[source,bash]
+....
+#!/bin/sh
+USER=$(/usr/bin/whoami)
+/usr/bin/logger -t githook -p info "$USER updated git"
+....
+
+Make it executable and check it works. 
+
+[source,console]
+....
+[nick@guest1 hooks]$ chmod 775 post-update
+[nick@guest1 hooks]$ ./post-update
+[nick@guest1 hooks]$ sudo tail /var/log/messages
+....
+
+Watch the log. 
+
+[source,console]
+....
+[root@guest1 ~]# journalctl -f
+-- Logs begin at Fri 2020-07-03 02:45:22 EDT. --
+....
+
+
+== commit to the common repo 
+
+Push something. 
+
+Many messages appear, not just one. 
+
+Most are related to SSH login.
+Only one message is from the new script.  
+
+[source,console]
+....
+Jul 03 13:45:05 guest1.lab.example.com systemd[1]: Starting SSSD Kerberos Cache Manager...
+Jul 03 13:45:05 guest1.lab.example.com systemd[1]: Started SSSD Kerberos Cache Manager.
+Jul 03 13:45:05 guest1.lab.example.com sssd[kcm][7226]: Starting up
+Jul 03 13:45:05 guest1.lab.example.com sshd[7223]: Accepted publickey for nick from 192.168.122.4 port 34496 ssh2: RSA SHA256:xrCEJMB6wUDzzxO475pJVJqVqdj7M9FV1YtjzvMu11k
+Jul 03 13:45:05 guest1.lab.example.com systemd[1]: Started Session 36 of user nick.
+Jul 03 13:45:05 guest1.lab.example.com systemd-logind[762]: New session 36 of user nick.
+Jul 03 13:45:05 guest1.lab.example.com sshd[7223]: pam_unix(sshd:session): session opened for user nick by (uid=0)
+Jul 03 13:45:05 guest1.lab.example.com githook[7251]: nick updated git
+Jul 03 13:45:05 guest1.lab.example.com sshd[7229]: Received disconnect from 192.168.122.4 port 34496:11: disconnected by user
+Jul 03 13:45:05 guest1.lab.example.com sshd[7229]: Disconnected from user nick 192.168.122.4 port 34496
+Jul 03 13:45:05 guest1.lab.example.com sshd[7223]: pam_unix(sshd:session): session closed for user nick
+Jul 03 13:45:05 guest1.lab.example.com systemd-logind[762]: Session 36 logged out. Waiting for processes to exit.
+Jul 03 13:45:05 guest1.lab.example.com systemd-logind[762]: Removed session 36.
+....
+
+

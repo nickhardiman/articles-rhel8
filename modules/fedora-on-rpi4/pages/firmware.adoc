@@ -1,0 +1,162 @@
+= firmware  
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+:revdate: 24-10-2020
+
+
+Firmware does all the work between power-on and OS starting.  
+The part that writes obscure messages to the screen before the OS is the UEFI application.
+
+The boot process has two parts. 
+The Raspberry Pi bootloader starts the UEFI system, and the UEFI bootloader starts the kernel. 
+
+The GNU project maintain their own boot loader, GRUB2. 
+The Grub2 bootloader is the Fedora UEFI application.
+
+
+== firmware 
+
+Firmware has to get everything started. For instance, to boot up the OS, the firmware must first find the storage, finds the OS kernel on that storage, figure out how to use the memory, copy the kernel into that memory, and point the CPU at the first instruction in that kernel.
+After that point, the kernel is up and running, and the OS can take over. 
+
+Firmware is tied to the computer it runs on. 
+It has to understand how to work with the many devices that make up a computer, and different types of computer have different collections of devices.
+Even two closely related computers like the Raspberry Pi 3 and the Raspberry Pi 4 are different.
+If you look at these two side by side, you can see the chips are different and the layout has changed. 
+The way devices are connected has changed, too. 
+Ethernet used to be connected to USB, and now it has its own controller. 
+And USB now has its own PCIe controller on the SoC. 
+
+If you want to know who's responsible for the "firmware" name and if he had a sense of humor, check out Ascher Opler's article in http://bitsavers.org/magazines/Datamation/196701.pdf[Datamation magazine, volume 13 number 1]. This magazine came out half a century ago, has groovy modern art on the cover and plenty of great hardware photos inside.  
+
+
+== the boot process 
+
+When the Raspberry Pi powers up, a chain of firmware programs run before Linux starts. 
+
+* power on 
+* boot ROM, on the SoC
+* bootloader, in EEPROM on the SoC
+* U-Boot, start4x.elf, in the first partition
+* Grub2, efi/fedora/grubaa64.efi
+* Linux
+
+
+A boot ROM starts first.
+This is stored on the SoC (the BCM2711 chip).
+It has two jobs - first it checks for bootloader updates, then it starts the bootloader. ROM is Read-Only Memory - you can't make any changes to this program. Since you can't change it, you can't break it and permanently brick your computer. 
+
+The bootloader starts next. 
+This is program is also stored on the SoC, in an https://en.wikipedia.org/wiki/EEPROM[EEPROM (Electrically Erasable Programmable Read-only Memory)]. That means this program can be updated, although you do have to jump through a few hoops. If someone talks about a firmware update, they may be talking about updating this bootloader code. 
+The bootloader's job is to search for the next bootloader stage. 
+Usually this means reading the SD card, finding the first partition, and running the code in the file _start4x.elf_. 
+On a running Fedora system, the first partition is mounted on /boot/efi/ so you can see _start4x.elf_ in that directory.
+
+.bootloader firmware
+[source,console]
+----
+[root@localhost ~]# file /boot/efi/start4x.elf 
+/boot/efi/start4x.elf: ELF 32-bit LSB executable, Broadcom VideoCore III, version 1 (SYSV), statically linked, stripped
+[root@localhost ~]# 
+----
+
+The bootloader can also search the network and USB storage. 
+
+If you power on the Raspberry Pi without an SD card, then after a couple seconds a screenful of information appears, including _SD card not detected_ errors. 
+These messages are printed by the bootloader. 
+
+Then it's UEFI's turn. 
+The system loads the UEFI application, efi/fedora/grubaa64.efi.
+UEFI displays a few lines on the screen, including "Found EFI removable media binary efi/fedora/grubaa64.efi".
+
+Grub is now running. 
+It presents a menu of OS choices.
+After a few seconds, it loads the default kernel and its RAMdisk from the /boot partition and runs it. 
+
+
+
+== UEFI 
+
+UEFI is a https://www.uefi.org/specifications[set of specifications], not software. 
+Software that is built to these specification is a UEFI system.
+UEFI defines how to boot over the network (with PXE and TFTP), how secure boot should work, and where to find the OS boot loader.
+A UEFI system is modular and extendable, so it's more like a small OS than an application. It even comes with its own shell. 
+
+The OS needs to know about the clock, console, block storage, memory and all the other devices that make up a computer. 
+The UEFI system presents that information in a standardized way - any OS that talks the UEFI language can get its hands on all that device data.
+
+Linux can be built to do the job of UEFI - it can find all the hardware, initalize it and creating reference tables for how it all hangs together. 
+But then there would be one version of Linux for the  Raspberry Pi 3 and another version the Raspberry Pi 4, with its changed hardware. 
+Instead, the hardware work is handed over to the UEFI application.
+The UEFI application for a Raspberry Pi 4 is different to the UEFI application on the RPi3. 
+
+Usng a UEFI application means the same copy of Linux can run on both machines. 
+In fact, the UEFI system presents all these devices in a standardised way, so any OS can get the information it needs to work. 
+Mac OS X, Windows, Linux and BSD all work with UEFI.
+
+The first partition contains all the files that make up the UEFI system.
+
+.UEFI partition
+[source,console]
+----
+[root@localhost ~]# df -h /boot/efi
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/mmcblk1p1  599M   31M  569M   6% /boot/efi
+[root@localhost ~]# 
+----
+
+
+
+== more firmware files  
+
+
+=== /lib/firmware/
+
+More firmware may be required while the OS is running. 
+A device driver may request a firmware at any time. 
+This firmware is code that is uploaded to a device to make it work. 
+The code is stored in hundreds of files in the /lib/firmware/ directory. 
+
+Most of these files are not useful on the Raspberry Pi, except for Broadcom firmware. 
+The Broadcom brcmfmac driver (the driver for the wifi chip) requests firmware. 
+
+[source,console]
+----
+[root@localhost firmware]# dmesg | grep brcmfmac
+[   19.412655] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43455-sdio for chip BCM4345/6
+[   19.413370] usbcore: registered new interface driver brcmfmac
+[   19.553192] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43455-sdio for chip BCM4345/6
+[   19.553297] brcmfmac: brcmf_c_process_clm_blob: no clm_blob available (err=-2), device may have limited channels available
+[   19.553711] brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM4345/6 wl0: Mar  1 2015 07:29:38 version 7.45.18 (r538002) FWID 01-6a2c8ad4
+[root@localhost firmware]# 
+----
+
+=== /sys/firmware/
+
+Linux has a special file system, sysfs. 
+Kernel objects appear as files in the /sys/ directory. 
+All the firmware objects are in the /sys/firmware directory.  
+
+The /sys/firmware/devicetree/base/ directory holds nearly two thousand https://en.wikipedia.org/wiki/Device_tree[device tree] files. These hold data on everything from audio devices to thermal sensors. The _model_ file holds the computer name. 
+
+[source,console]
+----
+[root@localhost efivars]# cat /sys/firmware/devicetree/base/model
+Raspberry Pi 4 Model B Rev 1.4[root@localhost efivars]# 
+----
+
+/sys/firmware/dmi/ files are all part of a big https://en.wikipedia.org/wiki/Desktop_Management_Interface[DMI] table of device data.  
+The _dmidecode_ command displays this table in a readable format. 
+
+/sys/firmware/efi/ holds a few EFI variables and values, such as whether this is a 32 bit or 64 bit UEFI system.
+
+[source,console]
+----
+[root@localhost ~]#  cat /sys/firmware/efi/fw_platform_size
+64
+[root@localhost ~]# 
+----
+
+
+

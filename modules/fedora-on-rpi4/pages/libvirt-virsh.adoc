@@ -1,0 +1,130 @@
+= virsh
+Nick Hardiman 
+:source-highlighter: pygments
+:toc: 
+:revdate: 21-11-2020
+
+
+
+The CLI tool for working with libvirt is called https://libvirt.org/manpages/virsh.html[virsh].
+
+== engine 
+
+* virsh 
+* libvirtd 
+* qemu
+
+
+The virsh command is part of the ``libvirt-client`` package. 
+
+== resources 
+
+The virsh tool helps manage these resources. 
+
+* Domain resources include machine emulation, what storage is attached, 
+* Network resources include bridges, IP address pools, gateways.
+* Storage pools are locations where disk images, installer ISOs are stored. 
+
+There are some resources already created in the directory /var/lib/libvirt/.
+For instance, there is an _images_ directory for storing disk images, but it's empty. 
+And there is no config yet to tell libvirt to use this location. 
+
+== configuration 
+
+Libvirt configuration lives in the directory /etc/libvirt/. 
+There are many files here ending in _.conf_ which define now the executables behave. 
+
+There are also  XML files. 
+Libvirt defines resources using XML. 
+There are many XML files for controlling the firewall, but not much else. 
+There is a definition for the default network, stored in the file /etc/libvirt/qemu/networks/default.xml.
+
+
+== view resources 
+
+Some resources already exist. 
+
+use _virsh_ to display the https://libvirt.org/news.html[version] of libvirt.  
+
+[source,console]
+----
+[root@rpi4 ~]# virsh --version
+6.6.0
+[root@rpi4 ~]# 
+----
+
+List all virtual machines. 
+There are no machines defined, so virsh displays an empty table.
+
+[source,console]
+----
+[root@rpi4 images]# virsh list --all
+ Id   Name   State
+--------------------
+
+
+[root@rpi4 images]# 
+----
+
+There are no storage pools either. 
+
+[source,console]
+----
+[root@rpi4 images]# virsh pool-list --all
+ Name   State   Autostart
+---------------------------
+
+[root@rpi4 images]# 
+----
+
+There is one network defined. 
+
+[source,console]
+----
+[root@rpi4 images]# virsh net-list --all
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ default   active   yes         yes
+
+[root@rpi4 images]# 
+----
+
+
+
+== XML 
+
+
+Use virsh to display this XML. 
+
+[source,console]
+----
+[root@rpi4 images]# virsh net-dumpxml default 
+<network>
+  <name>default</name>
+  <uuid>48e3122c-700a-48db-b9d9-8ed8d57e2db2</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:ef:b8:e7'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.122.2' end='192.168.122.254'/>
+    </dhcp>
+  </ip>
+</network>
+
+[root@rpi4 images]# 
+----
+
+
+
+
+
+[source,console]
+----
+----
+
+

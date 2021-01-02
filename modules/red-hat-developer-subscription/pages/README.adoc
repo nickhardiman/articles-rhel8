@@ -1,0 +1,18 @@
+= artcles about the Red Hat Developer Subscription  
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+:revdate: 01-01-2021
+
+
+Not finished, let alone published.
+Please feel free to use, and all feedback is welcome. 
+
+The files here are my attempt to document what is bundled with the free developer subscription, 
+and how to use it.
+The docs cover activities like these. 
+
+File content is https://asciidoctor.org/[ASCIIDoctor] markdown.
+Some diagrams created with http://asciiflow.com/[asciiflow] and converted to SVG files by https://github.com/asciitosvg/asciitosvg[asciitosvg]. 
+
+

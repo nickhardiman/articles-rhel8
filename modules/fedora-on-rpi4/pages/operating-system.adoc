@@ -1,0 +1,96 @@
+= operating system  
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+:revdate: 24-10-2020
+
+!!! copying this
+https://fedoramagazine.org/install-fedora-on-a-raspberry-pi/
+
+The computer needs an OS. 
+Fire up the Raspberry Pi 4 with Fedora.
+
+
+== download Fedora 33 Minimal
+
+!!! 24 Oct 20 Fedora 33 not here yet
+this is all temporary.
+
+* Find Fedora's https://alt.fedoraproject.org/alt/[alternate architecture images].  
+* https://kojipkgs.fedoraproject.org/compose/33/latest-Fedora-33/compose/Spins/aarch64/images/[AArch64 images]
+* Download the latest minimal image, named something like _Fedora-Minimal-33-1.2.aarch64.raw.xz_. 
+
+
+The _Fedora Minimal_ image, one of https://alt.fedoraproject.org/[Fedora’s alt downloads], contains three partitions.
+
+* the https://en.wikipedia.org/wiki/EFI_system_partition[EFI system partition]
+* boot partition
+* root partition
+
+The image contains a ready-made file system, with over 400 packages already installed. 
+This minimal image does not include popular packages like a development environment, Internet service or desktop.
+These types of software aren’t required for this work. 
+While this is the first Raspberry Pi to comfortably fit a graphical desktop, there's no need to waste a GB running one.
+
+The downloaded file is compressed and about 700MB in size. 
+When the file is uncompressed, it’s 5GB. 
+It’s an ext4 file system that’s using about half of that 5GB. 
+All that empty space is the reason the compressed download is so much smaller than the uncompressed raw image.
+
+== copy to the micro-SD card
+
+* Copy the image to a micro-SD card.
+
+This can be a more complex than it sounds, and a painful experience. 
+Finding a https://www.jeffgeerling.com/blog/2019/raspberry-pi-microsd-card-performance-comparison-2019[good micro-SD card] takes work. 
+Then there’s the challenge of physically attaching the card to your computer.
+Perhaps your laptop has a full SD card slot and you need a card adapter, or perhaps you need a USB adapter. 
+Then, when it comes to copying, the OS may either help or get in your way. 
+You may have luck with https://fedoramagazine.org/make-fedora-usb-stick/[Fedora Media Writer], or with these Linux commands.
+
+[source,bash]
+----
+unxz ./Fedora-Minimal-32-1.6.aarch64.raw.xz
+dd if=./Fedora-Minimal-32-1.6.aarch64.raw of=/dev/mmcblk0 bs=8M status=progress oflag=direct
+----
+
+set up Fedora
+
+* Connect the Pi, power cable, network cable and micro-SD card.
+* Hit the power.
+* Wait for the https://fedoraproject.org/wiki/Anaconda[anaconda installer] to start.
+* Answer anaconda’s setup questions.
+
+Initial configuration of the OS takes a few minutes – a couple minutes waiting for boot-up, and a couple to fill out the spokes of anaconda’s text-based installer. 
+Write down your root and user passwords somewhere safe. 
+
+I set mine up with a user named _nick_ who is an administrator (a member of the _wheel_ group). 
+
+After setup, the login prompt appears.  
+Log in with the _root_ account. 
+The prompt shows the host name is set to _localhost_. 
+
+[source,bash]
+----
+[root@localhost ~]# 
+----
+
+Congratulations! Your Fedora Pi is up and operational.
+
+== check your work 
+
+Power down the Pi, then power it back up again. 
+
+Power down. 
+
+* Power down with `systemctl poweroff`.
+* Wait a few seconds. The screen goes dark and the activity LED on the board stops flashing.
+* Switch off the power. 
+
+Power up. 
+
+* Switch on the power. 
+* Wait a few seconds. Bootloader messages briefly appear, followed by the login prompt. 
+* Log in with the root account. 
+
+

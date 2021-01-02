@@ -1,0 +1,307 @@
+
+= libvirt storage pool
+Nick Hardiman 
+:source-highlighter: pygments
+:toc: 
+
+The https://libvirt.org/[libvirt] project provides a virtualization management system. 
+It's used by RHV (Red Hat Virtualization), Openstack, and even the latest Openshift.
+
+Libvirt uses storage pools to store storage volumes. 
+The disk image used by a virtual machine is a storage volume. 
+Create a libvirt storage pool using the ``virsh`` command. 
+
+storage pool 
+
+[a2s,libvirt-storage-pool-1]
+....
+.-------------------------------------.
+|                                     |    
+|   my_images                         |    
+|                                     |    
+|   +-----------------------------+   |    
+|   |                             |   |   
+|   |  rhel-8.2-x86_64-kvm.qcow2  |   |
+|   |                             |   |  
+|   +-----------------------------+   |  
+.-------------------------------------.  
+....
+
+
+
+== prereqs 
+
+laptop with 500GB storage and 32GB memory 
+Fresh RHEL 8 install 
+developer subscription 
+libvirt
+
+
+== a storage pool for your image files  
+
+Each virtual machine has a storage volume - this is the disk image.
+
+A storage pool is where image files are kept. 
+A storage pool can be made from many types of storage, 
+like a local disk drive, a distributed file system, or a SCSI volume.
+Machine image files contain a lot of empty space. 
+Storing them somewhere that deduplicates blocks saves a lot of room. 
+VDO 
+
+We use the simplest kind of storage pool - a directory.
+
+
+
+== create a directory 
+
+
+POOL_DIR=/home/nick/guest-images
+mkdir $POOL_DIR
+
+== add selinux labels 
+
+???
+is this necessary ?
+if so, should it be virt_content_t or virt_image_t?
+https://docs.fedoraproject.org/en-US/Fedora/18/html-single/Virtualization_Administration_Guide/index.html
+
+The SELinux security context of this new directory needs some work. 
+The file label is ``user_home_t``.
+
+[source,console]
+----
+[nick@host ~]$ ls -dZ guest-images/
+unconfined_u:object_r:user_home_t:s0 guest-images/
+[nick@host ~]$ 
+----
+
+Change the label to ``virt_image_t``.
+
+```
+sudo semanage fcontext -a -t virt_image_t "$POOL_DIR(/.*)?"
+sudo restorecon -Rv $POOL_DIR
+```
+
+
+== create a storage pool 
+
+Libvirt reads and writes XML. 
+There are two ways to configure libvirt. 
+
+* Create XML files and tell libvirt to read them.
+* Add options to commands, which tell libvirt to create the XML files.
+
+
+XML for the storage pool configuration looks like this.
+
+.storage-pool.xml
+[source,xml]
+----
+<pool type="dir">
+  <name>my_images</name>
+  <target>
+    <path>/home/nick/guest-images</path>
+  </target>
+</pool>
+----
+
+Create the storage pool XML file. ``vim storage-pool.xml``
+
+Tell libvirt to read it. ``virsh pool-define storage-pool.xml``
+
+[source,console]
+----
+[nick@host ~]$ virsh pool-define storage-pool.xml
+Pool my_images defined from storage-pool.xml
+
+[nick@host ~]$ 
+----
+
+Check your work. 
+
+List all pools. ``virsh pool-list --all``
+
+[source,console]
+....
+[nick@host ~]$ virsh pool-list --all
+ Name                 State      Autostart 
+-------------------------------------------
+ my_images         inactive   no        
+
+[nick@host ~]$ 
+....
+
+View your pool configuration. ``virsh pool-dumpxml my_images``
+Libvirt adds a lot of tags to your XML.
+
+[source,console]
+----
+[nick@host ~]$ virsh pool-dumpxml my_images
+<pool type='dir'>
+  <name>my_images</name>
+  <uuid>1231fd91-0b5c-4db2-879e-82266a570d58</uuid>
+  <capacity unit='bytes'>0</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <available unit='bytes'>0</available>
+  <source>
+  </source>
+  <target>
+    <path>/home/nick/guest-images</path>
+  </target>
+</pool>
+
+[nick@host ~]$ 
+----
+
+
+Made a mistake? 
+
+Remove the pool. ``virsh pool-undefine my_images``
+
+[source,console]
+----
+[nick@host ~]$ virsh pool-undefine my_images
+Pool my_images has been undefined
+
+[nick@host ~]$ 
+----
+
+
+
+== start the storage pool 
+
+A pool is either active or inactive. 
+An active pool is one being managed by libvirt. 
+
+before 
+
+[source,console]
+----
+[nick@host ~]$ virsh pool-info my_images
+Name:           my_images
+UUID:           1231fd91-0b5c-4db2-879e-82266a570d58
+State:          inactive
+Persistent:     yes
+Autostart:      no
+
+[nick@host ~]$ 
+----
+
+Start the pool. 
+
+[source,console]
+----
+[nick@host ~]$ virsh pool-start my_images
+error: Failed to start pool my_images
+error: Requested operation is not valid: storage pool 'my_images' is already active
+
+[nick@host ~]$ 
+----
+
+after 
+
+[source,console]
+----
+[nick@host ~]$ virsh pool-info my_images
+Name:           my_images
+UUID:           1231fd91-0b5c-4db2-879e-82266a570d58
+State:          running
+Persistent:     yes
+Autostart:      no
+Capacity:       398.85 GiB
+Allocation:     2.83 GiB
+Available:      396.02 GiB
+
+[nick@host ~]$ 
+----
+
+Make the change permanent. 
+
+[source,console]
+----
+[nick@host ~]$ virsh pool-autostart my_images
+Pool my_images marked as autostarted
+
+[nick@host ~]$ 
+----
+
+The opposite of ``pool-start`` is not ``pool-stop``, it's ``pool-destroy``. 
+It's not as terminal as it sounds. 
+
+[source,console]
+----
+[nick@host ~]$ virsh pool-destroy my_images
+Pool my_images destroyed
+
+[nick@host ~]$ 
+----
+
+
+== check using the RHEL 8 KVM image
+
+Red Hat provide a disk image that's ready to use.  
+The file rhel-8.2-x86_64-kvm.qcow2 is a small 1GB file (well, small for a disk image). 
+It's a minimal install, with no graphical desktop and no extra space.
+
+This disk image is  
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/virtualization_deployment_and_administration_guide/sect-using_qemu_img-supported_qemu_img_formats[qcow2 (QEMU v2) format]. 
+Libvirt knows how to create a virtual machine using this kind of image. 
+
+
+=== download the RHEL 8 KVM image  
+
+The https://access.redhat.com/downloads/content/479/ver=/rhel---8/8.2/x86_64/product-software[download page for RHEL 8]
+
+This page also contains a tiny boot ISO and a big install DVD. 
+For more information, check out the https://access.redhat.com/solutions/104063[Understanding the various RHEL .iso files] page. 
+
+Download this KVM image and copy to the ``guest_images`` directory. 
+
+
+=== examine the volume
+
+List all volumes. 
+
+[source,console]
+....
+[nick@host ~]$ virsh vol-list my_images
+ Name                 Path                                    
+------------------------------------------------------------------------------
+ rhel-8.2-x86_64-kvm.qcow2 /home/nick/guest-images/rhel-8.2-x86_64-kvm.qcow2
+
+[nick@host ~]$ 
+....
+
+
+View configuration. 
+
+[source,console]
+....
+[nick@host ~]$ virsh vol-dumpxml /home/nick/guest-images/rhel-8.2-x86_64-kvm.qcow2
+<volume type='file'>
+  <name>rhel-8.2-x86_64-kvm.qcow2</name>
+  <key>/home/nick/guest-images/rhel-8.2-x86_64-kvm.qcow2</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>10737418240</capacity>
+  <allocation unit='bytes'>1159135232</allocation>
+  <physical unit='bytes'>1159135232</physical>
+  <target>
+    <path>/home/nick/guest-images/rhel-8.2-x86_64-kvm.qcow2</path>
+    <format type='qcow2'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>1001</owner>
+      <group>1001</group>
+      <label>system_u:object_r:virt_content_t:s0</label>
+    </permissions>
+    <timestamps>
+      <atime>1589796842.263124665</atime>
+      <mtime>1589554084.043738969</mtime>
+      <ctime>1589556374.334125412</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+[nick@host ~]$ 
+....

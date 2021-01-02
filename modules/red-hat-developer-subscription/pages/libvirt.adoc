@@ -1,0 +1,67 @@
+= libvirt 
+Nick Hardiman 
+:source-highlighter: pygments
+:toc: 
+
+The https://libvirt.org/[libvirt] project provides a virtualization management system. 
+It's used by RHV (Red Hat Virtualization), Openstack, and even the latest Openshift.
+
+
+== prereqs 
+
+laptop with 500GB storage and 32GB memory 
+Fresh RHEL 8 install 
+developer subscription 
+
+
+
+== virtualization components that are already installed  
+
+Many qemu and libvirt-daemon packages are already installed. 
+The  https://www.redhat.com/en/topics/virtualization/what-is-KVM hypervisor[KVM (Kernel-based Virtual Machine) hypervisor] is built into Linux. 
+Run ``lsmod | grep kvm`` to see the kernel modules.
+
+QEMU handles hardware emulation for virtual machines.
+libvirt provides a management interface to QEMU. 
+Libvirt is used by the https://www.redhat.com/en/technologies/virtualization/enterprise-virtualization[RHV (Red Hat Virtualization)] system, and RHV's upstream open-source project https://www.ovirt.org/[oVirt].
+
+
+libvirt-daemon manages the virtualization. 
+The version is a https://libvirt.org/news.html[couple years old]. 
+This libvirt version was included in Fedora 28, which was used as the base of RHEL 8. 
+
+[source,console]
+----
+[nick@host ~]$ /usr/sbin/libvirtd --version
+/usr/sbin/libvirtd (libvirt) 4.5.0
+[nick@host ~]$ 
+----
+
+systemd service libvirtd is running. 
+This created a couple network devices - 
+a bridge devices named virbr0 
+a https://en.wikipedia.org/wiki/TUN/TAP[TUN/TAP] network interface named virbr0-nic, 
+used by the bridge. 
+Run ``nmcli device status`` to see theses. 
+
+
+== install the virt module
+
+The virsh command is part of the ``libvirt-client`` package. 
+This package is included in the virt module. 
+
+[source,console]
+----
+[nick@host ~]$ sudo dnf module list virt 
+Updating Subscription Management repositories.
+Last metadata expiration check: 0:16:21 ago on Thu 14 May 2020 17:14:06 BST.
+Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+Name         Stream              Profiles           Summary                     
+virt         rhel [d][e]         common [d]         Virtualization module       
+
+Hint: [d]efault, [e]nabled, [x]disabled, [i]nstalled
+[nick@host ~]$ 
+----
+
+Install the module with ``sudo dnf module install virt``.
+
