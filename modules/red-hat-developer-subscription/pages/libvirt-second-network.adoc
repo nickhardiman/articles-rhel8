@@ -8,7 +8,6 @@ Nick Hardiman
 Create a second network named _private_, alongside _default_.
 
 .networks 
-[libvirt-second-network]
 ....
 .----------------------------.
 |                            |

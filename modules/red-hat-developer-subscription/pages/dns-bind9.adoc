@@ -17,7 +17,6 @@ public network -
   Gateway serves DHCP, DNS 
 
 .utility1 network 
-[utility1-network]
 ....
 +---------------------------------------+
 |                                       |

@@ -14,7 +14,6 @@ Don't set it up on the control node.
 
 
 .ansible node accounts  
-[ansible-node-accounts]
 ....
 .------------------------------------------------------.  
 |                                                      |
@@ -35,7 +34,6 @@ The concept of a guest virtual machine making changes on the host physical machi
 But that's the way many provisioning systems work.  
 
 .ansible SSH from guest to host 
-[ansible-guest-host]
 ....
 .---------------------------------.  
 |                                 |

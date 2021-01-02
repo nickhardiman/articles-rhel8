@@ -12,7 +12,6 @@ Add two git repositories on guest1.
 * a clone named *content1*. This is the development copy to hack. This copy is on guest1 too, but it could be anywhere in the network.
 
 .git repos 
-[git]
 ....
 .-----------------------------------------.  
 |                                         |

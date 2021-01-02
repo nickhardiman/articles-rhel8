@@ -12,7 +12,6 @@ The VM and its storage volume are called _does-it-work_.
 The _rpi4_ machine is the physical machine that hosts the _does-it-work_ guest. 
 
 .physical machine and virtual machine 
-[libvirt-virtual-machine]
 ....
 .------------------------.
 |                        |
@@ -196,12 +195,15 @@ Now there is a VM.
 A storage pool has been automatically created. 
 Libvirt creates a new XML configuration file /etc/libvirt/storage/images.xml. 
 
+[source,console]
+....
 [root@rpi4 images]# virsh pool-list
  Name     State    Autostart
 ------------------------------
  images   active   yes
 
 [root@rpi4 images]# 
+....
 
 
 

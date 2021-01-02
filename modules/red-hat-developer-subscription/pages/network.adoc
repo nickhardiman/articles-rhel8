@@ -15,7 +15,6 @@ workstation and the old laptop as a headless machine.
 SSH and port forwarding connects the two. 
 
 .workstation, host and guests  
-[libvirt-test-network-6]
 ....
 .-----------------.      .------------------------------------------------------.     
 |                 |      |                                                      |    
@@ -59,7 +58,6 @@ Not sure about
 
 
 .one host, many guests 
-[libvirt-test-network-1]
 ....
 .---------------------------------------------------------------------------------------------------------.
 |                                                                                                         |    
@@ -89,7 +87,6 @@ Not sure about
 == technical stack 
 
 .technical stack of host and guest
-[libvirt-test-network-2]
 ....
 
 host 
@@ -249,7 +246,6 @@ Two DNS zones
 
 
 .networks 
-[libvirt-test-network-3]
 ....
                        KVM/libvirt
 
@@ -294,7 +290,6 @@ Three small RHEL 8 boxes
 
 
 .libvirt networks and guests 
-[libvirt-test-network-4]
 ....
                        KVM/libvirt
 
@@ -342,7 +337,6 @@ I'm trying to make predictable IP adresses and MAC addresses.
 
 
 .interfaces 
-[libvirt-test-network-5]
 ....
 
 

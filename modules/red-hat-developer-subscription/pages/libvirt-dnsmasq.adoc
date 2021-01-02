@@ -7,7 +7,6 @@ Nick Hardiman
 set a VM's domain name and IP address using dnsmasq
 
 .VMs use dnsmasq services 
-[libvirt-dnsmasq]
 ....
 .-------------------------------------.  
 |                                     |

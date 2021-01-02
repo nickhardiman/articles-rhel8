@@ -13,7 +13,7 @@ Create a libvirt storage pool using the ``virsh`` command.
 
 storage pool 
 
-[libvirt-storage-pool-1]
+.storage pool
 ....
 .-------------------------------------.
 |                                     |    
