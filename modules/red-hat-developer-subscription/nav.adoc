@@ -1,4 +1,4 @@
-* Red Hat Developer Subscription
+* xref:red-hat-developer-subscription:index.adoc[]
 ** setting up  
 *** xref:developer-subscription-why.adoc[]
 *** xref:home-lab.adoc[]

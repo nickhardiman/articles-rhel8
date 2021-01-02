@@ -1,4 +1,4 @@
-* fedora on rpi4
+* xref:fedora-on-rpi4:index.adoc[]
 ** errr, stuff
 *** xref:hardware.adoc[]
 *** xref:firmware.adoc[]
