@@ -17,6 +17,7 @@ The docs cover activities like these.
 
 File content is https://asciidoctor.org/[ASCIIDoctor] markdown.
 Some diagrams created with http://asciiflow.com/[asciiflow] and converted to SVG files by https://github.com/asciitosvg/asciitosvg[asciitosvg]. 
+The slightly odd site layout is required by the https://antora.org/[Antora static site generator].   
 ====
 
 
