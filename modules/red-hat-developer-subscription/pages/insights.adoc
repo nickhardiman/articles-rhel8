@@ -154,7 +154,7 @@ Log in with your developer account.
 
 Take the tour.
 
-==== Optimize IT performance
+=== Optimize IT performance
 
 Insights can help you avoid unplanned downtime and easily track usage and configuration.
 
@@ -170,7 +170,7 @@ Track RHEL system configuration over time and compare differences to standard ba
 
 Efficiently monitor your Red Hat subscription usage - with confidence.
 
-==== Manage your security and compliance
+=== Manage your security and compliance
 
 Secure your infrastructure by managing vulnerabilities, tracking cybersecurity regulatory compliance, and creating custom policies.
 
@@ -186,7 +186,7 @@ For regulated industries, keep your systems compliant with standard security pol
 
 Use self-defined policies to monitor your RHEL configurations with instant or daily alerts.
 
-==== Resolve operational issues quickly
+=== Resolve operational issues quickly
 
 Fix issues and patch systems from Insights with Ansible Playbooks.
 
@@ -199,3 +199,4 @@ Red Hat Smart Management with Satellite subscribers can run playbooks directly f
 *Patch* New
 
 Keep your RHEL configurations standardized by patching consistently - regardless of what footprints your systems are in.
+

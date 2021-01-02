@@ -7,7 +7,7 @@ Nick Hardiman
 
 Install the container-tools module and run a container.
 
-[libvirt-storage-pool-1]
+.a container in a virtual machine in a physical machine
 ....
 .-------------------------------------.
 |                                     |    
