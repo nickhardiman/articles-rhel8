@@ -4,61 +4,61 @@
 *** xref:home-lab.adoc[]
 ** 50 things 
 *** xref:developer-subscription-sign-up.adoc[] 
-** firmware and OS 
-*** xref:install-rhel8.adoc[]
-*** xref:boot-stages.adoc[]
-*** xref:boot-bios.adoc[]
-*** xref:boot-grub.adoc[]
-*** xref:syspurpose.adoc[]
-** Red Hat services and CDN (Content Delivery Network)
-*** xref:insights.adoc[]
-**  errata (updates, bug fixes and security patches)
-*** xref:dnf.adoc[] 
-*** xref:dnf-module.adoc[] 
-** virtual network and virtual machines 
-*** xref:network.adoc[]
-*** xref:network-build.adoc[]
-*** xref:libvirt.adoc[]
-*** xref:libvirt-dnsmasq.adoc[]
-*** xref:libvirt-second-network.adoc[]
-*** xref:libvirt-storage-pool.adoc[]
-*** xref:libvirt-storage-volume.adoc[]
-*** xref:libvirt-virtual-machine.adoc[]
-*** xref:libvirt-second-disk.adoc[]
-** infrastructure 
-*** xref:cockpit.adoc[]
-*** xref:chrony.adoc[] 
-*** xref:chrony-service.adoc[] 
-*** xref:journald.adoc[] 
-*** xref:dns-bind9.adoc[] 
-*** xref:kexec-kdump.adoc[] 
-** security 
-*** xref:aide.adoc[]
-*** xref:auditd.adoc[]
-** storage 
-*** xref:luks.adoc[]
-*** xref:vdo.adoc[]
-*** xref:swap.adoc[]
-*** xref:lvm.adoc[]
-*** xref:nfs.adoc[]
-** cgroups
-*** xref:cgroups.adoc[]
-*** xref:cgroup-apache.adoc[]
-*** xref:cgroup-cpu.adoc[]
-*** xref:cgroup-memory.adoc[]
-*** xref:cgroup-storage.adoc[]
-** developer 
-*** xref:git.adoc[]
-*** xref:git-hook.adoc[]
-*** xref:python.adoc[]
-*** xref:python3-virtualenv.adoc[]
-** automation  
-*** xref:ansible-engine.adoc[]
-*** xref:ansible-guest-host.adoc[]
-*** xref:ansible-lint.adoc[]
-*** xref:ansible-molecule.adoc[]
-** container
-*** xref:container-tools.adoc[]
-*** xref:container-buildah.adoc[]
-*** xref:container-systemd.adoc[]
-*** xref:container-llvm-toolset.adoc[]
+*** firmware and OS things
+**** xref:install-rhel8.adoc[]
+**** xref:boot-stages.adoc[]
+**** xref:boot-bios.adoc[]
+**** xref:boot-grub.adoc[]
+**** xref:syspurpose.adoc[]
+*** Red Hat services and CDN (Content Delivery Network) things
+**** xref:insights.adoc[]
+***  errata (update, bug fix and security patch) things
+**** xref:dnf.adoc[] 
+**** xref:dnf-module.adoc[] 
+*** virtual network and virtual machine things
+**** xref:network.adoc[]
+**** xref:network-build.adoc[]
+**** xref:libvirt.adoc[]
+**** xref:libvirt-dnsmasq.adoc[]
+**** xref:libvirt-second-network.adoc[]
+**** xref:libvirt-storage-pool.adoc[]
+**** xref:libvirt-storage-volume.adoc[]
+**** xref:libvirt-virtual-machine.adoc[]
+**** xref:libvirt-second-disk.adoc[]
+*** infrastructure things
+**** xref:cockpit.adoc[]
+**** xref:chrony.adoc[] 
+**** xref:chrony-service.adoc[] 
+**** xref:journald.adoc[] 
+**** xref:dns-bind9.adoc[] 
+**** xref:kexec-kdump.adoc[] 
+*** security things
+**** xref:aide.adoc[]
+**** xref:auditd.adoc[]
+*** storage things
+**** xref:luks.adoc[]
+**** xref:vdo.adoc[]
+**** xref:swap.adoc[]
+**** xref:lvm.adoc[]
+**** xref:nfs.adoc[]
+*** cgroup things
+**** xref:cgroups.adoc[]
+**** xref:cgroup-apache.adoc[]
+**** xref:cgroup-cpu.adoc[]
+**** xref:cgroup-memory.adoc[]
+**** xref:cgroup-storage.adoc[]
+*** developer things
+**** xref:git.adoc[]
+**** xref:git-hook.adoc[]
+**** xref:python.adoc[]
+**** xref:python3-virtualenv.adoc[]
+*** automation things
+**** xref:ansible-engine.adoc[]
+**** xref:ansible-guest-host.adoc[]
+**** xref:ansible-lint.adoc[]
+**** xref:ansible-molecule.adoc[]
+*** container things
+**** xref:container-tools.adoc[]
+**** xref:container-buildah.adoc[]
+**** xref:container-systemd.adoc[]
+**** xref:container-llvm-toolset.adoc[]
