@@ -8,7 +8,7 @@ Nick Hardiman
 Create a second network named _private_, alongside _default_.
 
 .networks 
-[a2s,libvirt-second-network]
+[libvirt-second-network]
 ....
 .----------------------------.
 |                            |
@@ -34,7 +34,7 @@ VM guest1 already has one network interface, eth0.
 The current eth0 interface on the guest connects to the virbr0 interface on the host, and the new eth1 interface connects to virbr2.
 
 .interfaces 
-[a2s,libvirt-second-network-2]
+[libvirt-second-network-2]
 ....
 .---------------------------.
 |                           |

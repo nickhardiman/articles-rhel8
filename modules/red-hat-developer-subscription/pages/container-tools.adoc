@@ -7,7 +7,7 @@ Nick Hardiman
 
 Install the container-tools module and run a container.
 
-[a2s,libvirt-storage-pool-1]
+[libvirt-storage-pool-1]
 ....
 .-------------------------------------.
 |                                     |    

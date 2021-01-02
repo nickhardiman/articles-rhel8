@@ -7,7 +7,7 @@ Nick Hardiman
 Start with a basic image, make a few changes.
 
 .storage pool containing two volumes
-[a2s,libvirt-storage-volume]
+[libvirt-storage-volume]
 ....
 .-------------------------------------.
 |                                     |    

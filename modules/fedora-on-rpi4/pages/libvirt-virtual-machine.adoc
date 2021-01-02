@@ -12,7 +12,7 @@ The VM and its storage volume are called _does-it-work_.
 The _rpi4_ machine is the physical machine that hosts the _does-it-work_ guest. 
 
 .physical machine and virtual machine 
-[a2s,libvirt-virtual-machine]
+[libvirt-virtual-machine]
 ....
 .------------------------.
 |                        |
@@ -280,12 +280,12 @@ Domain does-it-work has been undefined
 Check it's gone. 
 
 [source,console]
-----
+....
 [root@rpi4 images]# virsh list --all
  Id   Name   State
 --------------------
 
 [root@rpi4 images]# 
-----
+....
 
 

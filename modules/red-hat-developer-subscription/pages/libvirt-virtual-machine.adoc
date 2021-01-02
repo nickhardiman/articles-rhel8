@@ -9,7 +9,7 @@ Nick Hardiman
 Create a VM using a storage volume.  
 
 .physical machine and virtual machine 
-[a2s,libvirt-virtual-machine]
+[libvirt-virtual-machine]
 ....
 .------------------.
 |                  |
