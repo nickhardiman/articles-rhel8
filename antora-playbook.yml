@@ -1,5 +1,7 @@
 site:
   title: Nick Hardiman, Red Hat consultant
+  url: https://nickhardiman.netlify.app
+  start_page: articles:ROOT:index.adoc
 content:
   sources: 
   - url: https://github.com/nickhardiman/articles.git
