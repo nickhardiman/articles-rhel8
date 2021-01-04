@@ -45,9 +45,13 @@ This created a couple network devices -
 a bridge devices named virbr0 
 a https://en.wikipedia.org/wiki/TUN/TAP[TUN/TAP] network interface named virbr0-nic, 
 used by the bridge. 
-network interface virbr0-nic doesn't handle traffic. 
+
+The network interface _virbr0-nic_ doesn't handle traffic. 
 The only job of this interface is to provide a MAC address that doesn't change. 
 https://www.redhat.com/archives/libvirt-users/2012-September/msg00038.html
+The  interface _virbr0-nic_ is a https://en.wikipedia.org/wiki/TUN/TAP[TAP] device, created as a hack to force a stable MAC address on the bridge device _virbr0_.
+This hack was required due to a bad kernel implementation of bridge device MAC address assignment.
+The _virbr0-nic_ device is not created by libvirt after version 6.8.0, because the kernel was fixed.
 
 [source,console]
 ----
