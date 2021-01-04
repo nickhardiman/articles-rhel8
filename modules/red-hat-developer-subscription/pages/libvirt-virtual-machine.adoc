@@ -30,7 +30,27 @@ Create a VM using a storage volume.
 
 Many qemu and libvirt-daemon packages are already installed. 
 The  https://www.redhat.com/en/topics/virtualization/what-is-KVM[KVM (Kernel-based Virtual Machine) hypervisor] is built into Linux. 
-Run ``lsmod | grep kvm`` to see the kernel modules.
+
+Check the version. 
+
+[source,console]
+----
+[nick@host1 ~]$ libvirtd --version
+libvirtd (libvirt) 6.0.0
+[nick@host1 ~]$ 
+----
+
+List the kernel's https://www.linux-kvm.org/page/Getting_the_kvm_kernel_modules[KVM modules].
+
+[source,console]
+----
+[nick@host1 ~]$ lsmod | grep kvm
+kvm_amd               110592  8
+ccp                    98304  1 kvm_amd
+kvm                   798720  1 kvm_amd
+irqbypass              16384  7 kvm
+[nick@host1 ~]$ 
+----
 
 QEMU handles hardware emulation for virtual machines.
 libvirt provides a management interface to QEMU. 
