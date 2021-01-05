@@ -4,6 +4,10 @@ Nick Hardiman
 :toc: 
 :revdate: 21-06-2020
 
+! Change 
+
+This page is a mess. 
+
 
 Use libvirt to create a test network on my laptop.
 
@@ -380,9 +384,6 @@ I'm trying to make predictable IP adresses and MAC addresses.
 ....
 
 
-! Change 
-
-This table is out of date. 
 
 .guest interfaces and addresses
 [%header,format=csv]
