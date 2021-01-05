@@ -17,8 +17,20 @@ If you don’t have a paid Red Hat subscription, you can use some Red Hat servic
 It's free. 
 Surely every student of GNU/Linux and enterprise applications should have one. 
 
+== a Red Hat Developer Subscription
 
-== why should I install RHEL 8
+This subscription gives you access to the RHEL OS, a truck-load of other Red Hat software, and some of their services. 
+
+Red Hat is not in the hardware business. Unless you count swag. 
+RHEL 8 runs on many different types of computer, but it's down to you to provide a home lab for your experiments. 
+
+If you don’t have a paid Red Hat subscription, you can use some Red Hat services for free with a Developer Subscription. 
+
+On the software side, the developer subscription provides access to RHEL, developer tools and a mix of applications.  
+The developer subscription does not provide access to the complete tech stack of Red Hat's software, which is basically a huge library of operating systems and applications. 
+
+
+== why install RHEL 8
 
 A serious home lab deserves a serious software stack. 
 
@@ -43,20 +55,8 @@ A lot of security work is done, like compiling more securely and certifying agai
 
 
 
-== a Red Hat Developer Subscription
 
-This subscription gives you access to the RHEL OS, a truck-load of other Red Hat software, and some of their services. 
-
-Red Hat is not in the hardware business. Unless you count swag. 
-RHEL 8 runs on many different types of computer, but it's down to you to provide a home lab for your experiments. 
-
-If you don’t have a paid Red Hat subscription, you can use some Red Hat services for free with a Developer Subscription. 
-
-On the software side, the developer subscription provides access to RHEL, developer tools and a mix of applications.  
-The developer subscription does not provide access to the complete tech stack of Red Hat's software, which is basically a huge library of operating systems and applications. 
-
-
-== free RHEL 8 with your developer subscription    
+== free RHEL 8 stuff    
 
 For more information, see the https://developers.redhat.com/articles/faqs-no-cost-red-hat-enterprise-linux/[FAQs for no-cost Red Hat Enterprise Linux
 machine entitlements]. 
@@ -87,7 +87,7 @@ A Beta release is good for early exposure, but there are no seatbelts.
 A Beta release is not supported in any way, and there's no way to upgrade to to the GA (General Availability) release when it appears. 
 
 
-== more free stuff included with your developer account    
+== more free stuff     
 
 Your new developer account includes a developer subscription. 
 This gets you up and running with RHEL 8, with a year of Red Hat support.
