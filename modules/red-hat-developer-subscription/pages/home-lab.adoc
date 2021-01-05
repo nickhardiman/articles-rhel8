@@ -12,6 +12,12 @@ But then you will miss out on some bare metal advantages.
 Some of these docs describe how to install virtual networks and machines. 
 Installing a VM on top of a VM is trickier and slows performance. 
 
+When you run your own home lab, the entire technology stack is under your control. That’s a good thing, because you’ve got the freedom to tear anything down. And it’s a bad thing, because the responsibility to make it work again rests only on you. Expect both reward and frustration.
+
+If you’re happy with that extra load on your life, you can move on to picking your home lab hardware. 
+
+
+== resource requirements 
 
 The entry-level computing muscle required to run RHEL 8 and a good selection of applications, from containers to graphical interface, is actually pretty achievable.  
 
@@ -19,11 +25,7 @@ The entry-level computing muscle required to run RHEL 8 and a good selection of 
 * 8 GiB memory 
 * 100 GiB storage 
 
-You're safe with a PC built in the last few years. 
-
-When you run your own home lab, the entire technology stack is under your control. That’s a good thing, because you’ve got the freedom to tear anything down. And it’s a bad thing, because the responsibility to make it work again rests only on you. Expect both reward and frustration.
-
-If you’re happy with that extra load on your life, you can move on to picking your home lab hardware. 
+You're safe with pretty much any PC built in the last few years. 
 
 
 == Do you want your own home lab? 
