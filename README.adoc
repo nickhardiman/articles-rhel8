@@ -10,3 +10,6 @@ I'm working on some pieces of writing here.
 * https://github.com/nickhardiman/articles/tree/main/modules/red-hat-developer-subscription/pages
 * https://github.com/nickhardiman/articles/tree/main/modules/fedora-on-rpi4/pages
 
+They are presented here. 
+
+* https://nickhardiman.netlify.app/articles/dev/index.html
