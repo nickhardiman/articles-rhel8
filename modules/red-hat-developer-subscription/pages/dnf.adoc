@@ -1,8 +1,58 @@
-= dnf 
+= DNF update
 Nick Hardiman 
 :source-highlighter: pygments
 :toc:
-:revdate: 29-07-2020
+:revdate: 05-01-2021
 
-Manage packages and modules with dnf.
+Connect with SSH and update packages with DNF.
+
+== RHEL 8 repos 
+
+[source,bash]
+----
+[root@host1 ~]# dnf repolist 
+Updating Subscription Management repositories.
+repo id                                               repo name
+ansible-2-for-rhel-8-x86_64-rpms                      Red Hat Ansible Engine 2 for RHEL 8 x86_64 (RPMs)
+rhel-8-for-x86_64-appstream-rpms                      Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+rhel-8-for-x86_64-baseos-rpms                         Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+[root@host1 ~]# 
+----
+
+
+== RHEL 8 update 
+
+[source,bash]
+----
+[root@host1 ~]# dnf -y update
+Updating Subscription Management repositories.
+Last metadata expiration check: 0:04:07 ago on Tue 05 Jan 2021 14:10:14 GMT.
+Dependencies resolved.
+...
+Transaction Summary
+======================================================
+Install   3 Packages
+Upgrade  74 Packages
+...
+Installed:
+  kernel-4.18.0-240.10.1.el8_3.x86_64    kernel-core-4.18.0-240.10.1.el8_3.x86_64    kernel-modules-4.18.0-240.10.1.el8_3.x86_64   
+
+Complete!
+[root@host1 ~]# 
+----
+
+Install media don't get updated with the latest packages. 
+The older the ISO file, the more packages require updates. 
+Here, the kernel is updated. 
+
+Reboot to swap from the current kernel to the new one. 
+
+
+[source,bash]
+----
+[root@host1 ~]# systemctl reboot
+[root@host1 ~]# Connection to host1 closed by remote host.
+Connection to host1 closed.
+MacBook-Pro:~ nick$ 
+----
 
