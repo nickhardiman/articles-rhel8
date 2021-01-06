@@ -15,7 +15,7 @@ https://www.redhat.com/en/blog/redefining-rhel-introduction-red-hat-insights
 https://www.redhat.com/en/blog/expanding-management-operational-and-security-risks-new-red-hat-insights
 
 
-When you SSH to your fresh install, you see this MOTD (Message Of The Day).
+When you SSH to your fresh RHEL 8 install, you see this MOTD (Message Of The Day).
 If you're on the Gnome desktop, you can only see these messages by looking at their files - ``cat /etc/motd.d/*``.
 
 [source,console]
@@ -27,25 +27,25 @@ This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
 To register this system, run: insights-client --register
 
 Last login: Thu May 14 17:29:53 2020 from 10.0.1.3
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ----
 
 Message from here 
 
 [source,console]
 ----
-[nick@host ~]$ sudo cat /etc/insights-client/insights-client.motd 
+[nick@host1 ~]$ sudo cat /etc/insights-client/insights-client.motd 
 This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
 To register this system, run: insights-client --register
 
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ----
 
 Register.
 
 [source,console]
 ----
-[nick@host ~]$ sudo insights-client --register
+[nick@host1 ~]$ sudo insights-client --register
 [sudo] password for nick: 
 You successfully registered 935ced68-ab82-4da8-a902-6fdd73b3c0e0 to account 5341919.
 Successfully registered host host.lab.example.com
@@ -60,7 +60,7 @@ After a few seconds, Insights is done.
 Uploading Insights data.
 Successfully uploaded report from host.lab.example.com to account 5341919.
 View the Red Hat Insights console at https://cloud.redhat.com/insights/
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ----
 
 https://access.redhat.com/solutions/2462091
@@ -70,39 +70,39 @@ This doesn't match what web console says.
 
 [source,console]
 ----
-[nick@host ~]$ cat /etc/insights-client/machine-id
-ed025aea-c063-43c7-a891-3f9a24c4dfb9[nick@host ~]$ 
-[nick@host ~]$ 
+[nick@host1 ~]$ cat /etc/insights-client/machine-id
+ed025aea-c063-43c7-a891-3f9a24c4dfb9[nick@host1 ~]$ 
+[nick@host1 ~]$ 
 ----
 
 
 [source,console]
 ----
-[nick@host ~]$ sudo insights-client --status
+[nick@host1 ~]$ sudo insights-client --status
 System is registered locally via .registered file. Registered at 2020-06-01T18:17:53.296845
 Insights API confirms registration.
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ----
 
 
 [source,console]
 ----
-[nick@host ~]$ sudo insights-client --show-results
+[nick@host1 ~]$ sudo insights-client --show-results
 Error: no report found. Run insights-client --check-results to update the report cache: [Errno 2] No such file or directory: '/var/lib/insights/insights-details.json'
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ----
 
 
 [source,console]
 ----
-[nick@host ~]$ sudo insights-client --check-results 
-[nick@host ~]$ 
+[nick@host1 ~]$ sudo insights-client --check-results 
+[nick@host1 ~]$ 
 ----
 
 
 [source,console]
 ----
-[nick@host ~]$ sudo insights-client --show-results
+[nick@host1 ~]$ sudo insights-client --show-results
 [
  {
   "rule": {
@@ -112,7 +112,7 @@ Error: no report found. Run insights-client --check-results to update the report
   }
  }
 ]
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ----
 
 
@@ -124,8 +124,8 @@ no point starting?
 
 [source,console]
 ----
-[nick@host ~]$ sudo systemctl start insights-client.service
-[nick@host ~]$ sudo systemctl status insights-client.service
+[nick@host1 ~]$ sudo systemctl start insights-client.service
+[nick@host1 ~]$ sudo systemctl status insights-client.service
 ● insights-client.service - Insights Client
    Loaded: loaded (/usr/lib/systemd/system/insights-client.service; static; ven>
    Active: active (running) since Mon 2020-06-01 18:29:26 BST; 8s ago
@@ -141,7 +141,7 @@ no point starting?
 
 Jun 01 18:29:26 host.lab.example.com systemd[1]: Starting Insights Client...
 Jun 01 18:29:26 host.lab.example.com systemd[1]: Started Insights Client.
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ----
 
 
