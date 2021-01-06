@@ -28,6 +28,9 @@ Here are 50 things to try, plus some info on the pre-requisites.
 * Add containers to VMs. 
 * Set up developer environments. 
 
+All these articles have examples to run, so you can learn by doing. Hands on a keyboard. Break it and fix it. 
+
+
 
 == the home network 
 
@@ -77,12 +80,24 @@ Either way, the home lab page can help.
 .---------------.      .---------------.      .---------------.
 ....
 
+
+
 There are probably also a whole load of smart devices on this home network, from phone to TV. 
 Let's ignore those.
 We only care about two machines. 
 
 * workstation 
-* RHEL 8 machine. In these examples, the name is _host1_.
+* RHEL 8 machine. In these examples, the name is _host1_ 
+
+== host1.lab.example.com
+
+It's a simple naming strategy - this machine will host some things, and it's the first machine in the home lab, so squash these facts together to get _host1_. This is a home lab machine. 
+It's there to experiment on and develop with. 
+Home labs should be kept private, with no access from the Internet. 
+This machine gets the full FQDN of host1.lab.example.com. 
+Example.com is an https://www.iana.org/domains/reserved[IANA-managed reserved domain] - it can't be used on the Internet.
+
+== SSH 
 
 Most work is done on the command line. 
 Use SSH to connect from your workstation to your new RHEL machine. 

@@ -14,6 +14,8 @@ https://www.redhat.com/en/blog/redefining-rhel-introduction-red-hat-insights
 
 https://www.redhat.com/en/blog/expanding-management-operational-and-security-risks-new-red-hat-insights
 
+Insights is distributed. There's the on-premise client, and the off-premise service that Red Hat runs in the cloud. 
+The local client collects data and sends it to the remote service, which analyzes it and delivers results. 
 
 When you SSH to your fresh RHEL 8 install, you see this MOTD (Message Of The Day).
 If you're on the Gnome desktop, you can only see these messages by looking at their files - ``cat /etc/motd.d/*``.
@@ -47,8 +49,8 @@ Register.
 ----
 [nick@host1 ~]$ sudo insights-client --register
 [sudo] password for nick: 
-You successfully registered 935ced68-ab82-4da8-a902-6fdd73b3c0e0 to account 5341919.
-Successfully registered host host.lab.example.com
+You successfully registered 935ccd68-ab82-4da8-a902-6fdd73b3c0e0 to account 1234567.
+Successfully registered host host1.lab.example.com
 Automatic scheduling for Insights has been enabled.
 Starting to collect Insights data for host.lab.example.com
 ----
@@ -63,18 +65,25 @@ View the Red Hat Insights console at https://cloud.redhat.com/insights/
 [nick@host1 ~]$ 
 ----
 
-https://access.redhat.com/solutions/2462091
-the insights-client creates a /etc/insights-client/machine-id file, which contains a UUID that uniquely identifies a particular RHEL system with the Insights back end. If two systems have the same UUID, information from the system that reported last will be visible.
+== log 
 
-This doesn't match what web console says.
+A new log file appears, /var/log/insights-client/insights-client.log.
+
+
+== config 
+
+The /etc/insights-client/ directory contains many files, including some hidden ones. 
+
+The https://access.redhat.com/solutions/2462091[insights-client creates a UUID].
 
 [source,console]
 ----
 [nick@host1 ~]$ cat /etc/insights-client/machine-id
-ed025aea-c063-43c7-a891-3f9a24c4dfb9[nick@host1 ~]$ 
+ed125aea-c063-43c7-a891-3f9a24c4dfb9[nick@host1 ~]$ 
 [nick@host1 ~]$ 
 ----
 
+Check. 
 
 [source,console]
 ----
@@ -84,14 +93,7 @@ Insights API confirms registration.
 [nick@host1 ~]$ 
 ----
 
-
-[source,console]
-----
-[nick@host1 ~]$ sudo insights-client --show-results
-Error: no report found. Run insights-client --check-results to update the report cache: [Errno 2] No such file or directory: '/var/lib/insights/insights-details.json'
-[nick@host1 ~]$ 
-----
-
+Ask the remote Red Hat Insights service for results. 
 
 [source,console]
 ----
@@ -99,6 +101,7 @@ Error: no report found. Run insights-client --check-results to update the report
 [nick@host1 ~]$ 
 ----
 
+Display what the Red Hat Insights service found. 
 
 [source,console]
 ----
@@ -116,33 +119,13 @@ Error: no report found. Run insights-client --check-results to update the report
 ----
 
 
-== systemd service
+== systemd 
 
-insights-client.service is activated by insights-client.timer
+The service runs once a day. 
+This is managed by Systemd (the unit file is _/usr/lib/systemd/system/insights-client.timer_).
 
-no point starting? 
+There's also a service taht can be run, but it's disabled by default (/usr/lib/systemd/system/insights-client.service)
 
-[source,console]
-----
-[nick@host1 ~]$ sudo systemctl start insights-client.service
-[nick@host1 ~]$ sudo systemctl status insights-client.service
-● insights-client.service - Insights Client
-   Loaded: loaded (/usr/lib/systemd/system/insights-client.service; static; ven>
-   Active: active (running) since Mon 2020-06-01 18:29:26 BST; 8s ago
-     Docs: man:insights-client(8)
-  Process: 10091 ExecStartPost=/bin/bash -c echo 1G >/dev/null 2>&1 > /sys/fs/c>
-  Process: 10090 ExecStartPost=/bin/bash -c echo 2G >/dev/null 2>&1 > /sys/fs/c>
- Main PID: 10089 (insights-client)
-    Tasks: 2 (limit: 300)
-   Memory: 40.3M (limit: 2.0G)
-   CGroup: /system.slice/insights-client.service
-           ├─10089 /usr/libexec/platform-python /usr/bin/insights-client --retr>
-           └─10117 /usr/libexec/platform-python /usr/lib/python3.6/site-package>
-
-Jun 01 18:29:26 host.lab.example.com systemd[1]: Starting Insights Client...
-Jun 01 18:29:26 host.lab.example.com systemd[1]: Started Insights Client.
-[nick@host1 ~]$ 
-----
 
 
 == web console 

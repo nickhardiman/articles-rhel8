@@ -22,8 +22,8 @@ SSH and port forwarding connects the two.
 ....
 .-----------------.      .------------------------------------------------------.     
 |                 |      |                                                      |    
-|   workstation   |      |   host1  (old laptop)                                |    
-|  (MacBook Pro)  +----->|                                                      |    
+|   workstation   |      |   host1                                              |    
+|                 +----->|                                                      |    
 |                 |      |   +------------+   +------------+   +------------+   |
 |                 |      |   |            |   |            |   |            |   |
 |                 |      |   |  guest1    |   |  guest2    |   |  guest3    |   |
