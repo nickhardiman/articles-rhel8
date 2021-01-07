@@ -3,7 +3,7 @@ Nick Hardiman
 :source-highlighter: pygments
 :toc:
 :revdate: 07-01-2021
-
+:link_with_underscores: https://github.com/RedHatInsights/insights-client/blob/master/src/insights_client/__init__.py
 
 Get advice from Insights 
 
@@ -18,11 +18,13 @@ https://www.redhat.com/en/blog/expanding-management-operational-and-security-ris
 Insights is distributed. There's the on-premise client, and the off-premise service that Red Hat runs in the cloud. 
 The local client collects data and sends it to the remote Red Hat service, which analyzes it and delivers results. 
 
-Red Hat provides a management web interface at https://cloud.redhat.com/insights/.
-
-[.left]
+[.right]
 .Insights at the Red Hat Cloud
 image::insights-dashboard.png[dashboard,width=400,height=249,title="Insights at the Red Hat Cloud"]
+
+Red Hat provides a management web interface at https://cloud.redhat.com/insights/.
+When the insights client is run, it displays a URL to make it easy to find the machine's results on this Red Hat Cloud site. 
+The local cockpit web console also provides a link to the cloud site. 
 
 When you SSH to your fresh RHEL 8 install, you see this MOTD (Message Of The Day).
 If you're on the Gnome desktop, you can only see these messages by looking at their files - ``cat /etc/motd.d/*``.
@@ -121,6 +123,8 @@ Display what the Red Hat Insights service found.
 * engine: _/usr/bin/insights-client_
 * configuration: _/etc/insights-client/_
 * log: _/var/log/insights-client/insights-client.log_
+* systemd unit files: _/usr/lib/systemd/system/insights-*_
+
 
 === engine 
 
@@ -134,6 +138,10 @@ View details about this system on cloud.redhat.com:
 https://cloud.redhat.com/insights/inventory/0123e32d-b1af-4261-8f4e-f38f9565532c
 [root@host1 ~]# 
 
+The insights client is written in Python, and can be https://github.com/RedHatInsights/insights-client[viewed on Github]. 
+The core code is distributed in a https://packaging.python.org/glossary/#term-Egg[Python egg].
+
+
 == cloud service 
 
 https://cloud.redhat.com/insights/inventory/0123e32d-b1af-4261-8f4e-f38f9565532c
@@ -143,12 +151,24 @@ https://cloud.redhat.com/insights/inventory/0123e32d-b1af-4261-8f4e-f38f9565532c
 
 After registering with the Insights service, a new log file appears: /var/log/insights-client/insights-client.log.
 
+Insights handles its own log rotation -  it doesn't use _logrotate_.
+The insights client https://access.redhat.com/solutions/3035091[rotates the log after a successful upload], and keeps three copies.  
+It doesn't check size. 
+
+For developers, you can see the Python logging class  
+https://docs.python.org/3/library/logging.handlers.html#rotatingfilehandler[RotatingFileHandler]
+and method 
+https://docs.python.org/3/library/logging.handlers.html#logging.handlers.RotatingFileHandler.doRollover[doRollover] 
+in the code {link_with_underscores}[+__init__.py+].
+
+
 
 === config 
 
 The /etc/insights-client/ directory contains many files, including some hidden ones. 
+For a description, run _man insights-client.conf_. 
 
-The https://access.redhat.com/solutions/2462091[insights-client creates a UUID].
+The insights-client creates a https://access.redhat.com/solutions/2462091[UUID].
 
 [source,console]
 ----
@@ -159,8 +179,9 @@ ed125aea-c063-43c7-a891-3f9a24c4dfb9[nick@host1 ~]$
 
 === systemd 
 
+Insights uses a systemd timer. 
 The service runs once a day. 
-This is managed by Systemd (the unit file is _/usr/lib/systemd/system/insights-client.timer_).
+This is  configured in the unit file _/usr/lib/systemd/system/insights-client.timer_.
 
 There's also a service that can be run (/usr/lib/systemd/system/insights-client.service).
 It's disabled by default.
@@ -168,7 +189,7 @@ The unit's process type is _simple_ - it kicks off _/usr/bin/insights-client_ an
 
 
 
-== web console 
+== web console on cloud.redhat.com
 
 View the web site.
 https://cloud.redhat.com/insights/
