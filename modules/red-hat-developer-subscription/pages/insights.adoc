@@ -20,7 +20,9 @@ The local client collects data and sends it to the remote Red Hat service, which
 
 Red Hat provides a management web interface at https://cloud.redhat.com/insights/.
 
-image::insights-dashboard.png[Insights at the Red Hat Cloud].
+[.left]
+.Insights at the Red Hat Cloud
+image::insights-dashboard.png[dashboard,width=400,height=249,title="Insights at the Red Hat Cloud"]
 
 When you SSH to your fresh RHEL 8 install, you see this MOTD (Message Of The Day).
 If you're on the Gnome desktop, you can only see these messages by looking at their files - ``cat /etc/motd.d/*``.
