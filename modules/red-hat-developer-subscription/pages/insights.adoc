@@ -118,12 +118,12 @@ Display what the Red Hat Insights service found.
 ----
 
 
-== components 
+== insight-client components 
 
-* engine: _/usr/bin/insights-client_
-* configuration: _/etc/insights-client/_
-* log: _/var/log/insights-client/insights-client.log_
-* systemd unit files: _/usr/lib/systemd/system/insights-*_
+* engine: python code, _/usr/bin/insights-client_, _/usr/lib/python3.6/site-packages/insights_client/_, _/etc/insights-client/rpm.egg_
+* log: current log and up to three older logs, _/var/log/insights-client/insights-client.log*_
+* configuration: many files in _/etc/insights-client/_
+* systemd: unit files, _/usr/lib/systemd/system/insights-*_
 
 
 === engine 
@@ -139,12 +139,7 @@ https://cloud.redhat.com/insights/inventory/0123e32d-b1af-4261-8f4e-f38f9565532c
 [root@host1 ~]# 
 
 The insights client is written in Python, and can be https://github.com/RedHatInsights/insights-client[viewed on Github]. 
-The core code is distributed in a https://packaging.python.org/glossary/#term-Egg[Python egg].
-
-
-== cloud service 
-
-https://cloud.redhat.com/insights/inventory/0123e32d-b1af-4261-8f4e-f38f9565532c
+The core code is distributed in a https://packaging.python.org/glossary/#term-Egg[Python egg] at _/etc/insights-client/rpm.egg_.
 
 
 === log 
@@ -163,7 +158,7 @@ in the code {link_with_underscores}[+__init__.py+].
 
 
 
-=== config 
+=== configuration 
 
 The /etc/insights-client/ directory contains many files, including some hidden ones. 
 For a description, run _man insights-client.conf_. 
