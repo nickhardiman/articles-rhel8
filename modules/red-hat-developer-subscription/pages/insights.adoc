@@ -2,6 +2,7 @@
 Nick Hardiman 
 :source-highlighter: pygments
 :toc:
+:revdate: 07-01-2021
 
 
 Get advice from Insights 
@@ -15,7 +16,11 @@ https://www.redhat.com/en/blog/redefining-rhel-introduction-red-hat-insights
 https://www.redhat.com/en/blog/expanding-management-operational-and-security-risks-new-red-hat-insights
 
 Insights is distributed. There's the on-premise client, and the off-premise service that Red Hat runs in the cloud. 
-The local client collects data and sends it to the remote service, which analyzes it and delivers results. 
+The local client collects data and sends it to the remote Red Hat service, which analyzes it and delivers results. 
+
+Red Hat provides a management web interface at https://cloud.redhat.com/insights/.
+
+image::insights-dashboard.png[Insights at the Red Hat Cloud].
 
 When you SSH to your fresh RHEL 8 install, you see this MOTD (Message Of The Day).
 If you're on the Gnome desktop, you can only see these messages by looking at their files - ``cat /etc/motd.d/*``.
@@ -43,6 +48,12 @@ To register this system, run: insights-client --register
 [nick@host1 ~]$ 
 ----
 
+
+
+== insights-client
+
+Manage Insights on your local machine with the _insights-client_ application.
+
 Register.
 
 [source,console]
@@ -65,23 +76,7 @@ View the Red Hat Insights console at https://cloud.redhat.com/insights/
 [nick@host1 ~]$ 
 ----
 
-== log 
 
-A new log file appears, /var/log/insights-client/insights-client.log.
-
-
-== config 
-
-The /etc/insights-client/ directory contains many files, including some hidden ones. 
-
-The https://access.redhat.com/solutions/2462091[insights-client creates a UUID].
-
-[source,console]
-----
-[nick@host1 ~]$ cat /etc/insights-client/machine-id
-ed125aea-c063-43c7-a891-3f9a24c4dfb9[nick@host1 ~]$ 
-[nick@host1 ~]$ 
-----
 
 Check. 
 
@@ -119,12 +114,55 @@ Display what the Red Hat Insights service found.
 ----
 
 
-== systemd 
+== components 
+
+* engine: _/usr/bin/insights-client_
+* configuration: _/etc/insights-client/_
+* log: _/var/log/insights-client/insights-client.log_
+
+=== engine 
+
+The easiest way to see what  _insights-client_ does is to run the application and watch the logs. 
+
+[root@host1 ~]# /usr/bin/insights-client --retry 3
+Starting to collect Insights data for host1.lab.example.com
+Uploading Insights data.
+Successfully uploaded report from host1.silvan.uk to account 1234567.
+View details about this system on cloud.redhat.com:
+https://cloud.redhat.com/insights/inventory/0123e32d-b1af-4261-8f4e-f38f9565532c
+[root@host1 ~]# 
+
+== cloud service 
+
+https://cloud.redhat.com/insights/inventory/0123e32d-b1af-4261-8f4e-f38f9565532c
+
+
+=== log 
+
+After registering with the Insights service, a new log file appears: /var/log/insights-client/insights-client.log.
+
+
+=== config 
+
+The /etc/insights-client/ directory contains many files, including some hidden ones. 
+
+The https://access.redhat.com/solutions/2462091[insights-client creates a UUID].
+
+[source,console]
+----
+[nick@host1 ~]$ cat /etc/insights-client/machine-id
+ed125aea-c063-43c7-a891-3f9a24c4dfb9[nick@host1 ~]$ 
+[nick@host1 ~]$ 
+----
+
+=== systemd 
 
 The service runs once a day. 
 This is managed by Systemd (the unit file is _/usr/lib/systemd/system/insights-client.timer_).
 
-There's also a service taht can be run, but it's disabled by default (/usr/lib/systemd/system/insights-client.service)
+There's also a service that can be run (/usr/lib/systemd/system/insights-client.service).
+It's disabled by default.
+The unit's process type is _simple_ - it kicks off _/usr/bin/insights-client_ and exits. 
 
 
 
