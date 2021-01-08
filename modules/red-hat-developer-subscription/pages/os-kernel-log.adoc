@@ -4,22 +4,60 @@ Nick Hardiman
 :toc: 
 :revdate: 05-01-2021
 
+customer portal documentation: 
 https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/managing_monitoring_and_updating_the_kernel/getting-started-with-kernel-logging_managing-monitoring-and-updating-the-kernel
 
-/Users/nhardima/Documents/red-hat/job/blog/blog-gitlab-rh/home-lab/kernel-log.adoc
 
 
-== kernel log buffer 
+== things related to kernel logging 
 
-size 
-/boot/config-4.18.0-240.10.1.el8_3.x86_64
+=== kernel log buffer 
+
+Size is set during kernel compilation by CONFIG_LOG_BUF_SHIFT. 
+This is listed in 
+_/boot/config-4.18.0-240.10.1.el8_3.x86_64_.
 
 [source,console]
 ----
+[root@host1 ~]# grep LOG_BUF /boot/config-4.18.0-240.10.1.el8_3.x86_64 
 CONFIG_LOG_BUF_SHIFT=20
+CONFIG_PRINTK_SAFE_LOG_BUF_SHIFT=13
+[root@host1 ~]# 
 ----
 
-== /proc/kmsg 
+       
+=== loglevel values 
+
+[start=0]
+. Kernel emergency. The system is unusable.
+. Kernel alert. Action must be taken immediately.
+. Condition of the kernel is considered critical.
+. General kernel error condition.
+. General kernel warning condition.
+. Kernel notice of a normal but significant condition.
+. Kernel informational message.
+. Kernel debug-level messages
+
+log levels from "man 2 syslog"
+
+[source,console]
+----
+Kernel constant   Level value   Meaning
+KERN_EMERG             0        System is unusable
+KERN_ALERT             1        Action must be taken immediately
+KERN_CRIT              2        Critical conditions
+KERN_ERR               3        Error conditions
+KERN_WARNING           4        Warning conditions
+KERN_NOTICE            5        Normal but significant condition
+KERN_INFO              6        Informational
+KERN_DEBUG             7        Debug-level messages
+----
+
+
+
+== display messages 
+
+=== /proc/kmsg 
 
 [source,console]
 ----
@@ -31,7 +69,7 @@ CONFIG_LOG_BUF_SHIFT=20
 ...
 ----
 
-== /dev/kmsg 
+=== /dev/kmsg 
 
 [source,console]
 ----
@@ -52,7 +90,7 @@ CONFIG_LOG_BUF_SHIFT=20
 ----
 
 
-== dmesg 
+=== dmesg
 
 [source,console]
 ----
@@ -100,7 +138,7 @@ Numbers in angle brackets are loglevel values, listed below
 
 
 
-== journalctl 
+=== journalctl
 
 [source,console]
 ----
@@ -125,8 +163,9 @@ Jan 07 09:58:25 host1.silvan.uk kernel: x86/fpu: Supporting XSAVE feature 0x001:
 ...
 ----
 
+== console logging 
 
-== printk and ring buffer 
+=== printk and ring buffer 
 
 [source,console]
 ----
@@ -181,35 +220,8 @@ BOOT_IMAGE=(hd0,msdos2)/vmlinuz-4.18.0-240.10.1.el8_3.x86_64 root=/dev/mapper/rh
 [root@host1 boot]# 
 ----
  
-       
-== loglevel values 
 
-[start=0]
-. Kernel emergency. The system is unusable.
-. Kernel alert. Action must be taken immediately.
-. Condition of the kernel is considered critical.
-. General kernel error condition.
-. General kernel warning condition.
-. Kernel notice of a normal but significant condition.
-. Kernel informational message.
-. Kernel debug-level messages
-
-log levels from "man 2 syslog"
-
-[source,console]
-----
-Kernel constant   Level value   Meaning
-KERN_EMERG             0        System is unusable
-KERN_ALERT             1        Action must be taken immediately
-KERN_CRIT              2        Critical conditions
-KERN_ERR               3        Error conditions
-KERN_WARNING           4        Warning conditions
-KERN_NOTICE            5        Normal but significant condition
-KERN_INFO              6        Informational
-KERN_DEBUG             7        Debug-level messages
-----
-
-== syslog 
+== syslog logging
 
 /etc/rsyslog.conf 
 
@@ -230,32 +242,54 @@ Log all messages with facility "kern" and all priorities.
 
 vi /etc/rsyslog.d/kern.conf
 
+[source,console]
+----
 # facilities: auth, authpriv, cron, daemon, kern, lpr, mail, news, syslog, user, uucp and local0 through local7
 # priorities: debug, info, notice, warning, err, crit, alert and emerg
 # for more information, run "man rsyslog.conf"
 # selector:
 kern.warning        /var/log/kern.log
+----
 
-
+[source,console]
+----
 systemctl restart rsyslog
+----
 
+All OK? 
+
+[source,console]
+----
 systemctl status rsyslog
+----
 
 Kernel log messages may be many minutes apart. 
 Instead of waiting, tell the kernel to print a help message. 
+
+[source,console]
+----
 echo h > /proc/sysrq-trigger
+----
 
 The file is created when the first message shows up. 
+
+[source,console]
+----
 ls -l /var/log/kern.log
+----
 
 The rsyslog process manages this new log file. 
+
+[source,console]
+----
 [root@host1 ~]# lsof /var/log/kern.log 
 COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF      NODE NAME
 rsyslogd 1546 root    7w   REG  253,0   103851 268823973 /var/log/kern.log
 [root@host1 ~]# 
+----
 
 
-== help 
+=== help 
 
 * man 2 syslog         system call provided by the kernel 
 * man 3 syslog         library call provided by a library 
@@ -264,13 +298,15 @@ rsyslogd 1546 root    7w   REG  253,0   103851 268823973 /var/log/kern.log
 * man 8 rsyslogd       System administration command
 
 
-== change log level 
+=== kernel messages on the console
+
+=== change console log level 
 
 
-change for current session 
+change for current session.
+Increase from 4 (quiet).
 
-increase from 4 (quiet) 
-Kernel logs less than the set number, so setting 8 logs everything. 
+Console displays messages with priorities less than the set number, so setting 8 logs everything. 
 
 These three commands do the same thing. 
 
@@ -291,9 +327,7 @@ sysctl -w kernel.printk=8
 ----
 
 
-
-
-== change loglevel by interrupting bootup
+== loglevel and the kernel command line
 
 When Grub menu appears, hit a kit to interrupt.
 
@@ -309,15 +343,14 @@ systemd.log_level=debug loglevel=8
 Log errors only. 
 
 Edit the kernel command line.
-replace 
-quiet
-with 
-debug
-systemd.log_level=debug 
-loglevel=8
+Replace quiet with something like 
+
+* debug
+* systemd.log_level=debug 
+* loglevel=8
 
 
-== change loglevel in GRUB 
+=== change loglevel in GRUB 
 
 change for all sessions 
 
@@ -325,12 +358,23 @@ decrease from 4 (quiet)
 
 vi /etc/default/grub
 change 
+[source,console]
+----
 GRUB_CMDLINE_LINUX=" ... quiet"
+----
+
 to
+
+[source,console]
+----
 GRUB_CMDLINE_LINUX=" ... loglevel=3"
+----
 
 
 == write a message to the kernel ring buffer 
+
+The kernel treats these as messages from user space, not kernel space.
+Rsyslog won't treat them as facility: kern 
 
 [source,console]
 ----
@@ -339,14 +383,17 @@ echo "<7>my debug message from userspace" >/dev/kmsg
 ----
 
 See the result.
+[source,console]
+----
 dmesg 
+----
 
-The kernel treats these as messages from user space, not kernel space.
-They don't appear in the rsyslog kernel log. 
 
 
 
 == systemd 
+
+Linux command line options to send messages to the ring buffer. 
 
 https://freedesktop.org/wiki/Software/systemd/Debugging/
 systemd.log_level=debug systemd.log_target=kmsg log_buf_len=1M printk.devkmsg=on

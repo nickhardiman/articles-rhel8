@@ -55,8 +55,6 @@ https://developers.redhat.com/articles/getting-red-hat-developer-subscription-wh
 
 
 
-
-
 == check out the desktop
 
 If you've used Fedora as a workstation but only used RHEL on the command line, 

@@ -4,9 +4,12 @@ Nick Hardiman
 :toc: 
 :revdate: 08-01-2021
 
-
+Your new RHEL 8 system is running a downstream version of the Linux kernel. 
+Find out a few things with these commands. 
 
 == kernel version 
+
+Find the version. 
 
 Actually, the version isn't very informative. 
 The release is. 
@@ -36,31 +39,41 @@ The *el8_3* part shows the upstream kernel code was copied for RHEL and worked o
 
 == kernel file 
 
+The kernel file is called https://en.wikipedia.org/wiki/Vmlinux[vmlinux]. 
+The /boot/ directory holds the compressed version (vmlinuz) and the name has the kernel release and machine architecture tacked on the end. 
+
+Use the _file_ command to describe the kernel file. 
+
 [source,console]
 ----
-[root@host1 ~]# grep CMDLINE /etc/default/grub 
-GRUB_CMDLINE_LINUX="crashkernel=auto resume=/dev/mapper/rhel-swap rd.lvm.lv=rhel/root rd.lvm.lv=rhel/swap rhgb quiet"
-[root@host1 ~]# 
+[root@host1 module2]# file /boot/vmlinuz-4.18.0-240.10.1.el8_3.x86_64
+/boot/vmlinuz-4.18.0-240.10.1.el8_3.x86_64: Linux kernel x86 boot executable bzImage, version 4.18.0-240.10.1.el8_3.x86_64 (mockbuild@x86-vm-08.build.eng.bos.redhat.com) #1 SMP Wed Dec 16 0, RO-rootFS, swap_dev 0x9, Normal VGA
+[root@host1 module2]# 
 ----
 
 
 == kernel packages 
 
+When the system is installed, there is only one kernel package installed. 
+
+The first upgrade usually adds another kernel package, and the /boot directory stores two kernel files. 
+The GRUB menu lets the user choose which one to boot. 
+
+
 [source,console]
 ----
-[root@host1 ~]# dnf list kernel
+[nick@host1 ~]$ sudo dnf list kernel
+[sudo] password for nick: 
 Updating Subscription Management repositories.
-Last metadata expiration check: 1:59:14 ago on Fri 08 Jan 2021 10:37:36 GMT.
+Last metadata expiration check: 1:31:31 ago on Fri 08 Jan 2021 13:39:46 GMT.
 Installed Packages
-kernel.x86_64                                  4.18.0-240.el8                                         @anaconda                     
-kernel.x86_64                                  4.18.0-240.10.1.el8_3                                  @rhel-8-for-x86_64-baseos-rpms
-[root@host1 ~]# 
+kernel.x86_64        4.18.0-240.el8               @anaconda                     
+kernel.x86_64        4.18.0-240.10.1.el8_3        @rhel-8-for-x86_64-baseos-rpms
+[nick@host1 ~]$ 
 ----
 
 
 == kernel command line 
-
-command line does contain quiet. 
 
 Grub menu line is defined here. 
 
@@ -71,8 +84,9 @@ GRUB_CMDLINE_LINUX="crashkernel=auto resume=/dev/mapper/rhel-swap rd.lvm.lv=rhel
 [root@host1 ~]# 
 ----
 
+This GRUB line can be edited by the user when the machine starts up.
+The command line that was actually used is here. 
 
-What was used is here. 
 The second half of this line matches the line in /etc/default/grub. 
 
 [source,console]
@@ -88,7 +102,7 @@ BOOT_IMAGE=(hd0,msdos2)/vmlinuz-4.18.0-240.10.1.el8_3.x86_64 root=/dev/mapper/rh
 The kernel keeps its own activity log. 
 This is partly because it has to keep track of its activity when the system starts, before all the regular logging things are available.
 Log messages are kept in a https://en.wikipedia.org/wiki/Circular_buffer[circular buffer] im memory. 
-The manual pages call this the log buffer or ring buffer. 
+Manual pages call this the _log buffer_ or _ring buffer_. 
 
 While the system is running, kernel messages also appear in _/var/log/messages_. 
 There is no separate _/var/log/kern.log_. 
@@ -97,7 +111,7 @@ Important messages are copied to the console.
 In the olden days, when computers had consoles and operators hanging around to see the messages, this made sense. 
 These days, a server machine has no screen, let alone someone looking at it. 
 
-View the kernel log with journalctl. 
+View the kernel log with the _journalctl_ command. 
 
 [source,console]
 ----
@@ -109,4 +123,40 @@ Jan 07 09:58:25 host1.silvan.uk kernel: x86/fpu: Supporting XSAVE feature 0x001:
 ...
 ----
 
+
+== kernel threads 
+
+The kernel has its own space and runs its own tasks. 
+These tasks are called threads, and are started by the kernel thread daemon. 
+
+Use the _ps_ command to see the kernel thread daemon and its children. 
+
+[source,console]
+----
+[root@host1 module2]# ps faux 
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           2  0.0  0.0      0     0 ?        S    10:27   0:00 [kthreadd]
+root           3  0.0  0.0      0     0 ?        I<   10:27   0:00  \_ [rcu_gp]
+root           4  0.0  0.0      0     0 ?        I<   10:27   0:00  \_ [rcu_par_gp]
+----
+
+
+
+== kernel modules 
+
+The kernel is a modular system - it can be extended by loading modules. 
+Modules can create threads, use the /proc file system, manage devices and so on.  
+Many modules are loaded by the RHEL 8 kernel. 
+
+List modules with the _lsmod_ command. 
+
+[source,console]
+----
+[root@host1 module2]# lsmod 
+Module                  Size  Used by
+rfcomm                 86016  4
+binfmt_misc            20480  1
+tcp_diag               16384  0
+...
+----
 
