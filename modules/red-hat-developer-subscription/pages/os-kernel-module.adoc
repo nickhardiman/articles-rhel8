@@ -1,0 +1,149 @@
+= make a kernel module  
+Nick Hardiman 
+:source-highlighter: pygments
+:toc: 
+:revdate: 05-01-2021
+
+
+== log using a kernel module 
+
+[source,console]
+----
+# This is a dangling symlink
+ls -la  /lib/modules/$(uname -r)/build
+# install development package for building kernel modules
+dnf install kernel-devel
+# install libraries to for handling ELF object files.
+dnf install elfutils-libelf-devel
+#
+mkdir -p /root/printk/module
+cd /root/printk/module
+----
+
+now follow the instructions in this 2017 article 
+https://blog.sourcerer.io/writing-a-simple-linux-kernel-module-d9dc3762c234
+probably ripped off from this 2013 article 
+https://www.thegeekstuff.com/2013/07/write-linux-kernel-module/
+#:~:text=Kernel%20modules%20are%20piece%20of,as%20a%20Linux%20kernel%20modules.
+
+reference
+The Linux Kernel Module Programming Guide
+https://tldp.org/LDP/lkmpg/2.6/lkmpg.pdf
+linux-kernel-module-programming-guide.pdf
+
+[source,console]
+----
+# create source 
+vi lkm_example.c
+----
+
+ASCII  quotes "GPL", not unicode quotes “GPL”
+
+[source,console]
+----
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/kernel.h>
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Robert W. Oliver II");
+MODULE_DESCRIPTION("A simple example Linux module.");
+MODULE_VERSION("0.01");
+static int __init lkm_example_init(void) {
+ printk(KERN_INFO "Hello, World!\n");
+ return 0;
+}
+static void __exit lkm_example_exit(void) {
+ printk(KERN_INFO "Goodbye, World!\n");
+}
+module_init(lkm_example_init);
+module_exit(lkm_example_exit);
+----
+
+[source,console]
+----
+# create Makefile 
+vi Makefile 
+----
+
+Tabs, not spaces. 
+
+[source,console]
+----
+obj-m += lkm_example.o
+all:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+clean:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+----
+
+[source,console]
+----
+# build module 
+make 
+----
+
+[source,console]
+----
+# check 
+file lkm_example.ko 
+----
+
+[source,console]
+----
+# set verbose 
+dmesg --console-level 8
+
+# watch dmesg 
+dmesg --follow
+
+# open a console 
+# watch the console  
+dmesg --follow
+----
+
+[source,console]
+----
+# open another terminal 
+# insert module 
+insmod lkm_example.ko 
+----
+
+
+List kernel modules.
+There's the new module, listed along with many others. 
+
+[source,console]
+----
+[root@host1 module2]# lsmod 
+Module                  Size  Used by
+hello_1                16384  0
+rfcomm                 86016  4
+...
+----
+
+Remove the new module. 
+
+[source,console]
+----
+rmmod lkm_example.ko 
+----
+
+
+Messages appear in dmesg and the console. 
+
+Reset to bad news only.
+
+[source,console]
+----
+dmesg --console-level 4
+----
+
+Repeat test.
+
+[source,console]
+----
+insmod lkm_example.ko 
+rmmod lkm_example.ko 
+----
+
+Messages appear in dmesg only. 

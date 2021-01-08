@@ -5,10 +5,13 @@
 *** xref:developer-subscription-sign-up.adoc[] 
 ** 50 things (ish)
 *** _firmware and OS things_
-*** xref:install-rhel8.adoc[]
+*** xref:os-install-rhel8.adoc[]
 *** xref:boot-stages.adoc[]
 *** xref:boot-bios.adoc[]
 *** xref:boot-grub.adoc[]
+*** xref:os-kernel.adoc[]
+*** xref:os-kernel-log.adoc[]
+*** xref:os-kernel-module.adoc[]
 *** _Red Hat things_
 *** xref:rhsm.adoc[]
 *** xref:syspurpose.adoc[]
