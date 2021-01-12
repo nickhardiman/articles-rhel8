@@ -13,10 +13,11 @@
 *** xref:host1-kernel-log.adoc[]
 *** xref:host1-kernel-module.adoc[]
 *** _Red Hat things_
-*** xref:host1-rhsm.adoc[]
-*** xref:syspurpose.adoc[]
+*** xref:host1-rhsm-entitlement.adoc[]
+*** xref:host1-rhsm-syspurpose.adoc[]
+*** xref:host1-rhsm-repo.adoc[]
 *** xref:insights.adoc[]
-*** errata (update, bug fix and security patch)
+*** xref:host1-dnf-update.adoc[]
 *** CDN (Content Delivery Network)
 *** xref:dnf.adoc[] 
 *** xref:dnf-module.adoc[] 
