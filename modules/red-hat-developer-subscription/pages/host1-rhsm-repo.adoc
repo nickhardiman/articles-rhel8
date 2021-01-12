@@ -55,14 +55,14 @@ Enabled:   1
 [root@host1 ~]# 
 ----
 
-=== disable all repos 
+== disable all repos 
 
 [source,bash]
 ----
 subscription-manager repos --disable "*"
 ----
 
-=== enable a few repos 
+== enable a few repos 
 
 re-enable the two default repos. 
 
@@ -80,7 +80,7 @@ subscription-manager repos --enable=ansible-2-for-rhel-8-x86_64-rpms
 ----
 
 
-=== check 
+== check 
 
 [source,bash]
 ----

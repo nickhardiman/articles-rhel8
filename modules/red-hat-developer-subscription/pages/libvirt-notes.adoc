@@ -6,7 +6,7 @@ Nick Hardiman <nick@redhat.com>
 
 TO BE DELETED
 
-NOTE
+[NOTE]
 ====
 Move anything useful out of this page and delete it. 
 It makes little sense to anyone, including me. 
