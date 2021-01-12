@@ -40,13 +40,15 @@ NEW_DISK=/var/lib/libvirt/images/$HOST.qcow2
 INSTALL_ISO=/var/lib/libvirt/images/rhel-8.2-x86_64-dvd.iso
 KICKSTART_CONFIG=/root/libvirt/$HOST.ks
 IF1_MAC=52:54:00:00:00:01
+IF2_MAC=52:54:00:00:00:02
 virt-install \
   --name="$HOST" \
   --vcpus=2 \
   --ram=4096 \
-  --disk path=$NEW_DISK,bus=virtio,size=50 \
+  --disk path=$NEW_DISK,size=50 \
   --os-variant rhel8.2 \
   --network network=pubbr0,mac=$IF1_MAC   \
+  --network network=privbr0,mac=$IF2_MAC   \
   --boot uefi,hd,menu=on \
   --location $INSTALL_ISO \
   --initrd-inject $KICKSTART_CONFIG \
@@ -54,12 +56,17 @@ virt-install \
   --noautoconsole
 ....
 
-
+* The _--disk_ option creates a new 50GB volume. 
 * The _--os-variant_ option takes an OS name and sets a few default values that are good for that OS. 
+The default values for CPU cores and memory are overridden here by the `--vcpus` and `--ram` options. 
 The command `osinfo-query os` lists all the values that can go in here. 
-* The console is connected to the serial port with the _--extra-args_ text _console=tty0 console=ttyS0,115200_. 
+* The two _--network_ options give the VM two network interfaces.
+* The _--extra-args_ text _console=ttyS0,115200_ connects the console to the serial port.  
 * The kickstart file is loaded by the _--initrd-inject_ option and used by the _--extra-args_ text _inst.ks=file:/guest1.ks_.
-* Normally the console would appear and show all the install messages, but the _--noautoconsole_ option stops that happening.  Connecting to the console is done manually below, because after a few successful attempts the scrolling list of messages becomes pretty annoying.   
+
+Normally, after executing this command, the console would appear and show all the install messages.
+But here the _--noautoconsole_ option stops that happening.  Connecting to the console is done manually below, because after a few successful attempts the scrolling list of messages becomes pretty annoying.   
+
 
 
 == create a VM 

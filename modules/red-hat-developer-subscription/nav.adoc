@@ -32,6 +32,7 @@
 *** _guest1 things_
 *** xref:guest1-kickstart-file.adoc[]
 *** xref:guest1-virt-install.adoc[]
+*** xref:guest1-os-setup.adoc[]
 *** xref:guest1-dns-bind9.adoc[]
 *** _guest2 things_
 *** xref:guest2-libguestfs-tools.adoc[]

@@ -56,7 +56,7 @@ An online https://access.redhat.com/labs/kickstartconfig/[kickstart generator] c
 
 [source,bash]
 ....
-# kickstart file for rhel81
+# kickstart file for guest1
 
 ignoredisk --only-use=vda
 # Partition clearing information
