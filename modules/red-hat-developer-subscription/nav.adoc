@@ -5,22 +5,22 @@
 *** xref:developer-subscription-sign-up.adoc[] 
 ** 50 things (ish)
 *** _firmware and OS things_
-*** xref:os-install-rhel8.adoc[]
+*** xref:host1-rhel8-install.adoc[]
 *** xref:boot-stages.adoc[]
 *** xref:boot-bios.adoc[]
 *** xref:boot-grub.adoc[]
-*** xref:os-kernel.adoc[]
-*** xref:os-kernel-log.adoc[]
-*** xref:os-kernel-module.adoc[]
+*** xref:host1-kernel.adoc[]
+*** xref:host1-kernel-log.adoc[]
+*** xref:host1-kernel-module.adoc[]
 *** _Red Hat things_
-*** xref:rhsm.adoc[]
+*** xref:host1-rhsm.adoc[]
 *** xref:syspurpose.adoc[]
 *** xref:insights.adoc[]
 *** errata (update, bug fix and security patch)
 *** CDN (Content Delivery Network)
 *** xref:dnf.adoc[] 
 *** xref:dnf-module.adoc[] 
-*** _virtual machine things_
+*** _virtual network things_
 *** xref:network.adoc[]
 *** xref:network-build.adoc[]
 *** xref:libvirt.adoc[]
@@ -28,6 +28,7 @@
 *** xref:libvirt-second-network.adoc[]
 *** xref:libvirt-storage-pool.adoc[]
 *** xref:libvirt-storage-volume.adoc[]
+*** _virtual machine things_
 *** xref:libvirt-virtual-machine.adoc[]
 *** xref:libvirt-second-disk.adoc[]
 *** _infrastructure things_
