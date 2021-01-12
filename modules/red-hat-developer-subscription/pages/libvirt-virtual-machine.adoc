@@ -1,147 +1,36 @@
 
-= libvirt virtual machine 
+= create a virtual machine, then delete it
 Nick Hardiman 
 :source-highlighter: pygments
 :toc: 
-:revdate: 29-05-2020
+:revdate: 11-01-2021
 
 
-Create a VM using a storage volume.  
+Create a VM, then destroy it. 
+
 
 .physical machine and virtual machine 
 ....
-.------------------.
-|                  |
-|  host            |
-|                  |   
-|   +----------+   |    
-|   |          |   |  
-|   |  guest1  |---+--> Internet
-|   |          |   |   
-|   +----------+   |  
-.------------------.  
+.--------------------.
+|                    |
+|  host1             |
+|                    |   
+|   +------------+   |    
+|   |            |   |  
+|   |  myfirstvm |---+--> Internet
+|   |            |   |   
+|   +------------+   |  
+.--------------------.  
 ....
 
-
-
-
-
-== virtualization components that are already installed  
-
-Many qemu and libvirt-daemon packages are already installed. 
-The  https://www.redhat.com/en/topics/virtualization/what-is-KVM[KVM (Kernel-based Virtual Machine) hypervisor] is built into Linux. 
-
-Check the version. 
-
-[source,console]
-----
-[nick@host1 ~]$ libvirtd --version
-libvirtd (libvirt) 6.0.0
-[nick@host1 ~]$ 
-----
-
-List the kernel's https://www.linux-kvm.org/page/Getting_the_kvm_kernel_modules[KVM modules].
-
-[source,console]
-----
-[nick@host1 ~]$ lsmod | grep kvm
-kvm_amd               110592  8
-ccp                    98304  1 kvm_amd
-kvm                   798720  1 kvm_amd
-irqbypass              16384  7 kvm
-[nick@host1 ~]$ 
-----
-
-QEMU handles hardware emulation for virtual machines.
-libvirt provides a management interface to QEMU. 
-Libvirt is used by the https://www.redhat.com/en/technologies/virtualization/enterprise-virtualization[RHV (Red Hat Virtualization)] 
-system, and RHV's upstream open-source project https://www.ovirt.org/[oVirt].
-
-
-libvirt-daemon manages the virtualization. 
-
-systemd service libvirtd is running. 
-This created a couple network devices - 
-a bridge devices named virbr0 
-a https://en.wikipedia.org/wiki/TUN/TAP[TUN/TAP] network interface named virbr0-nic, 
-used by the bridge. 
-
-The network interface _virbr0-nic_ doesn't handle traffic. 
-The only job of this interface is to provide a MAC address that doesn't change. 
-https://www.redhat.com/archives/libvirt-users/2012-September/msg00038.html
-The  interface _virbr0-nic_ is a https://en.wikipedia.org/wiki/TUN/TAP[TAP] device, created as a hack to force a stable MAC address on the bridge device _virbr0_.
-This hack was required due to a bad kernel implementation of bridge device MAC address assignment.
-The _virbr0-nic_ device is not created by libvirt after version 6.8.0, because the kernel was fixed.
-
-[source,console]
-----
-[nick@host ~]$ nmcli device status
-DEVICE      TYPE      STATE      CONNECTION 
-enp0s25     ethernet  connected  enp0s25    
-wlp3s0      wifi      connected  my wifi   
-virbr0      bridge    connected  virbr0     
-lo          loopback  unmanaged  --         
-virbr0-nic  tun       unmanaged  --         
-[nick@host ~]$ 
-----
-
-
-
-
-== prereqs 
-
-. laptop  
-. Fresh RHEL 8 install 
-. developer subscription 
-. storage pool, nicks_images
-. storage volume, guest1.qcow2
- 
-
-== install 
-
-Edit disk image with qemu-img. 
-View VM's desktop with virt-viewer?
-Add a bridge with brctl? or bridge? or nmcli?
-
-
-
-Install libvirt client tools.
-
-The virt module provides most of the tools. 
-Couple more from the appstream repository, virt-viewer, cockpit-machines 
-
-[source,console]
-----
-[nick@host ~]$ sudo dnf module list virt 
-Updating Subscription Management repositories.
-Last metadata expiration check: 0:16:21 ago on Thu 14 May 2020 17:14:06 BST.
-Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
-Name         Stream              Profiles           Summary                     
-virt         rhel [d][e]         common [d]         Virtualization module       
-
-Hint: [d]efault, [e]nabled, [x]disabled, [i]nstalled
-[nick@host ~]$ 
-----
-
-The virt module doesn't include everything used in this article. 
-The ``virt-resize`` command comes from the libguestfs-tools package, and  ``virt-install`` from the virt-install package. 
-
-Install all packages. 
-
-[source,console]
-----
-sudo dnf module install virt
-sudo dnf install libguestfs-tools
-sudo dnf install virt-install
-----
 
 
 
 == create a virtual machine 
 
-Create a VM using a ready-made disk image (guest-images/guest1.qcow2). This is not the same as using an install ISO - the OS is already installed. 
+Create a VM using a ready-made disk image (guest-images/myfirstvm.qcow2). This is not the same as using an install ISO - the OS is already installed. 
 
-A new VM can be created using a command like ``virsh define my-machine.xml``, 
+A new VM can be created using a command like ``virsh define myfirstvm.xml``, 
 similar to the way a storage pool can be created using ``virsh pool-define storage-pool.xml``.
 But the XML configuration that defines a virtual machine is complicated. 
 It's easier to use the ``virt-install`` command to do the hard work. 
@@ -152,9 +41,9 @@ This ``virt-install`` command creates a virtual machine with 2 CPUs, 1536 MB mem
 ----
   virt-install \
     --network bridge:virbr0,mac=52:54:00:00:00:01 \
-    --name guest1 \
+    --name myfirstvm \
     --boot uefi  \
-    --disk guest-images/guest1.qcow2 \
+    --disk guest-images/myfirstvm.qcow2 \
     --os-variant rhel8.0 \
     --import \
     --graphics none \
@@ -167,7 +56,7 @@ If you're wondering about the odd-looking MAC address ``52:54:00:00:00:01``, it'
 
 [source,console]
 ----
-[nick@host ~]$ virt-install  --network bridge:virbr0,mac=52:54:00:00:00:01  --name guest1  --disk guest-images/guest1.qcow2  --os-variant rhel8.0  --import  --graphics none  --noautoconsole
+[nick@host ~]$ virt-install  --network bridge:virbr0,mac=52:54:00:00:00:01  --name myfirstvm  --disk guest-images/myfirstvm.qcow2  --os-variant rhel8.0  --import  --graphics none  --noautoconsole
 Using rhel8.0 default --memory 1536
 
 Starting install...
@@ -178,15 +67,15 @@ Domain creation completed.
 
 == use the console 
 
-Connect to the console with the command ``virsh console guest1``.
+Connect to the console with the command ``virsh console myfirstvm``.
 
 It may take a few seconds for boot-up to finish. 
 The login prompt may not appear until you hit the ``Enter`` key. 
 
 [source,console]
 ----
-[nick@host ~]$ virsh console guest1
-Connected to domain guest1
+[nick@host ~]$ virsh console myfirstvm
+Connected to domain myfirstvm
 Escape character is ^]
 (Enter)
 Red Hat Enterprise Linux 8.2 (Ootpa)
@@ -194,10 +83,10 @@ Kernel 4.18.0-193.el8.x86_64 on an x86_64
 
 Activate the web console with: systemctl enable --now cockpit.socket
 
-guest1 login: 
+myfirstvm login: 
 ----
 
-Log in. This password was set by customizing the guest1 KVM image.
+Log in. This password was set by customizing the myfirstvm KVM image.
 
 * user: root
 * password: x%5ckA-1
@@ -207,11 +96,11 @@ Oh yes.
 
 [source,console]
 ----
-[root@guest1 ~]# dmesg | grep virtual
+[root@myfirstvm ~]# dmesg | grep virtual
 [    0.000000] Booting paravirtualized kernel on KVM
 [    1.263237] systemd[1]: Detected virtualization kvm.
 [    4.411466] systemd[1]: Detected virtualization kvm.
-[root@guest1 ~]# 
+[root@myfirstvm ~]# 
 ----
 
 Log out. ``exit``
@@ -220,28 +109,28 @@ Disconnect from the console. ``ctrl`` + ``]``
 
 [source,console]
 ----
-guest1 login:  ^]
+myfirstvm login:  ^]
 [nick@host ~]$ 
 ----
 
 
 == stop the VM
 
-Stop the new VM with the command ``virsh shutdown guest1``. 
+Stop the new VM with the command ``virsh shutdown myfirstvm``. 
 This is a graceful shutdown, like running ``systemctl poweroff``.
 
-If you want to pull the plug, use ``virsh destroy guest1``.
+If you want to pull the plug, use ``virsh destroy myfirstvm``.
 
 [source,console]
 ....
-[nick@host ~]$ virsh shutdown guest1
-Domain guest1 is being shutdown
+[nick@host ~]$ virsh shutdown myfirstvm
+Domain myfirstvm is being shutdown
 
 [nick@host ~]$ 
 [nick@host ~]$ virsh list --all
  Id    Name                           State
 ----------------------------------------------------
- -     guest1                         shut off
+ -     myfirstvm                         shut off
 
 [nick@host ~]$ 
 ....
@@ -249,21 +138,21 @@ Domain guest1 is being shutdown
 
 == restart the VM
 
-Restart the new VM with the command ``virsh start guest1``.
+Restart the new VM with the command ``virsh start myfirstvm``.
 
 This ``virsh start`` command runs a huge ``qemu-kvm`` command with dozens of options. 
 You can see it by running ``ps -fwwwC qemu-kvm``.
 
 [source,console]
 ....
-[nick@host ~]$ virsh start guest1
-Domain guest1 started
+[nick@host ~]$ virsh start myfirstvm
+Domain myfirstvm started
 
 [nick@host ~]$ 
 [nick@host ~]$ virsh list
  Id    Name                           State
 ----------------------------------------------------
- 1     guest1                         running
+ 1     myfirstvm                         running
 
 [nick@host ~]$ 
 ....
@@ -291,7 +180,7 @@ Factory-fitted libvirt only has one network named _default_, and there is only o
 [nick@host ~]$ sudo virsh net-dhcp-leases default
  Expiry Time          MAC address        Protocol  IP address                Hostname        Client ID or DUID
 -------------------------------------------------------------------------------------------------------------------
- 2020-05-27 19:31:43  52:54:00:f1:b6:01  ipv4      192.168.122.218/24        guest1          01:52:54:00:f1:b6:01
+ 2020-05-27 19:31:43  52:54:00:f1:b6:01  ipv4      192.168.122.218/24        myfirstvm          01:52:54:00:f1:b6:01
 
 [nick@host ~]$ 
 ....
@@ -312,14 +201,14 @@ This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
 To register this system, run: insights-client --register
 
 Last login: Wed May 27 13:26:47 2020
-[nick@guest1 ~]$ 
+[nick@myfirstvm ~]$ 
 ....
 
 Disconnect. 
 
 [source,console]
 ----
-[nick@guest1 ~]$ exit
+[nick@myfirstvm ~]$ exit
 logout
 Connection to 192.168.122.218 closed.
 [nick@host ~]$ 
@@ -327,7 +216,7 @@ Connection to 192.168.122.218 closed.
 
 A slightly harder way of finding the IP address is to use the VM's MAC address and the arp command. 
 
-. Save the XML configuration with ``virsh dumpxml guest1 > guest1.xml``.
+. Save the XML configuration with ``virsh dumpxml myfirstvm > myfirstvm.xml``.
 . Find 'mac address' in this file. 
 . Run ``arp -an``.
 . Search the arp results for the line containing the MAC address. 
@@ -336,18 +225,18 @@ A slightly harder way of finding the IP address is to use the VM's MAC address a
 
 == delete the VM
 
-Delete the new VM with the command  ``virsh destroy guest1``.
+Delete the new VM with the command  ``virsh destroy myfirstvm``.
 
 Power off the machine and remove its configuration. 
 
 [source,console]
 ....
-[nick@host ~]$ virsh destroy guest1
-Domain guest1 destroyed
+[nick@host ~]$ virsh destroy myfirstvm
+Domain myfirstvm destroyed
 
 [nick@host ~]$ 
-[nick@host ~]$ virsh undefine guest1
-Domain guest1 has been undefined
+[nick@host ~]$ virsh undefine myfirstvm
+Domain myfirstvm has been undefined
 
 [nick@host ~]$ 
 [nick@host ~]$ virsh list --all
