@@ -18,13 +18,11 @@
 *** xref:host1-rhsm-repo.adoc[]
 *** xref:insights.adoc[]
 *** xref:host1-dnf-update.adoc[]
-*** CDN (Content Delivery Network)
-*** xref:dnf.adoc[] 
-*** xref:dnf-module.adoc[] 
+*** xref:host1-dnf-module-view.adoc[] 
 *** _virtual network things_
-*** xref:network.adoc[]
-*** xref:network-build.adoc[]
-*** xref:libvirt.adoc[]
+*** xref:libvirt-notes.adoc[]
+*** xref:host1-dnf-module-virt.adoc[] 
+*** xref:libvirt-plan.adoc[]
 *** xref:libvirt-dnsmasq.adoc[]
 *** xref:libvirt-second-network.adoc[]
 *** xref:libvirt-storage-pool.adoc[]

@@ -4,7 +4,16 @@ Nick Hardiman <nick@redhat.com>
 :toc: 
 :revdate: 03-08-2020
 
-This may be repeated in the libvirt docs. 
+TO BE DELETED
+
+NOTE
+====
+Move anything useful out of this page and delete it. 
+It makes little sense to anyone, including me. 
+And I wrote it. 
+It's out of date, and it's all manual. 
+It needs an overhaul and replacing with ansible plays. 
+====
 
 Three types of machine. 
 The workstation and host1 are physical, guests are virtual. 
@@ -16,8 +25,6 @@ They can be the same machine, like a well-endowed PC, or two seperate machines, 
 
 This page collects all the config and commands required to set up the libvirt test network. 
 
-It's out of date, and it's all manual. 
-It needs an overhaul and replacing with ansible plays. 
 
 
 == accounts 
