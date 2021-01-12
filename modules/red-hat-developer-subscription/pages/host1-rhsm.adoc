@@ -1,0 +1,218 @@
+= use RHSM (Red Hat Subscription Manager)
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+:revdate: 05-01-2021
+
+Use RHSM (Red Hat Subscription Manager) to https://access.redhat.com/solutions/253273[register and subscribe] your new machine.
+
+
+== check before 
+
+[source,console]
+----
+[root@host1 ~]# subscription-manager status
++-------------------------------------------+
+   System Status Details
++-------------------------------------------+
+Overall Status: Unknown
+
+System Purpose Status: Unknown
+
+[root@host1 ~]#
+----
+
+
+
+== register 
+
+Use the _subscription-manager_ command to manage subscriptions for products.
+
+[source,console]
+----
+subscription-manager register --username <username> --password <password> --auto-attach
+----
+
+The first time subscription-manager runs, it displays a warning about enabling a few plugins.
+
+[source,console]
+----
+[nick@rhel8 ~]$ sudo subscription-manager register --username nick --password ';1!eB9-aW' --auto-attach
+[sudo] password for nick: 
+Registering to: subscription.rhsm.redhat.com:443/subscription
+The system has been registered with ID: faa0b03b-2d45-41e7-a269-e71180cc5e5a
+The registered system name is: rhel8.lab.example.com
+Installed Product Current Status:
+Product Name: Red Hat Enterprise Linux for x86_64
+Status:       Subscribed
+
+
+WARNING
+
+The yum/dnf plugins: /etc/dnf/plugins/subscription-manager.conf, /etc/dnf/plugins/product-id.conf were automatically enabled for the benefit of Red Hat Subscription Management. If not desired, use "subscription-manager config --rhsm.auto_enable_yum_plugins=0" to block this behavior.
+
+[nick@rhel8 ~]$ 
+----
+
+Remove this registration with the command ``sudo subscription-manager unregister``.
+
+== find a suitable subscription 
+
+[source,console]
+----
+subscription-manager list --available 
+----
+
+== attach your system to your subscription 
+
+[source,console]
+----
+subscription-manager attach --pool=1234567890abcdef1234567890abcdef
+----
+
+== check after 
+
+[source,console]
+....
+[root@host1 ~]# subscription-manager list
++-------------------------------------------+
+    Installed Product Status
++-------------------------------------------+
+Product Name:   Red Hat Enterprise Linux for x86_64
+Product ID:     479
+Version:        8.3
+Arch:           x86_64
+Status:         Subscribed
+Status Details: 
+Starts:         15/03/17
+Ends:           01/01/22
+
+[root@host1 ~]# 
+[root@host1 ~]# subscription-manager status
++-------------------------------------------+
+   System Status Details
++-------------------------------------------+
+Overall Status: Current
+
+System Purpose Status: Not Specified
+
+[root@host1 ~]# 
+....
+
+
+== set system purpose 
+
+Subscription manager can set other values, like service level and usage.  
+These are fields in each subscription record. 
+
+[source,console]
+....
+[root@host1 ~]# subscription-manager list --consumed
++-------------------------------------------+
+   Consumed Subscriptions
++-------------------------------------------+
+Subscription Name:   Employee SKU
+...
+Service Level:       Self-Support
+Usage:               Development/Test
+...
+[root@host1 ~]# 
+....
+
+Setting service level changes the line 'System Purpose Status: Not Specified' to 'System Purpose Status: Matched'.
+
+Setting these value helps with tasks like auto-attaching the right subscription from a list. 
+Subscription-manager attempts to match fields in the available subscriptions. 
+
+No value is set. 
+
+[source,console]
+....
+[root@host1 ~]# subscription-manager service-level --show
+Service level preference not set
+[root@host1 ~]#
+....
+
+List choices.
+
+[source,console]
+....
+[root@host1 ~]# subscription-manager service-level --list
++-------------------------------------------+
+           Available Service Levels
++-------------------------------------------+
+Premium
+Self-Support
+Standard
+[root@host1 ~]# 
+....
+
+Pick a value. 
+
+This subscription is _Self-Support_.
+If the wrong value is entered, remove the value with _subscription-manager service-level --unset_. 
+
+[source,console]
+....
+[root@host1 ~]# subscription-manager service-level --set=Self-Support
+service_level_agreement set to "Self-Support".
+[root@host1 ~]# 
+....
+
+
+[source,console]
+....
+[root@host1 ~]# subscription-manager status
++-------------------------------------------+
+   System Status Details
++-------------------------------------------+
+Overall Status: Current
+
+System Purpose Status: Matched
+
+[root@host1 ~]# 
+....
+
+The usage field is similar. 
+
+[source,console]
+....
+[root@host1 ~]# subscription-manager usage --list
++-------------------------------------------+
+               Available usage
++-------------------------------------------+
+ - Development/Test
+ - Production
+[root@host1 ~]# 
+....
+
+[source,console]
+....
+[root@host1 ~]# subscription-manager usage --set Development/Test
+usage set to "Development/Test".
+[root@host1 ~]# 
+....
+
+Setting this to something the machine is not entitled to shows a warning. 
+
+[source,console]
+....
+[root@host1 ~]# subscription-manager usage --set Production
+usage set to "Production".
+[root@host1 ~]# 
+....
+
+[source,console]
+....
+[root@host1 ~]# subscription-manager status
++-------------------------------------------+
+   System Status Details
++-------------------------------------------+
+Overall Status: Current
+
+System Purpose Status: Mismatched
+- The requested usage preference "Production" is not provided by a currently consumed subscription.
+
+[root@host1 ~]# 
+....
+
