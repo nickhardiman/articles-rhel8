@@ -1,12 +1,12 @@
-= libvirt second disk 
+= add a second disk
 Nick Hardiman 
 :source-highlighter: pygments
 :toc: 
-:revdate: 01-07-2020
+:revdate: 11-01-2021
 
 
 
-Add a second disk to a libvirt guest.
+Add a second disk to the virtual machine _guest2_.
 
 
 == create a disk 
@@ -32,13 +32,13 @@ temporary, does not survive reboots
 
 [source,XML]
 ----
-sudo virsh attach-disk guest1 /home/nick/libvirt/guest_images/second-disk.qcow2 vdb --cache none
+sudo virsh attach-disk guest2 /home/nick/libvirt/guest_images/second-disk.qcow2 vdb --cache none
 ----
 
 persistent
 [source,bash]
 ----
-sudo virsh attach-disk guest1 \
+sudo virsh attach-disk guest2 \
   --source /home/nick/libvirt/guest_images/second-disk.qcow2 \
   --target vdb \
   --persistent
@@ -60,7 +60,7 @@ adds this xml
 
 == use the disk 
 
-in guest 
+in guest2 
 
 Format the new disk.
 

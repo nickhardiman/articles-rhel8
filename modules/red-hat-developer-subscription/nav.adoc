@@ -3,7 +3,7 @@
 *** xref:developer-subscription-why.adoc[]
 *** xref:home-lab.adoc[]
 *** xref:developer-subscription-sign-up.adoc[] 
-** 50 things (ish)
+** 60 things (ish)
 *** _firmware and OS things_
 *** xref:host1-rhel8-install.adoc[]
 *** xref:boot-stages.adoc[]
@@ -23,19 +23,21 @@
 *** xref:libvirt-notes.adoc[]
 *** xref:host1-dnf-module-virt.adoc[] 
 *** xref:libvirt-plan.adoc[]
-*** xref:libvirt-public-bridge.adoc[]
-*** xref:libvirt-private-bridge.adoc[]
 *** xref:libvirt-storage-pool.adoc[]
 *** xref:libvirt-storage-volume-rhel8-iso.adoc[]
 *** xref:libvirt-storage-volume-rhel8-kvm.adoc[]
+*** xref:libvirt-virtual-machine.adoc[]
+*** xref:libvirt-public-bridge.adoc[]
+*** xref:libvirt-private-bridge.adoc[]
 *** _guest1 things_
+*** xref:guest1-kickstart-file.adoc[]
+*** xref:guest1-virt-install.adoc[]
+*** xref:guest1-dns-bind9.adoc[]
 *** _guest2 things_
 *** xref:guest2-libguestfs-tools.adoc[]
-
-*** xref:libvirt-dnsmasq.adoc[]
-*** _virtual machine things_
-*** xref:libvirt-virtual-machine.adoc[]
-*** xref:libvirt-second-disk.adoc[]
+*** xref:guest2-dhcp-dnsmasq.adoc[]
+*** xref:guest2-second-disk.adoc[]
+*** _guest3 things_
 *** _infrastructure things_
 *** xref:cockpit.adoc[]
 *** xref:chrony.adoc[] 

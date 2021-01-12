@@ -1,14 +1,9 @@
-= libvirt dnsmasq 
+= set the IP address using dnsmasq 
 Nick Hardiman 
 :source-highlighter: pygments
 :toc: 
-:revdate: 29-05-2020
+:revdate: 11-01-2021
 
-NOTE
-====
-Out of date. 
-VM guest1 is no longer using default network
-====
 
 
 set a VM's domain name and IP address using dnsmasq
@@ -17,11 +12,11 @@ set a VM's domain name and IP address using dnsmasq
 ....
 .-------------------------------------.  
 |                                     |
-|  host                               |
+|  host1                              |
 |                                     |
 |   +----------+        +----------+  |
 |   |          |        |          |  |
-|   |  guest1  | DHCP   | dnsmasq  |  |
+|   |  guest2  | DHCP   | dnsmasq  |  |
 |   |          +------->|          |  |
 |   |          |        |          |  |
 |   |          | DNS    |          |  |
@@ -31,8 +26,8 @@ set a VM's domain name and IP address using dnsmasq
 ....
 
 
-Set up a name and address for the new VM _guest1_. Use dnsmasq to fix the IP address _192.168.122.100_ and the 
-https://en.wikipedia.org/wiki/Fully_qualified_domain_name[FQDN (Fully Qualified Domain Name)] _guest1.lab.example.com_.
+Set up a name and address for the new VM _guest2_. Use dnsmasq to fix the IP address _192.168.122.100_ and the 
+https://en.wikipedia.org/wiki/Fully_qualified_domain_name[FQDN (Fully Qualified Domain Name)] _guest2.private.example.com_.
 
 RHEL 8 includes a complete system for managing VMs (virtual machines) - the KVM hypervisor, QEMU machine emulator and libvirt tools. 
 The libvirt daemon uses http://www.thekelleys.org.uk/dnsmasq/doc.html[dnsmasq] to provide 
@@ -48,7 +43,7 @@ All we need to get started is the MAC address, and that was fixed by ``virt-inst
 
 People remember names better than numbers. A fixed IP address is easier to use than a random IP address, and a DNS name is easier still.  
 Out of the box, dnsmasq reads names and addresses from the /etc/hosts file. 
-If _guest1.lab.example.com_ is in the hosts file, that would assign the name to the address.
+If _guest2.private.example.com_ is in the hosts file, that would assign the name to the address.
 But this setup is more complicated - we want the name associated with the IP address, and the IP address associated with the MAC address. That requires adding details to two places, not one. 
 
 * the host's /etc/hosts file, so the host can look up the guest's name
@@ -106,7 +101,7 @@ On the host, search the VM's XML configuration.
 
 [source,console]
 ....
-[nick@host ~]$ virsh dumpxml guest1 | grep 'mac address'
+[nick@host ~]$ virsh dumpxml guest2 | grep 'mac address'
       <mac address='52:54:00:00:00:01'/>
 [nick@host ~]$ 
 ....
@@ -142,10 +137,10 @@ On the guest, display the interface's link layer settings.
 
 [source,console]
 ....
-[nick@guest1 ~]$ ip link show eth0
+[nick@guest2 ~]$ ip link show eth0
 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
     link/ether 52:54:00:00:00:01 brd ff:ff:ff:ff:ff:ff
-[nick@guest1 ~]$ 
+[nick@guest2 ~]$ 
 ....
 
 
@@ -162,7 +157,7 @@ The IPv4 address gets stashed in a few places.
   {
     "ip-address": "192.168.122.27",
     "mac-address": "52:54:00:00:00:01",
-    "hostname": "guest1",
+    "hostname": "guest2",
     "client-id": "01:52:54:00:00:00:01",
     "expiry-time": 1590770614
   }
@@ -199,7 +194,7 @@ List all DHCP leases.
 [sudo] password for nick: 
  Expiry Time          MAC address        Protocol  IP address                Hostname        Client ID or DUID
 -------------------------------------------------------------------------------------------------------------------
- 2020-05-29 18:11:36  52:54:00:00:00:01  ipv4      192.168.122.27/24         guest1          01:52:54:00:00:00:01
+ 2020-05-29 18:11:36  52:54:00:00:00:01  ipv4      192.168.122.27/24         guest2          01:52:54:00:00:00:01
 
 [nick@host ~]$ 
 ....
@@ -219,19 +214,19 @@ Add an XML tag to the network's configuration.
 
 
 
-=== add the lab.example.com domain 
+=== add the private.example.com domain 
 
-Add the domain _lab.example.com_ before adding the name _guest1.lab.example.com_.
+Add the domain _private.example.com_ before adding the name _guest2.private.example.com_.
 
 dnsmasq has a security feature that ignores DNS domains it doesn't recognize. 
-The default configuration has no domain, so adding a full FQDN for the VM (_guest1.lab.example.com_) won't work. Journalctl would show an error like this. 
+The default configuration has no domain, so adding a full FQDN for the VM (_guest2.private.example.com_) won't work. Journalctl would show an error like this. 
 
 [source,console]
 ....
-May 29 18:17:15 host.lab.example.com dnsmasq-dhcp[2380]: Ignoring domain lab.example.com for DHCP host name guest1
+May 29 18:17:15 host.private.example.com dnsmasq-dhcp[2380]: Ignoring domain private.example.com for DHCP host name guest2
 ....
 
-Add a domain by editing the XML configuration and adding the line ``<domain name='lab.example.com' localOnly='yes'/>``.
+Add a domain by editing the XML configuration and adding the line ``<domain name='private.example.com' localOnly='yes'/>``.
 
 Adding a domain is a little painful, both because editing XML is never fun, and because the network must be stopped and started after this edit to pick up the configuration change. 
 
@@ -256,11 +251,11 @@ Add the _domain_ line.
   </forward>
   <bridge name='virbr0' stp='on' delay='0'/>
   <mac address='52:54:00:74:ca:3c'/>
-  <domain name='lab.example.com' localOnly='yes'/>
+  <domain name='private.example.com' localOnly='yes'/>
   <ip address='192.168.122.1' netmask='255.255.255.0'>
     <dhcp>
       <range start='192.168.122.2' end='192.168.122.254'/>
-      <host mac='52:54:00:00:00:01' name='guest1.lab.example.com' ip='192.168.122.100'/>
+      <host mac='52:54:00:00:00:01' name='guest2.private.example.com' ip='192.168.122.100'/>
     </dhcp>
   </ip>
 </network>
@@ -299,9 +294,9 @@ Virsh updates the dnsmasq config.
 
 [source,console]
 ....
-[nick@host ~]$ sudo grep lab.example.com /var/lib/libvirt/dnsmasq/default.conf
-local=/lab.example.com/
-domain=lab.example.com
+[nick@host ~]$ sudo grep private.example.com /var/lib/libvirt/dnsmasq/default.conf
+local=/private.example.com/
+domain=private.example.com
 [nick@host ~]$ 
 ....
 
@@ -317,7 +312,7 @@ The ``--live`` and ``--config`` options make sure both the current configuration
 [source,console]
 ....
 sudo virsh net-update default add ip-dhcp-host \
-    "<host  mac='52:54:00:00:00:01' name='guest1.lab.example.com' ip='192.168.122.100' />" \
+    "<host  mac='52:54:00:00:00:01' name='guest2.private.example.com' ip='192.168.122.100' />" \
     --live \
     --config
 ....
@@ -326,7 +321,7 @@ Add the host line.
 
 [source,console]
 ....
-[nick@host ~]$ sudo virsh net-update default add ip-dhcp-host "<host mac='52:54:00:00:00:01' name='guest1.lab.example.com' ip='192.168.122.100' />" --live --config
+[nick@host ~]$ sudo virsh net-update default add ip-dhcp-host "<host mac='52:54:00:00:00:01' name='guest2.private.example.com' ip='192.168.122.100' />" --live --config
 Updated network default persistent config and live state
 [nick@host ~]$ 
 ....
@@ -342,7 +337,7 @@ Add a line to /etc/hosts.
 
 [source,console]
 ....
-[nick@host ~]$ sudo bash -c 'echo "192.168.122.100 guest1 guest1.lab.example.com" >> /etc/hosts'
+[nick@host ~]$ sudo bash -c 'echo "192.168.122.100 guest2 guest2.private.example.com" >> /etc/hosts'
 [nick@host ~]$ 
 ....
 
@@ -351,7 +346,7 @@ Add a line to /etc/hosts.
 
 === watch the activity log
 
-When the _guest1_ VM starts, it uses DHCP to obtain an IP address.
+When the _guest2_ VM starts, it uses DHCP to obtain an IP address.
 The guest VM starts by broadcasting a 'looking for DHCP server' message and gets an answer from dnsmasq on the host machine. 
 You can see the conversation taking place using ``journalctl``.
 
@@ -364,15 +359,15 @@ May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPNAK(virbr0) 192.168.122
 May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPDISCOVER(virbr0) 192.168.122.27 52:54:00:00:00:01
 May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPOFFER(virbr0) 192.168.122.100 52:54:00:00:00:01
 May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPREQUEST(virbr0) 192.168.122.100 52:54:00:00:00:01
-May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPACK(virbr0) 192.168.122.100 52:54:00:00:00:01 guest1
+May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPACK(virbr0) 192.168.122.100 52:54:00:00:00:01 guest2
 ....
 
 
 === start the VM 
 
-Check whether guest1 is running with ``virsh dominfo guest1``.
-Stop the guest VM with ``virsh shutdown guest1``. 
-Start with ``virsh shutdown guest1``.
+Check whether guest2 is running with ``virsh dominfo guest2``.
+Stop the guest VM with ``virsh shutdown guest2``. 
+Start with ``virsh shutdown guest2``.
 
 
 
@@ -382,13 +377,13 @@ dnsmasq only listens to the libvirt network interface.
 
 [source,console]
 ....
-[nick@host ~]$ host guest1 192.168.122.1
+[nick@host ~]$ host guest2 192.168.122.1
 Using domain server:
 Name: 192.168.122.1
 Address: 192.168.122.1#53
 Aliases: 
 
-guest1.lab.example.com has address 192.168.122.100
+guest2.private.example.com has address 192.168.122.100
 [nick@host ~]$ 
 ....
 
@@ -396,11 +391,11 @@ Can the host find it?
 
 [source,console]
 ....
-[nick@host ~]$ ping -c1 guest1
-PING guest1 (192.168.122.100) 56(84) bytes of data.
-64 bytes from guest1 (192.168.122.100): icmp_seq=1 ttl=64 time=0.226 ms
+[nick@host ~]$ ping -c1 guest2
+PING guest2 (192.168.122.100) 56(84) bytes of data.
+64 bytes from guest2 (192.168.122.100): icmp_seq=1 ttl=64 time=0.226 ms
 
---- guest1 ping statistics ---
+--- guest2 ping statistics ---
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 0.226/0.226/0.226/0.000 ms
 [nick@host ~]$ 
@@ -411,26 +406,26 @@ rtt min/avg/max/mdev = 0.226/0.226/0.226/0.000 ms
 
 [source,console]
 ....
-[nick@host ~]$ ssh guest1
-The authenticity of host 'guest1 (192.168.122.100)' can't be established.
+[nick@host ~]$ ssh guest2
+The authenticity of host 'guest2 (192.168.122.100)' can't be established.
 ECDSA key fingerprint is SHA256:JcjI8AIHkUvat0qdM1OqDPzY0jughZC5ZOuU/uvApmk.
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-Warning: Permanently added 'guest1,192.168.122.100' (ECDSA) to the list of known hosts.
-nick@guest1's password: 
+Warning: Permanently added 'guest2,192.168.122.100' (ECDSA) to the list of known hosts.
+nick@guest2's password: 
 Activate the web console with: systemctl enable --now cockpit.socket
 
 This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
 To register this system, run: insights-client --register
 
 Last login: Fri May 29 12:15:41 2020
-[nick@guest1 ~]$ 
+[nick@guest2 ~]$ 
 ....
 
 Disconnect. 
 
 [source,console]
 ----
-[nick@guest1 ~]$ exit
+[nick@guest2 ~]$ exit
 logout
 Connection to 192.168.122.218 closed.
 [nick@host ~]$ 
