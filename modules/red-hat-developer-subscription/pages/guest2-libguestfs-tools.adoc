@@ -158,7 +158,7 @@ Check out that insecure password.
 virt-customize \
   --add            guest2.qcow2  \
   --root-password  password:'x%5ckA-1'  \
-  --hostname       guest2.lab.silvan.uk  \
+  --hostname       guest2.private.example.com  \
   --timezone       'Europe/London'  \
   --selinux-relabel
 ----
@@ -167,11 +167,11 @@ The command takes a few seconds. ``virt-customize``` prints an activity log, alo
 
 [source,console]
 ----
-[nick@host ~]$ virt-customize --add guest-images/guest2.qcow2 --root-password password:'x%5ckA-1' --hostname guest2.lab.example.com
+[nick@host ~]$ virt-customize --add guest-images/guest2.qcow2 --root-password password:'x%5ckA-1' --hostname guest2.private.example.com
 [   0.0] Examining the guest ...
 [   4.6] Setting a random seed
 [   4.6] Setting the machine ID in /etc/machine-id
-[   4.6] Setting the hostname: guest2.lab.example.com
+[   4.6] Setting the hostname: guest2.private.example.com
 [   4.6] Setting the timezone: Europe/London
 [   4.7] Setting passwords
 [   5.9] SELinux relabelling
