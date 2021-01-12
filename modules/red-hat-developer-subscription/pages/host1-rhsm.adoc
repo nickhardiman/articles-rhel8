@@ -6,8 +6,7 @@ Nick Hardiman
 
 Use RHSM (Red Hat Subscription Manager) to https://access.redhat.com/solutions/253273[register and subscribe] your new machine.
 
-
-== check before 
+A new machine's status is usually unknown. 
 
 [source,console]
 ----
@@ -23,8 +22,11 @@ System Purpose Status: Unknown
 ----
 
 
-
 == register 
+
+Add the machine to your account in the customer portal. 
+
+=== register 
 
 Use the _subscription-manager_ command to manage subscriptions for products.
 
@@ -56,21 +58,31 @@ The yum/dnf plugins: /etc/dnf/plugins/subscription-manager.conf, /etc/dnf/plugin
 
 Remove this registration with the command ``sudo subscription-manager unregister``.
 
-== find a suitable subscription 
+=== check the portal 
+
+
+
+== subscribe 
+
+The machine is not yet entitled to updates. 
+
+=== find a suitable subscription 
+
+With a developer subscription, there is only one. 
 
 [source,console]
 ----
 subscription-manager list --available 
 ----
 
-== attach your system to your subscription 
+=== attach your system to your subscription 
 
 [source,console]
 ----
 subscription-manager attach --pool=1234567890abcdef1234567890abcdef
 ----
 
-== check after 
+=== check  
 
 [source,console]
 ....
@@ -103,7 +115,10 @@ System Purpose Status: Not Specified
 == set system purpose 
 
 Subscription manager can set other values, like service level and usage.  
-These are fields in each subscription record. 
+Setting these value helps with tasks like auto-attaching the right subscription from a list. 
+Subscription-manager attempts to match fields in the available subscriptions. 
+
+Subscription  manager tries to match fields in each subscription record. 
 
 [source,console]
 ....
@@ -119,10 +134,10 @@ Usage:               Development/Test
 [root@host1 ~]# 
 ....
 
+=== set service level 
+
 Setting service level changes the line 'System Purpose Status: Not Specified' to 'System Purpose Status: Matched'.
 
-Setting these value helps with tasks like auto-attaching the right subscription from a list. 
-Subscription-manager attempts to match fields in the available subscriptions. 
 
 No value is set. 
 
@@ -159,6 +174,7 @@ service_level_agreement set to "Self-Support".
 [root@host1 ~]# 
 ....
 
+Check. 
 
 [source,console]
 ....
@@ -172,6 +188,8 @@ System Purpose Status: Matched
 
 [root@host1 ~]# 
 ....
+
+=== set usage 
 
 The usage field is similar. 
 
@@ -216,3 +234,113 @@ System Purpose Status: Mismatched
 [root@host1 ~]# 
 ....
 
+
+== check identity 
+
+[source,bash]
+----
+[root@host1 ~]# subscription-manager identity
+system identity: 00f46344-d547-4e7b-8ca1-a6a03dfd692d
+name: localhost.localdomain
+org name: 11009103
+org ID: 11009103
+[root@host1 ~]#
+----
+
+[source,bash]
+----
+[root@localhost ~]# subscription-manager list 
++-------------------------------------------+
+    Installed Product Status
++-------------------------------------------+
+Product Name:   Red Hat Enterprise Linux for x86_64
+Product ID:     479
+Version:        8.2
+Arch:           x86_64
+Status:         Subscribed
+Status Details: 
+Starts:         15/03/17
+Ends:           31/12/21
+
+[root@localhost ~]# 
+----
+
+
+== disable and enable repositories  
+
+A developer subscription adds 149 repos.
+Types include source, debug and binary RPM.
+Only these two are enabled. 
+
+* rhel-8-for-x86_64-appstream-rpms
+* rhel-8-for-x86_64-baseos-rpms
+
+[source,bash]
+----
+[root@host1 ~]# subscription-manager repos --list-enabled
++----------------------------------------------------------+
+    Available Repositories in /etc/yum.repos.d/redhat.repo
++----------------------------------------------------------+
+Repo ID:   rhel-8-for-x86_64-appstream-rpms
+Repo Name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+Repo URL:  https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/appstream/os
+Enabled:   1
+
+Repo ID:   rhel-8-for-x86_64-baseos-rpms
+Repo Name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+Repo URL:  https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/baseos/os
+Enabled:   1
+
+[root@host1 ~]# 
+----
+
+=== disable all repos 
+
+[source,bash]
+----
+subscription-manager repos --disable "*"
+----
+
+=== enable a few repos 
+
+re-enable the two default repos. 
+
+[source,bash]
+----
+subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms 
+subscription-manager repos --enable=rhel-8-for-x86_64-appstream-rpms 
+----
+
+Enable the Ansible repo as well. 
+
+[source,bash]
+----
+subscription-manager repos --enable=ansible-2-for-rhel-8-x86_64-rpms 
+----
+
+
+=== check 
+
+[source,bash]
+----
+[root@host1 ~]# subscription-manager repos --list-enabled
++----------------------------------------------------------+
+    Available Repositories in /etc/yum.repos.d/redhat.repo
++----------------------------------------------------------+
+Repo ID:   rhel-8-for-x86_64-appstream-rpms
+Repo Name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+Repo URL:  https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/appstream/os
+Enabled:   1
+
+Repo ID:   ansible-2-for-rhel-8-x86_64-rpms
+Repo Name: Red Hat Ansible Engine 2 for RHEL 8 x86_64 (RPMs)
+Repo URL:  https://cdn.redhat.com/content/dist/layered/rhel8/x86_64/ansible/2/os
+Enabled:   1
+
+Repo ID:   rhel-8-for-x86_64-baseos-rpms
+Repo Name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+Repo URL:  https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/baseos/os
+Enabled:   1
+
+[root@host1 ~]# 
+----
