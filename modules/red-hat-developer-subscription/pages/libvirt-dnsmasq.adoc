@@ -4,6 +4,13 @@ Nick Hardiman
 :toc: 
 :revdate: 29-05-2020
 
+NOTE
+====
+Out of date. 
+VM guest1 is no longer using default network
+====
+
+
 set a VM's domain name and IP address using dnsmasq
 
 .VMs use dnsmasq services 

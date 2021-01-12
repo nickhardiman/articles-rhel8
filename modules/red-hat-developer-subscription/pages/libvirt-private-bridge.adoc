@@ -1,0 +1,207 @@
+= create a libvirt private bridge
+Nick Hardiman <nhardima@redhat.com>
+:source-highlighter: pygments
+:toc: 
+:revdate: 23-11-2020
+
+
+Create a private bridge and  libvirt network named _privbr0_.
+
+The virtual machine guest1 will be attached to both bridges. 
+This makes it part of the physical home network and the virtual private network.
+
+
+.networks 
+....
+.----------------------------.
+|                            |
+|  host1                     |
+|                            |   
+|   +----------+             |    
+|   |          |             |
+|   |  guest1  |             |  
+|   |          +----> public +--> Internet  
+|   |          |             |  
+|   |          +---> private |   
+|   +----------+             |
+.----------------------------.  
+....
+
+All guests can join this new _private_ network and talk to each other.
+Unlike _default_, this network is isolated because there is no connection to the outside world.
+The host is also connected to the _private_ networkt. 
+NetworkManager runs another copy of dnsmasq to provide DHCP and DNS services. 
+
+Add a second network interface on guest1, and connect it to the new network. 
+VM guest1 already has one network interface, enp1s0.
+The current enp1s0 interface on the guest connects to the virbr0 interface on the host, and the new enp2s0 interface connects to privbr0.
+
+.interfaces 
+....
+.---------------------------.
+|                           |
+|  host                     |
+|                           |   
+|   +----------+            |    
+|   |          |            |
+|   |  guest1  |            |  
+|   |          |            |  
+|   |  enp1s0  +---> pubbr0 | 
+|   |          |            |  
+|   |  enp2s0  +--> privbr0 |   
+|   +----------+            |
+.---------------------------.  
+....
+
+
+== behind the scenes 
+
+Libvirt adds config, services and devices behind the scenes to make each network function.
+Libvirt creates a dnsmasq configuration file, _/var/lib/libvirt/dnsmasq/(network).conf_. 
+Dnsmasq handles DNS and DHCP queries. 
+Libvirt adds a firewall zone (try running ``sudo firewall-cmd --list-all --zone=libvirt``). 
+And it creates network interfaces.
+
+For the _default_ network, libvirt creates a bridge interface named _virbr0_ and a NIC named _virbr0-nic_. 
+Every time a VM starts, libvirt also creates a https://en.wikipedia.org/wiki/TUN/TAP[TAP] interface named something like _tap0_.  
+
+The libvirt bridge _virbr0_ doesn't look like a real bridge - it doesn't connect two paths. 
+A simple network bridge does connect two network interfaces, but 
+virbr0 is a forwarding bridge.
+It uses a forwarding database of layer 2 addresses (ethernet MAC addresses) to send packets to many destinations. 
+View the forwarding database with the command ``bridge fdb``.
+When an IP packet passes through virbr0 destined for the Internet, IP masquerading and forwarding get it to the outside world. 
+When a packet is destined for a virtual machine, it's sent to the VM's TAP interface where the machine emulator https://www.qemu.org/[QEMU] picks it up. 
+
+Most of these components are duplicated for the _private_ network. 
+There is no IP masquerading and forwarding, so there is no communication with the outside world. 
+
+Only the default network exists.
+
+[source,console]
+....
+[root@host1 libvirt]# virsh net-list --all
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ default   active   yes         yes
+
+[root@host1 libvirt]# 
+....
+
+
+== create the libvirt network privbr0
+
+Create an XML file defining the interface. 
+
+Run the command ``vim net-privbr0.xml``.
+
+Add XML. 
+This markup is copied from the 
+https://libvirt.org/formatnetwork.html#examplesPrivate[libvirt example].
+
+.net-privbr0.xml
+[source,XML]
+----
+<network>
+  <name>privbr0</name>
+  <bridge name="privbr0"/>
+  <ip address="192.168.152.1" netmask="255.255.255.0">
+    <dhcp>
+      <range start="192.168.152.2" end="192.168.152.254"/>
+    </dhcp>
+  </ip>
+  <ip family="ipv6" address="2001:db8:ca2:3::1" prefix="64"/>
+</network>
+----
+
+Create the new network. Run ``sudo virsh net-define net-privbr0.xml``
+
+[source,console]
+....
+[root@host1 libvirt]# virsh net-define net-privbr0.xml
+Network privbr0 defined from net-privbr0.xml
+
+[root@host1 libvirt]#  
+....
+
+The network is created and is persistent - it will still exist across reboots. 
+But it is not in use.
+
+[source,console]
+.... 
+[root@host1 libvirt]# virsh net-list --all
+ Name      State      Autostart   Persistent
+----------------------------------------------
+ default   active     yes         yes
+ privbr0   inactive   no          yes
+
+[root@host1 libvirt]# 
+....
+
+
+Set the new network to start on boot, and start it now. 
+
+[source,console]
+....
+[root@host1 libvirt]# virsh net-start privbr0
+Network privbr0 started
+
+[root@host1 libvirt]# virsh net-autostart privbr0
+Network privbr0 marked as autostarted
+
+[root@host1 libvirt]# 
+[root@host1 libvirt]# virsh net-list --all
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ default   active   yes         yes
+ privbr0   active   yes         yes
+
+[root@host1 libvirt]# 
+....
+
+
+=== check interfaces 
+
+Libvirt creates a new bridge. 
+Two new interfaces appear on the host, *privbr0* and *privbr0-nic*.
+There is no need to create a bridge manually using ``nmcli connection``, ``ip link`` or ``bridge link`` commands. 
+
+[source,console]
+....
+[nick@host1 ~]$ ip addr show
+...
+8: privbr0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+    link/ether 52:54:00:23:0f:f9 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.152.1/24 brd 192.168.152.255 scope global privbr0
+       valid_lft forever preferred_lft forever
+    inet6 2001:db8:ca2:3::1/64 scope global 
+       valid_lft forever preferred_lft forever
+    inet6 fe80::5054:ff:fe23:ff9/64 scope link 
+       valid_lft forever preferred_lft forever
+9: privbr0-nic: <BROADCAST,MULTICAST> mtu 1500 qdisc fq_codel master privbr0 state DOWN group default qlen 1000
+    link/ether 52:54:00:23:0f:f9 brd ff:ff:ff:ff:ff:ff
+....
+
+
+=== loosen permissions 
+
+libvirt uses qemu to do the hard work, and qemu uses ACLs (Access Control Lists). 
+It won't let anyone use the new _privbr0_ interface. 
+Let the VMs use the new network by copying permissions for the current _virbr0_ interface. 
+Permissions for _virbr0_ are set in qemu's config file. 
+
+[source,console]
+....
+[nick@host1 ~]$ cat /etc/qemu-kvm/bridge.conf 
+allow virbr0
+[nick@host1 ~]$ 
+....
+
+Add a similar line for the new bridge interface. 
+[source,console]
+....
+[nick@host1 ~]$ sudo sh -c 'echo "allow privbr0" >> /etc/qemu-kvm/bridge.conf'
+[nick@host1 ~]$ 
+....
+
+
