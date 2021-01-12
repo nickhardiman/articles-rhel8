@@ -33,10 +33,12 @@
 *** xref:guest1-kickstart-file.adoc[]
 *** xref:guest1-virt-install.adoc[]
 *** xref:guest1-os-setup.adoc[]
+*** xref:guest1-dnsmasq-ip-pool.adoc[]
+*** xref:guest1-dnsmasq-dhcp-dns.adoc[]
 *** xref:guest1-dns-bind9.adoc[]
 *** _guest2 things_
 *** xref:guest2-libguestfs-tools.adoc[]
-*** xref:guest2-dhcp-dnsmasq.adoc[]
+*** xref:guest2-dnsmasq-dhcp.adoc[]
 *** xref:guest2-second-disk.adoc[]
 *** _guest3 things_
 *** _infrastructure things_

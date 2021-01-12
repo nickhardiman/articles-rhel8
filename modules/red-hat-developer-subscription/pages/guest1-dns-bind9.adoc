@@ -7,7 +7,11 @@ Nick Hardiman <nhardima@redhat.com>
 
 Install https://www.isc.org/bind/[ISC Bind].
 Configure it to answer queries from the network. 
-Tell Bind to be authoritative on the silvan.uk domain, so Bind answers queries about silvan.uk and forwards all other queries to the home network's DNS server. 
+Tell Bind to 
+
+* Answer questions about the _lab.example.com_ domain. Bind is authoritative for this domain, so it hands over records for hosts like guest1.lab.example.com. 
+* Forward requests for _private.example.com_ records to dnsmasq.
+* Forward all other questions to the home network's DNS server. 
 
 This is a simple config that does not cover anything fancy like DNSSEC or split DNS. 
 
@@ -15,24 +19,63 @@ This is a simple config that does not cover anything fancy like DNSSEC or split 
 public network - 
   Gateway serves DHCP, DNS 
 
-.utility1 network 
+.guest1 network 
 ....
-+---------------------------------------+
+  |  
+  | Internet
+  |
++-+-------------------------------------+
 |                                       |
-| public gateway                        |
+|     ISP router                        |
+|                                       |
 +-+-------------------------------------+
   |
-  | public network 
+  | home network 
   | 192.168.1.0/24
   |
 +-+-------------------------------------+
-|enp1s0  utility1.lab.example.com       |
-|                                       |
-+---------------------------------------+
+| enp1s0                                |
+|    guest1.lab.example.com             |
+| enp2s0                                |
++-+-------------------------------------+
+  |
+  | private network 
+  | 192.168.152.0/24
+  | privbr0
+
 ....
 
 
-== bind 
+=== connect using SSH
+
+[source,console]
+....
+[nick@host1 ~]$ ssh guest1
+The authenticity of host 'guest1 (192.168.1.123)' can't be established.
+ECDSA key fingerprint is SHA256:JcjI8AIHkUvat0qdM1OqDPzY0jughZC5ZOuU/uvApmk.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'guest1,192.168.1.123' (ECDSA) to the list of known hosts.
+nick@guest1's password: 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Fri May 29 12:15:41 2020
+[nick@guest1 ~]$ 
+....
+
+When finished, disconnect with _exit_. 
+
+[source,console]
+----
+[nick@guest1 ~]$ exit
+logout
+Connection to 192.168.152.218 closed.
+[nick@host1 ~]$ 
+----
+
+== install bind 
 
 [source,bash]
 ----
@@ -43,29 +86,29 @@ before
 
 [source,bash]
 ----
-[root@utility1 ~]# systemctl status named
+[root@guest1 ~]# systemctl status named
 ● named.service - Berkeley Internet Name Domain (DNS)
    Loaded: loaded (/usr/lib/systemd/system/named.service; disabled; vendor preset: disabled)
    Active: inactive (dead)
-[root@utility1 ~]# 
+[root@guest1 ~]# 
 ----
 
 enable and start 
 
 [source,bash]
 ----
-[root@utility1 ~]# systemctl enable named
+[root@guest1 ~]# systemctl enable named
 Created symlink /etc/systemd/system/multi-user.target.wants/named.service → /usr/lib/systemd/system/named.service.
-[root@utility1 ~]# 
-[root@utility1 ~]# systemctl start named
-[root@utility1 ~]# 
+[root@guest1 ~]# 
+[root@guest1 ~]# systemctl start named
+[root@guest1 ~]# 
 ----
 
 after 
 
 [source,bash]
 ----
-[root@utility1 named]# systemctl status named
+[root@guest1 named]# systemctl status named
 ● named.service - Berkeley Internet Name Domain (DNS)
    Loaded: loaded (/usr/lib/systemd/system/named.service; enabled; vendor prese>
    Active: active (running) since Wed 2020-12-02 16:55:02 GMT; 3h 55min ago
@@ -77,17 +120,17 @@ after
    CGroup: /system.slice/named.service
            └─6705 /usr/sbin/named -u named -c /etc/named.conf
 
-Dec 02 16:55:02 utility1.silvan.uk named[6705]: zone 0.in-addr.arpa/IN: loaded >
-Dec 02 16:55:02 utility1.silvan.uk named[6705]: zone 1.0.0.127.in-addr.arpa/IN:>
-Dec 02 16:55:02 utility1.silvan.uk named[6705]: zone localhost/IN: loaded seria>
-Dec 02 16:55:02 utility1.silvan.uk named[6705]: zone 1.0.0.0.0.0.0.0.0.0.0.0.0.>
-Dec 02 16:55:02 utility1.silvan.uk named[6705]: zone localhost.localdomain/IN: >
-Dec 02 16:55:02 utility1.silvan.uk named[6705]: all zones loaded
-Dec 02 16:55:02 utility1.silvan.uk named[6705]: running
-Dec 02 16:55:02 utility1.silvan.uk systemd[1]: Started Berkeley Internet Name D>
-Dec 02 16:55:02 utility1.silvan.uk named[6705]: managed-keys-zone: Key 20326 fo>
-Dec 02 16:55:02 utility1.silvan.uk named[6705]: resolver priming query complete
-[root@utility1 named]# 
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: zone 0.in-addr.arpa/IN: loaded >
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: zone 1.0.0.127.in-addr.arpa/IN:>
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: zone localhost/IN: loaded seria>
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: zone 1.0.0.0.0.0.0.0.0.0.0.0.0.>
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: zone localhost.localdomain/IN: >
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: all zones loaded
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: running
+Dec 02 16:55:02 guest1.lab.example.com systemd[1]: Started Berkeley Internet Name D>
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: managed-keys-zone: Key 20326 fo>
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: resolver priming query complete
+[root@guest1 named]# 
 ----
 
 This text is displayed by a pager, which truncates long lines to fit the screen. 
@@ -102,7 +145,7 @@ before
 
 [source,bash]
 ----
-[root@utility1 ~]# host www.google.com localhost
+[root@guest1 ~]# host www.google.com localhost
 Using domain server:
 Name: localhost
 Address: ::1#53
@@ -110,16 +153,16 @@ Aliases:
 
 www.google.com has address 216.58.212.196
 www.google.com has IPv6 address 2a00:1450:4009:80a::2004
-[root@utility1 ~]# 
+[root@guest1 ~]# 
 ----
 
 [source,bash]
 ----
-[root@utility1 ~]# cat /etc/resolv.conf 
+[root@guest1 ~]# cat /etc/resolv.conf 
 # Generated by NetworkManager
-search home silvan.uk
+search home lab.example.com
 nameserver 192.168.1.254
-[root@utility1 ~]# 
+[root@guest1 ~]# 
 ----
 
 
@@ -129,10 +172,10 @@ The machine has two network interfaces - _lo_ and _enp1s0_.
 
 [source,bash]
 ----
-[root@utility1 ~]# ip addr | grep 'inet '
+[root@guest1 ~]# ip addr | grep 'inet '
     inet 127.0.0.1/8 scope host lo
     inet 192.168.1.217/24 brd 192.168.1.255 scope global dynamic noprefixroute enp1s0
-[root@utility1 ~]# 
+[root@guest1 ~]# 
 ----
 
 The DNS server is only listening to _lo_, the loopback interface. 
@@ -140,11 +183,11 @@ The DNS server is only listening to _lo_, the loopback interface.
 
 [source,bash]
 ----
-[root@utility1 named]# ss -tl  '( dport = :domain or sport = :domain )'
+[root@guest1 named]# ss -tl  '( dport = :domain or sport = :domain )'
 State     Recv-Q    Send-Q       Local Address:Port         Peer Address:Port   
 LISTEN    0         10               127.0.0.1:domain            0.0.0.0:*      
 LISTEN    0         10                   [::1]:domain               [::]:*      
-[root@utility1 named]# 
+[root@guest1 named]# 
 ----
 
 The config file contains https://bind9.readthedocs.io/en/latest/reference.html?highlight=listen-on#interfaces[listen-on] options.
@@ -152,10 +195,10 @@ These tell Bind to listen only to the loopback interface, so the rest of the net
 
 [source,bash]
 ----
-[root@utility1 ~]# grep listen-on /etc/named.conf 
+[root@guest1 ~]# grep listen-on /etc/named.conf 
   listen-on port 53 { 127.0.0.1; };
 	listen-on-v6 port 53 { ::1; };
-[root@utility1 ~]# 
+[root@guest1 ~]# 
 ----
 
 Make Bind listen to the network address. 
@@ -177,17 +220,17 @@ This is good.
 
 [source,bash]
 ----
-[root@utility1 ~]# named-checkconf /etc/named.conf
-[root@utility1 ~]# 
+[root@guest1 ~]# named-checkconf /etc/named.conf
+[root@guest1 ~]# 
 ----
 
 This is bad. The problem here is a typo: *~* instead of *#*. 
 
 [source,bash]
 ----
-[root@utility1 ~]# named-checkconf /etc/named.conf
+[root@guest1 ~]# named-checkconf /etc/named.conf
 /etc/named.conf:11: unknown option '~listen-on'
-[root@utility1 ~]# 
+[root@guest1 ~]# 
 ----
 
 
@@ -195,26 +238,26 @@ Reload the configuration.
 
 [source,bash]
 ----
-[root@utility1 ~]# systemctl reload named
-[root@utility1 ~]# 
+[root@guest1 ~]# systemctl reload named
+[root@guest1 ~]# 
 ----
 
 Bind starts listening to the IPv4 address 192.168.1.217.
 
 [source,bash]
 ----
-[root@utility1 ~]# ss -tln | grep :53
+[root@guest1 ~]# ss -tln | grep :53
 LISTEN    0         10           192.168.1.217:53               0.0.0.0:*       
 LISTEN    0         10               127.0.0.1:53               0.0.0.0:*       
 LISTEN    0         10                   [::1]:53                  [::]:*       
-[root@utility1 ~]# 
+[root@guest1 ~]# 
 ----
 
 Check. 
 
 [source,bash]
 ----
-[root@utility1 ~]# host www.google.com localhost
+[root@guest1 ~]# host www.google.com localhost
 Using domain server:
 Name: localhost
 Address: ::1#53
@@ -222,7 +265,7 @@ Aliases:
 
 www.google.com has address 216.58.212.196
 www.google.com has IPv6 address 2a00:1450:4009:80a::2004
-[root@utility1 ~]# 
+[root@guest1 ~]# 
 ----
 
 
@@ -241,15 +284,15 @@ Nothing happens, then the attempt times out.
 [nick@host1 ~]$ 
 ----
 
-Edit the firewall on utility1. 
+Edit the firewall on guest1. 
 
 [source,bash]
 ----
-[root@utility1 ~]# firewall-cmd --add-service=dns
+[root@guest1 ~]# firewall-cmd --add-service=dns
 success
-[root@utility1 ~]# firewall-cmd --add-service=dns --permanent
+[root@guest1 ~]# firewall-cmd --add-service=dns --permanent
 success
-[root@utility1 ~]# 
+[root@guest1 ~]# 
 ----
 
 Try again from host1. 
@@ -278,9 +321,9 @@ The only one included in the default config file is _allow-query_.
 
 [source,bash]
 ----
-[root@utility1 ~]# grep allow- /etc/named.conf 
+[root@guest1 ~]# grep allow- /etc/named.conf 
 	allow-query     { localhost; };
-[root@utility1 ~]# 
+[root@guest1 ~]# 
 ----
 
 the default is to allow all queries, so comment out the statement. 
@@ -315,8 +358,8 @@ The next thing to do is give Bind a zone to manage.
 
 == add a zone file
 
-A zone is a set of names and addresses for a name like www.silvan.uk. 
-Add a zone file that describes silvan.uk. 
+A zone is a set of names and addresses for a name like www.lab.example.com. 
+Add a zone file that describes lab.example.com. 
 
 Bind already has some zones defined. 
 The details are in files in the /var/named/ directory, such as named.ca which lists servers for the root domain. 
@@ -327,9 +370,9 @@ https://tools.ietf.org/html/rfc1912[RFC 1912] is about "Common DNS Operational a
 
 [source,bash]
 ----
-[root@utility1 ~]# cd /var/named/
-[root@utility1 named]# 
-[root@utility1 named]# vi silvan.uk-records
+[root@guest1 ~]# cd /var/named/
+[root@guest1 named]# 
+[root@guest1 named]# vi lab.example.com-records
 ----
 
 
@@ -339,45 +382,45 @@ The file is spaced out to look more like a table (that's another suggestion from
 [source,bash]
 ----
 $TTL 3H
-@    IN SOA    @ root.silvan.uk (
+@    IN SOA    @ root.lab.example.com (
                     0    ; serial
                     1D    ; refresh
                     1H    ; retry
                     1W    ; expire
                     3H )    ; minimum
-; these records are names and addresses for silvan.uk
+; these records are names and addresses for lab.example.com
              IN NS   dns1
              A       192.168.1.217
              AAAA    2a00:23c8:1d05:1e00:5054:ff:fe00:1
-; these records are names and addresses for (HOST).silvan.uk
+; these records are names and addresses for (HOST).lab.example.com
 dns1         IN A    192.168.1.217
 satellite1   IN A    192.168.1.214
 satellite1.lab   IN A    192.168.1.214
-utility1     IN A    192.168.1.217
+guest1     IN A    192.168.1.217
 ----
 
 
 [source,bash]
 ----
 $TTL 3H
-@    IN SOA    @ root.silvan.uk (
+@    IN SOA    @ root.lab.example.com (
                     0    ; serial
                     1D    ; refresh
                     1H    ; retry
                     1W    ; expire
                     3H )    ; minimum
-            IN NS   dns1.silvan.uk.
-217         IN PTR dns1.silvan.uk.
-214         IN PTR satellite1.silvan.uk.
-214         IN PTR satellite1.lab.silvan.uk.
-217         IN PTR utility1.silvan.uk.
+            IN NS   dns1.lab.example.com.
+217         IN PTR dns1.lab.example.com.
+214         IN PTR satellite1.lab.example.com.
+214         IN PTR satellite1.lab.lab.example.com.
+217         IN PTR guest1.lab.example.com.
 ----
 
 
 
 [source,bash]
 ----
-[root@utility1 named]# ls -la 
+[root@guest1 named]# ls -la 
 total 28
 drwxrwx--T.  5 root  named  177 Dec  3 17:57 .
 drwxr-xr-x. 21 root  root  4096 Dec  2 16:50 ..
@@ -388,16 +431,16 @@ drwxrwx---.  2 named named   60 Dec  3 17:57 dynamic
 -rw-r-----.  1 root  named  152 Aug 21 11:12 named.empty
 -rw-r-----.  1 root  named  152 Aug 21 11:12 named.localhost
 -rw-r-----.  1 root  named  168 Aug 21 11:12 named.loopback
--rw-r-----.  1 root  root   527 Dec  3 17:55 silvan.uk-records
+-rw-r-----.  1 root  root   527 Dec  3 17:55 lab.example.com-records
 drwxrwx---.  2 named named    6 Aug 21 11:12 slaves
-[root@utility1 named]# 
+[root@guest1 named]# 
 ----
 
 Change the group to match the other files. 
 [source,bash]
 ----
-[root@utility1 named]# chown .named silvan.uk-records 192.168.1-records 
-[root@utility1 named]# 
+[root@guest1 named]# chown .named lab.example.com-records 192.168.1-records 
+[root@guest1 named]# 
 ----
 
 No need to change the SELinux file type - all the files are _named_zone_t_.
@@ -410,9 +453,9 @@ Add these options to the bottom of /etc/named.conf.
 
 [source,bash]
 ----
-zone "silvan.uk" IN {
+zone "lab.example.com" IN {
   type master;
-  file "silvan.uk-records";
+  file "lab.example.com-records";
 };
 
 zone "1.168.192.in-addr.arpa" IN {
@@ -426,44 +469,44 @@ Check the SOA records.
 
 [source,bash]
 ----
-[root@utility1 named]# host -t SOA silvan.uk localhost
+[root@guest1 named]# host -t SOA lab.example.com localhost
 Using domain server:
 Name: localhost
 Address: ::1#53
 Aliases: 
 
-silvan.uk has SOA record silvan.uk. root.silvan.uk.silvan.uk. 0 86400 3600 604800 10800
-[root@utility1 named]# 
-[root@utility1 named]# host -t SOA 1.168.192.in-addr.arpa localhost
+lab.example.com has SOA record lab.example.com. root.lab.example.com.lab.example.com. 0 86400 3600 604800 10800
+[root@guest1 named]# 
+[root@guest1 named]# host -t SOA 1.168.192.in-addr.arpa localhost
 Using domain server:
 Name: localhost
 Address: ::1#53
 Aliases: 
 
-1.168.192.in-addr.arpa has SOA record 1.168.192.in-addr.arpa. root.silvan.uk.1.168.192.in-addr.arpa. 0 86400 3600 604800 10800
-[root@utility1 named]#
+1.168.192.in-addr.arpa has SOA record 1.168.192.in-addr.arpa. root.lab.example.com.1.168.192.in-addr.arpa. 0 86400 3600 604800 10800
+[root@guest1 named]#
 ----
 
 Check the NS records. 
 
 [source,bash]
 ----
-[root@utility1 named]# host -t NS silvan.uk localhost
+[root@guest1 named]# host -t NS lab.example.com localhost
 Using domain server:
 Name: localhost
 Address: ::1#53
 Aliases: 
 
-silvan.uk name server dns1.silvan.uk.
-[root@utility1 named]# 
-[root@utility1 named]# host -t NS 1.168.192.in-addr.arpa localhost 
+lab.example.com name server dns1.lab.example.com.
+[root@guest1 named]# 
+[root@guest1 named]# host -t NS 1.168.192.in-addr.arpa localhost 
 Using domain server:
 Name: localhost
 Address: ::1#53
 Aliases: 
 
-1.168.192.in-addr.arpa name server dns1.silvan.uk.
-[root@utility1 named]# 
+1.168.192.in-addr.arpa name server dns1.lab.example.com.
+[root@guest1 named]# 
 ----
 
 Check one of the A records and the matching PTR record. 
@@ -471,22 +514,22 @@ Check one of the A records and the matching PTR record.
 
 [source,bash]
 ----
-[root@utility1 named]# host utility1.silvan.uk localhost
+[root@guest1 named]# host guest1.lab.example.com localhost
 Using domain server:
 Name: localhost
 Address: ::1#53
 Aliases: 
 
-utility1.silvan.uk has address 192.168.1.217
-[root@utility1 named]# host 192.168.1.217 localhost
+guest1.lab.example.com has address 192.168.1.217
+[root@guest1 named]# host 192.168.1.217 localhost
 Using domain server:
 Name: localhost
 Address: ::1#53
 Aliases: 
 
-217.1.168.192.in-addr.arpa domain name pointer dns1.silvan.uk.
-217.1.168.192.in-addr.arpa domain name pointer utility1.silvan.uk.
-[root@utility1 named]# 
+217.1.168.192.in-addr.arpa domain name pointer dns1.lab.example.com.
+217.1.168.192.in-addr.arpa domain name pointer guest1.lab.example.com.
+[root@guest1 named]# 
 ----
 
 
@@ -499,19 +542,19 @@ It was told to do this by DHCP.
 
 [source,bash]
 ----
-[root@utility1 named]# cat /etc/resolv.conf 
+[root@guest1 named]# cat /etc/resolv.conf 
 # Generated by NetworkManager
-search home silvan.uk
+search home lab.example.com
 nameserver 192.168.1.254
-[root@utility1 named]# 
-[root@utility1 named]# nmcli 
+[root@guest1 named]# 
+[root@guest1 named]# nmcli 
 ...
 DNS configuration:
         servers: 192.168.1.254
         domains: home
         interface: enp1s0
 ...
-[root@utility1 named]# 
+[root@guest1 named]# 
 ----
 
 NetworkManager has a quite a few options for DNS. 
@@ -520,7 +563,7 @@ The upper case settings (the ones spelled with CAPITAL LETTERS) can't - these sh
 
 [source,bash]
 ----
-[root@utility1 named]# nmcli con show enp1s0 | grep dns
+[root@guest1 named]# nmcli con show enp1s0 | grep dns
 connection.mdns:                        -1 (default)
 ipv4.dns:                               --
 ipv4.dns-search:                        --
@@ -532,8 +575,8 @@ ipv6.dns-search:                        --
 ipv6.dns-options:                       --
 ipv6.dns-priority:                      0
 ipv6.ignore-auto-dns:                   no
-[root@utility1 named]# 
-[root@utility1 named]# nmcli con show enp1s0 | grep domain
+[root@guest1 named]# 
+[root@guest1 named]# nmcli con show enp1s0 | grep domain
 DHCP4.OPTION[2]:                        domain_name = home
 DHCP4.OPTION[3]:                        domain_name_servers = 192.168.1.254
 DHCP4.OPTION[7]:                        requested_domain_name = 1
@@ -541,46 +584,46 @@ DHCP4.OPTION[8]:                        requested_domain_name_servers = 1
 DHCP4.OPTION[9]:                        requested_domain_search = 1
 DHCP4.OPTION[13]:                       requested_nis_domain = 1
 DHCP6.OPTION[1]:                        dhcp6_domain_search = home
-[root@utility1 named]# 
+[root@guest1 named]# 
 ----
 
 Change the IPv4 settings. 
 
 [source,bash]
 ----
-[root@utility1 named]# nmcli con mod enp1s0 ipv4.dns 127.0.0.1
-[root@utility1 named]# 
-[root@utility1 named]# nmcli con mod enp1s0 ipv4.ignore-auto-dns yes
-[root@utility1 named]# 
+[root@guest1 named]# nmcli con mod enp1s0 ipv4.dns 127.0.0.1
+[root@guest1 named]# 
+[root@guest1 named]# nmcli con mod enp1s0 ipv4.ignore-auto-dns yes
+[root@guest1 named]# 
 ----
 
 Apply the changes. 
 
 [source,bash]
 ----
-[root@utility1 named]# nmcli con up enp1s0
+[root@guest1 named]# nmcli con up enp1s0
 Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/3)
-[root@utility1 named]# 
+[root@guest1 named]# 
 ----
 
 Check the resolver config file. 
 
 [source,bash]
 ----
-[root@utility1 named]# cat /etc/resolv.conf 
+[root@guest1 named]# cat /etc/resolv.conf 
 # Generated by NetworkManager
-search home silvan.uk
+search home lab.example.com
 nameserver 127.0.0.1
-[root@utility1 named]# 
+[root@guest1 named]# 
 ----
 
 Check Bind is now the default choice. 
 
 [source,bash]
 ----
-[root@utility1 named]# host silvan.uk
-silvan.uk has address 192.168.1.217
-silvan.uk has IPv6 address 2a00:23c8:1d05:1e00:5054:ff:fe00:1
-[root@utility1 named]# 
+[root@guest1 named]# host lab.example.com
+lab.example.com has address 192.168.1.217
+lab.example.com has IPv6 address 2a00:23c8:1d05:1e00:5054:ff:fe00:1
+[root@guest1 named]# 
 ----
 

@@ -50,168 +50,69 @@ But this setup is more complicated - we want the name associated with the IP add
 * the host's dnsmasq configuration, so guests can look up the name
 
 
-libvirtd controls the dnsmasq process, not systemd. 
+== dnsmasq services 
+
+libvirtd controls dnsmasq services, not systemd. 
+One pair of processes - a parent and child - are started for each libvirt network that needs DHCP.
+The _pubbr0_ network doesn't use dnsmasq.
+The _default_ and _privbr0_ networks do.
+
 Running the command ``systemctl status dnsmasq`` says dnsmasq isn't running. 
 
+[source,console]
+....
+[root@host1 libvirt]# ps -fwwC dnsmasq
+UID          PID    PPID  C STIME TTY          TIME CMD
+dnsmasq     2077       1  0 08:16 ?        00:00:00 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/default.conf --leasefile-ro --dhcp-script=/usr/libexec/libvirt_leaseshelper
+root        2078    2077  0 08:16 ?        00:00:00 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/default.conf --leasefile-ro --dhcp-script=/usr/libexec/libvirt_leaseshelper
+dnsmasq    16756       1  0 20:16 ?        00:00:00 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/privbr0.conf --leasefile-ro --dhcp-script=/usr/libexec/libvirt_leaseshelper
+root       16757   16756  0 20:16 ?        00:00:00 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/privbr0.conf --leasefile-ro --dhcp-script=/usr/libexec/libvirt_leaseshelper
+[root@host1 libvirt]# 
+[root@host1 ~]# systemctl status dnsmasq
+● dnsmasq.service - DNS caching server.
+   Loaded: loaded (/usr/lib/systemd/system/dnsmasq.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+[root@host1 ~]# 
+....
 
 
-== network configuration 
 
-The dnsmasq server uses the config file at /var/lib/libvirt/dnsmasq/default.conf. This ``dhcp-range`` line tells dnsmasq what the IP pool is. 
+== check the IP pool 
+
+The dnsmasq server uses the config file at /var/lib/libvirt/dnsmasq/default.conf. This ``dhcp-range`` line tells dnsmasq what IP pool to manage. 
 
 [source,console]
 ....
-[nick@host ~]$ sudo grep dhcp-range /var/lib/libvirt/dnsmasq/default.conf
+[nick@host1 ~]$ sudo grep dhcp-range /var/lib/libvirt/dnsmasq/default.conf
 dhcp-range=192.168.122.2,192.168.122.254
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ....
 
-This dnsmasq config file can't be edited directly because it's controlled by libvirt - any changes would be overwritten. 
-Instead, use ``virsh`` commands to add config. 
-
-libvirt writes that dnsmasq configuration after reading its own config.
-You can see libvirt's network settings using the ``virsh net-dumpxml`` command.
+libvirt writes that dnsmasq configuration after reading its own network configuration.
+You can see libvirt's configuration  using the ``virsh net-dumpxml`` command.
 There are about 20 lines of XML that define the network.
-These are all listed further down. Here's the address range config.  
+These are all listed further down. 
 
+Here's the IP pool config.  
 
 [source,console]
 ....
-[nick@host ~]$ sudo virsh net-dumpxml default
+[nick@host1 ~]$ sudo virsh net-dumpxml default
 ...
     <dhcp>
       <range start='192.168.122.2' end='192.168.122.254'/>
     </dhcp>
 ...
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ....
-
-
-== find the MAC address
-
-If you can't remember what the MAC address is, you can find it in a few places. 
-
-* On the host, search the VM's XML configuration.
-* On the host, search the IP neighbor table.
-* On the guest, display the interface's link layer settings.
-
-=== the VM's XML configuration
-
-On the host, search the VM's XML configuration.
-
-[source,console]
-....
-[nick@host ~]$ virsh dumpxml guest2 | grep 'mac address'
-      <mac address='52:54:00:00:00:01'/>
-[nick@host ~]$ 
-....
-
-=== the IP neighbor table
-
-On the host, search the IP neighbor table. 
-If you don't know what _ip neighbor_ table is_, the short answer is it's a replacement for _arp_. 
-Read https://www.redhat.com/sysadmin/arp-versus-ip[Linux networking: arp versus ip neighbour] to find out more.
-
-The neighbour table is little harder to decipher, because it includes MAC addresses from your local network as well as the libvirt network. 
-This neighbor table lists two interfaces.
-
-* *enp0s25*, the ethernet interface to the outside world
-* *virbr0*, libvirt's https://wiki.libvirt.org/page/VirtualNetworking[virtual network switch].
-
-Every VM that starts adds a line to this table. 
-Each VM interface is attached to a virbr0 interface.
-The table only has one line for _virbr0_, which makes it easy to spot which MAC address we want. 
-
-[source,console]
-....
-[nick@host ~]$ ip neighbor show
-192.168.122.111 dev virbr0 lladdr 52:54:00:00:00:1a REACHABLE
-10.0.1.46 dev enp0s25 lladdr a0:ce:c8:c8:2a:bf REACHABLE
-10.0.1.1 dev enp0s25 lladdr d8:30:62:47:55:e5 STALE
-[nick@host ~]$ 
-....
-
-=== the interface's link layer settings. 
-
-On the guest, display the interface's link layer settings.
-
-[source,console]
-....
-[nick@guest2 ~]$ ip link show eth0
-2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
-    link/ether 52:54:00:00:00:01 brd ff:ff:ff:ff:ff:ff
-[nick@guest2 ~]$ 
-....
-
-
-== find the IP address
-
-The IPv4 address gets stashed in a few places. 
-
-=== view the DHCP lease file 
-
-[source,console]
-....
-[nick@host ~]$ sudo cat /var/lib/libvirt/dnsmasq/virbr0.status 
-[
-  {
-    "ip-address": "192.168.122.27",
-    "mac-address": "52:54:00:00:00:01",
-    "hostname": "guest2",
-    "client-id": "01:52:54:00:00:00:01",
-    "expiry-time": 1590770614
-  }
-]
-[nick@host ~]$ 
-....
-
-
-=== use the virsh command
-
-Check the VM is running with the command ``virsh list --all``. 
-If it's running, dnsmasq has given it an IP address. 
-
-Each libvirt network has its own dnsmasq.
-Factory-fitted libvirt only has one network named _default_, so there is only one copy of dnsmasq running. 
-
-Find out how many networks are configured.
-
-[source,console]
-....
-[nick@host ~]$ sudo virsh net-list
- Name                 State      Autostart     Persistent
-----------------------------------------------------------
- default              active     yes           yes
-
-[nick@host ~]$ 
-....
-
-List all DHCP leases. 
-
-[source,console]
-....
-[nick@host ~]$ sudo virsh net-dhcp-leases default
-[sudo] password for nick: 
- Expiry Time          MAC address        Protocol  IP address                Hostname        Client ID or DUID
--------------------------------------------------------------------------------------------------------------------
- 2020-05-29 18:11:36  52:54:00:00:00:01  ipv4      192.168.122.27/24         guest2          01:52:54:00:00:00:01
-
-[nick@host ~]$ 
-....
-
-
-=== view the arp table 
-
-A slightly harder way of finding the IP address is to use the VM's MAC address and the arp command. 
-
-. Run ``arp -an``.
-. Search the arp results for the line containing the MAC address. 
 
 
 == assign a name and address
 
 Add an XML tag to the network's configuration.
 
+This dnsmasq config file can't be edited directly because it's created by libvirt - any changes would be overwritten. 
+Instead, use ``virsh`` commands to add config. 
 
 
 === add the private.example.com domain 
@@ -233,7 +134,7 @@ Adding a domain is a little painful, both because editing XML is never fun, and 
 
 [source,console]
 ....
-[nick@host ~]$ sudo virsh net-edit default
+[nick@host1 ~]$ sudo virsh net-edit default
 ....
 
 virsh fires up the vi editor. 
@@ -269,35 +170,35 @@ Restart the network. Check its state before and after - it changes from _inactiv
 ....
 Network default XML configuration edited.
 
-[nick@host ~]$ sudo virsh net-destroy default
+[nick@host1 ~]$ sudo virsh net-destroy default
 Network default destroyed
 
-[nick@host ~]$ sudo virsh net-list --all
+[nick@host1 ~]$ sudo virsh net-list --all
  Name                 State      Autostart     Persistent
 ----------------------------------------------------------
  default              inactive   yes           yes
 
-[nick@host ~]$ 
-[nick@host ~]$ sudo virsh net-start default
+[nick@host1 ~]$ 
+[nick@host1 ~]$ sudo virsh net-start default
 Network default started
 
-[nick@host ~]$ 
-[nick@host ~]$ sudo virsh net-list --all
+[nick@host1 ~]$ 
+[nick@host1 ~]$ sudo virsh net-list --all
  Name                 State      Autostart     Persistent
 ----------------------------------------------------------
  default              active     yes           yes
 
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ....
 
 Virsh updates the dnsmasq config.
 
 [source,console]
 ....
-[nick@host ~]$ sudo grep private.example.com /var/lib/libvirt/dnsmasq/default.conf
+[nick@host1 ~]$ sudo grep private.example.com /var/lib/libvirt/dnsmasq/default.conf
 local=/private.example.com/
 domain=private.example.com
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ....
 
 
@@ -321,9 +222,9 @@ Add the host line.
 
 [source,console]
 ....
-[nick@host ~]$ sudo virsh net-update default add ip-dhcp-host "<host mac='52:54:00:00:00:01' name='guest2.private.example.com' ip='192.168.122.100' />" --live --config
+[nick@host1 ~]$ sudo virsh net-update default add ip-dhcp-host "<host mac='52:54:00:00:00:01' name='guest2.private.example.com' ip='192.168.122.100' />" --live --config
 Updated network default persistent config and live state
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ....
 
 You can remove this line by replacing ``add`` with ``delete``. 
@@ -337,8 +238,8 @@ Add a line to /etc/hosts.
 
 [source,console]
 ....
-[nick@host ~]$ sudo bash -c 'echo "192.168.122.100 guest2 guest2.private.example.com" >> /etc/hosts'
-[nick@host ~]$ 
+[nick@host1 ~]$ sudo bash -c 'echo "192.168.122.100 guest2 guest2.private.example.com" >> /etc/hosts'
+[nick@host1 ~]$ 
 ....
 
 
@@ -352,7 +253,7 @@ You can see the conversation taking place using ``journalctl``.
 
 [source,console]
 ....
-[nick@host ~]$ journalctl -f
+[nick@host1 ~]$ journalctl -f
 ...
 May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPREQUEST(virbr0) 192.168.122.27 52:54:00:00:00:01
 May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPNAK(virbr0) 192.168.122.27 52:54:00:00:00:01 static lease available
@@ -377,28 +278,28 @@ dnsmasq only listens to the libvirt network interface.
 
 [source,console]
 ....
-[nick@host ~]$ host guest2 192.168.122.1
+[nick@host1 ~]$ host guest2 192.168.122.1
 Using domain server:
 Name: 192.168.122.1
 Address: 192.168.122.1#53
 Aliases: 
 
 guest2.private.example.com has address 192.168.122.100
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ....
 
 Can the host find it?
 
 [source,console]
 ....
-[nick@host ~]$ ping -c1 guest2
+[nick@host1 ~]$ ping -c1 guest2
 PING guest2 (192.168.122.100) 56(84) bytes of data.
 64 bytes from guest2 (192.168.122.100): icmp_seq=1 ttl=64 time=0.226 ms
 
 --- guest2 ping statistics ---
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 0.226/0.226/0.226/0.000 ms
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ....
 
 
@@ -406,7 +307,7 @@ rtt min/avg/max/mdev = 0.226/0.226/0.226/0.000 ms
 
 [source,console]
 ....
-[nick@host ~]$ ssh guest2
+[nick@host1 ~]$ ssh guest2
 The authenticity of host 'guest2 (192.168.122.100)' can't be established.
 ECDSA key fingerprint is SHA256:JcjI8AIHkUvat0qdM1OqDPzY0jughZC5ZOuU/uvApmk.
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
@@ -428,7 +329,7 @@ Disconnect.
 [nick@guest2 ~]$ exit
 logout
 Connection to 192.168.122.218 closed.
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ----
 
 == automate 
