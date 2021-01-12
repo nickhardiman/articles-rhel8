@@ -1,4 +1,4 @@
-= use RHSM (Red Hat Subscription Manager) to set system purpose 
+= use RHSM to set system purpose 
 Nick Hardiman 
 :source-highlighter: pygments
 :toc:
