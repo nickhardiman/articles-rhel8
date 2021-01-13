@@ -36,6 +36,7 @@
 *** xref:guest1-kickstart-file.adoc[]
 *** xref:guest1-virt-install.adoc[]
 *** xref:guest1-os-setup.adoc[]
+*** xref:guest1-enp2s0.adoc[]
 *** xref:guest1-dnsmasq-ip-pool.adoc[]
 *** xref:guest1-dnsmasq-dhcp-dns.adoc[]
 *** xref:guest1-dns-bind9.adoc[]
