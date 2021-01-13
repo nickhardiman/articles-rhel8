@@ -13,71 +13,20 @@ Tell Bind to
 
 This is a simple config that does not cover anything fancy like DNSSEC or split DNS. 
 
-
-== add a zone file
-
-A zone is a set of names and addresses for a name like www.lab.example.com. 
-Add a zone file that describes lab.example.com. 
+==  current zone files 
 
 Bind already has some zones defined. 
 The details are in files in the /var/named/ directory, such as named.ca which lists servers for the root domain. 
-Bind's config has _zone_ options which tell Bind where these files are. 
-One zone option is in /etc/named.conf and more are in /etc/named.rfc1912.zones
-https://tools.ietf.org/html/rfc1912[RFC 1912] is about "Common DNS Operational and Configuration Errors" and says "certain zones should always be present", so this config file ticks that box. 
+These files are in the named group. 
 
+The https://en.wikipedia.org/wiki/Sticky_bit[sticky bit] is set on the named directory.
+The sticky bit provides a little bit of extra security. 
+The named files can't be removed by named. 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# cd /var/named/
 [root@guest1 named]# 
-[root@guest1 named]# vi lab.example.com-records
-----
-
-
-These are the records. 
-The file is spaced out to look more like a table (that's another suggestion from RFC 1912). 
-
-[source,bash]
-----
-$TTL 3H
-@    IN SOA    @ root.lab.example.com (
-                    0    ; serial
-                    1D    ; refresh
-                    1H    ; retry
-                    1W    ; expire
-                    3H )    ; minimum
-; these records are names and addresses for lab.example.com
-             IN NS   dns1
-             A       192.168.1.217
-             AAAA    2a00:23c8:1d05:1e00:5054:ff:fe00:1
-; these records are names and addresses for (HOST).lab.example.com
-dns1         IN A    192.168.1.217
-satellite1   IN A    192.168.1.214
-satellite1.lab   IN A    192.168.1.214
-guest1     IN A    192.168.1.217
-----
-
-
-[source,bash]
-----
-$TTL 3H
-@    IN SOA    @ root.lab.example.com (
-                    0    ; serial
-                    1D    ; refresh
-                    1H    ; retry
-                    1W    ; expire
-                    3H )    ; minimum
-            IN NS   dns1.lab.example.com.
-217         IN PTR dns1.lab.example.com.
-214         IN PTR satellite1.lab.example.com.
-214         IN PTR satellite1.lab.lab.example.com.
-217         IN PTR guest1.lab.example.com.
-----
-
-
-
-[source,bash]
-----
 [root@guest1 named]# ls -la 
 total 28
 drwxrwx--T.  5 root  named  177 Dec  3 17:57 .
@@ -94,22 +43,88 @@ drwxrwx---.  2 named named    6 Aug 21 11:12 slaves
 [root@guest1 named]# 
 ----
 
+
+Bind's config has _zone_ options which tell Bind where these files are. 
+One zone option is in /etc/named.conf and more are in /etc/named.rfc1912.zones
+https://tools.ietf.org/html/rfc1912[RFC 1912] is about "Common DNS Operational and Configuration Errors" and says "certain zones should always be present", so this config file ticks that box. 
+
+
+
+== add zone files
+
+A zone is a set of names and addresses for a domain like lab.example.com. 
+Add a zone file that describes lab.example.com, and another for matching IP addresses. 
+
+These files contain many https://en.wikipedia.org/wiki/List_of_DNS_record_types
+[types of DNS record], from A to SOA.
+
+
+[source,shell]
+----
+[root@guest1 ~]# cd /var/named/
+[root@guest1 named]# 
+[root@guest1 named]# vi lab.example.com-records
+----
+
+These are the records for forward DNS. 
+The zone is lab.example.com.
+The file is spaced out to look more like a table (that's another suggestion from https://tools.ietf.org/html/rfc1912[RFC 1912]). 
+
+[source,dns]
+----
+$TTL 3H
+@    IN SOA    @ root.lab.example.com (
+                    0    ; serial
+                    1D    ; refresh
+                    1H    ; retry
+                    1W    ; expire
+                    3H )    ; minimum
+; these records are names and addresses for lab.example.com
+             IN NS   dns1
+             A       192.168.1.217
+             AAAA    2a00:23c8:1d05:1e00:5054:ff:fe00:1
+; these records are names and addresses for (HOST).lab.example.com
+dns1         IN A    192.168.1.217
+guest1       IN A    192.168.1.217
+----
+
+These are the records for reverse DNS. 
+The zone is 1.168.192.in-addr.arpa.
+
+Add these to a new file named _192.168.1-records_.
+
+[source,dns]
+----
+$TTL 3H
+@    IN SOA    @ root.lab.example.com (
+                    0    ; serial
+                    1D    ; refresh
+                    1H    ; retry
+                    1W    ; expire
+                    3H )    ; minimum
+            IN NS   dns1.lab.example.com.
+217         IN PTR dns1.lab.example.com.
+217         IN PTR guest1.lab.example.com.
+----
+
+
 Change the group to match the other files. 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 named]# chown .named lab.example.com-records 192.168.1-records 
 [root@guest1 named]# 
 ----
 
-No need to change the SELinux file type - all the files are _named_zone_t_.
+No need to change the SELinux file type.
+The new files inherit _named_zone_t_ from the directory.
 
 
-=== more config 
+=== edit config 
 
 Tell Bind where the new zone records are. 
 Add these options to the bottom of /etc/named.conf.
 
-[source,bash]
+[source,shell]
 ----
 zone "lab.example.com" IN {
   type master;
@@ -122,10 +137,14 @@ zone "1.168.192.in-addr.arpa" IN {
 };
 ----
 
+Tell named to re-read its config with the command _systemctl reload named.service_.
 
-Check the SOA records. 
 
-[source,bash]
+== check your work 
+
+Check the https://en.wikipedia.org/wiki/SOA_record[SOA (Start Of Authority) records]. 
+
+[source,shell]
 ----
 [root@guest1 named]# host -t SOA lab.example.com localhost
 Using domain server:
@@ -147,7 +166,7 @@ Aliases:
 
 Check the NS records. 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 named]# host -t NS lab.example.com localhost
 Using domain server:
@@ -169,8 +188,7 @@ Aliases:
 
 Check one of the A records and the matching PTR record. 
 
-
-[source,bash]
+[source,shell]
 ----
 [root@guest1 named]# host guest1.lab.example.com localhost
 Using domain server:
