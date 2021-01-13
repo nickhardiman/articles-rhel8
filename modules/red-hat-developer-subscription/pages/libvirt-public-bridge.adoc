@@ -45,10 +45,17 @@ This tells libvirt about the _virbr0_ NAT bridge.
 The _default_ configuration contains the XML tag _forward_. 
 The _mode_ attribute is set to 'nat', which means it's easy for virtual machines using this bridge to send requests to the workstation on the home network and to the Internet, but impossible for the workstation to send requests to these virtual machines. 
 
+The virsh net-dumpxml command displays libvirt's network config. 
 
 [source,shell]
 ....
 [root@host1 ~]# virsh net-dumpxml default 
+....
+
+This is how the default network is configured. 
+
+[source,XML]
+....
 <network>
   <name>default</name>
   <uuid>beb06c88-f2a8-47b6-b82a-d07f7170bacd</uuid>
@@ -65,8 +72,6 @@ The _mode_ attribute is set to 'nat', which means it's easy for virtual machines
     </dhcp>
   </ip>
 </network>
-
-[root@host1 ~]# 
 ....
 
 
@@ -226,15 +231,28 @@ Its address _192.168.1.195_ now belongs to _pubbr0_.
 
 If something is wrong, back out with these _nmcli_ commands. 
 
+Create a script to do the work. 
+
 [source,shell]
 ....
 [root@host1 libvirt]# vi pubbr0-delete.sh
+....
+
+Add these lines. 
+
+[source,bash]
+....
 #!/bin/bash
 nmcli con down pubbr0
 nmcli connection delete bridge-slave-enp2s0f0 
 nmcli connection delete pubbr0 
 nmcli con up enp2s0f0
+....
 
+Run it. 
+
+[source,shell]
+....
 [root@host1 libvirt]# chmod 754 pubbr0-delete.sh 
 [root@host1 libvirt]# 
 [root@host1 libvirt]# ./pubbr0-delete.sh 
@@ -243,6 +261,12 @@ Connection 'bridge-slave-enp2s0f0' (0ae977d2-7c5c-490c-bad8-be647014886a) succes
 Connection 'pubbr0' (a4d5ddf3-e0db-49f6-85c1-09b124537dd1) successfully deleted.
 Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/8)
 [root@host1 libvirt]# 
+....
+
+Check the slave is gone.
+
+[source,shell]
+....
 [root@host1 libvirt]# nmcli device
 DEVICE          TYPE      STATE                   CONNECTION 
 enp2s0f0        ethernet  connected               enp2s0f0   
