@@ -1,4 +1,4 @@
-= provide DNS with Bind 9 
+= add a zone and forward requests 
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: pygments
 :toc:
