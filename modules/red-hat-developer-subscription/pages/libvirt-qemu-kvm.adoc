@@ -79,3 +79,45 @@ virbr0-nic      tun       unmanaged               --
 ----
 
 
+== systemd 
+
+From man systemd-machined
+
+systemd-machined is a system service that keeps track of virtual machines and containers, and processes belonging to them.
+
+[source,console]
+----
+[nick@host1 ~]$ machinectl 
+MACHINE       CLASS SERVICE      OS VERSION ADDRESSES
+qemu-1-guest1 vm    libvirt-qemu -  -       -        
+
+1 machines listed.
+[nick@host1 ~]$ 
+----
+
+Unit file /usr/lib/systemd/system/systemd-machined.service runs /usr/lib/systemd/systemd-machined
+
+[source,console]
+----
+[nick@host1 ~]$ systemctl status machined
+Unit machined.service could not be found.
+[nick@host1 ~]$ man machinectl
+[nick@host1 ~]$ systemctl status systemd-machined
+● systemd-machined.service - Virtual Machine and Container Registration Service
+   Loaded: loaded (/usr/lib/systemd/system/systemd-machined.service; static; vendor preset: disabled)
+   Active: active (running) since Wed 2021-01-13 08:42:11 GMT; 1h 35min ago
+     Docs: man:systemd-machined.service(8)
+           https://www.freedesktop.org/wiki/Software/systemd/machined
+ Main PID: 1036 (systemd-machine)
+   Status: "Processing requests..."
+    Tasks: 1 (limit: 406402)
+   Memory: 2.2M
+   CGroup: /system.slice/systemd-machined.service
+           └─1036 /usr/lib/systemd/systemd-machined
+
+Jan 13 08:42:10 host1.silvan.uk systemd[1]: Starting Virtual Machine and Container Registration Service...
+Jan 13 08:42:11 host1.silvan.uk systemd[1]: Started Virtual Machine and Container Registration Service.
+Jan 13 09:10:11 host1.silvan.uk systemd-machined[1036]: New machine qemu-1-guest1.
+[nick@host1 ~]$ 
+----
+

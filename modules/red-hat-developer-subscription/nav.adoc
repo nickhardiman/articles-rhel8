@@ -3,12 +3,14 @@
 *** xref:developer-subscription-why.adoc[]
 *** xref:home-lab.adoc[]
 *** xref:developer-subscription-sign-up.adoc[] 
-** 60 things (ish)
+** 70 things (ish)
 *** _firmware and OS things_
 *** xref:host1-rhel8-install.adoc[]
 *** xref:boot-stages.adoc[]
 *** xref:boot-bios.adoc[]
 *** xref:boot-grub.adoc[]
+*** xref:host1-os.adoc[]
+*** xref:host1-shell.adoc[]
 *** xref:host1-kernel.adoc[]
 *** xref:host1-kernel-log.adoc[]
 *** xref:host1-kernel-module.adoc[]
@@ -19,6 +21,7 @@
 *** xref:host1-insights.adoc[]
 *** xref:host1-dnf-update.adoc[]
 *** xref:host1-dnf-module-view.adoc[] 
+*** xref:host1-more-shells.adoc[]
 *** _virtual network things_
 *** xref:libvirt-notes.adoc[]
 *** xref:host1-dnf-module-virt.adoc[] 
