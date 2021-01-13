@@ -19,7 +19,7 @@ For more information, read the article https://access.redhat.com/articles/213096
 
 Use DNF to list all the updates this machine can get. 
 
-[source,bash]
+[source,shell]
 ----
 [root@host1 ~]# dnf updateinfo --list
 Updating Subscription Management repositories.
@@ -38,7 +38,7 @@ Security administrators can also search the  https://access.redhat.com/security/
 
 Packages will be downloaded from enabled repositories. 
 
-[source,bash]
+[source,shell]
 ----
 [root@host1 ~]# dnf repolist 
 Updating Subscription Management repositories.
@@ -52,7 +52,7 @@ rhel-8-for-x86_64-baseos-rpms                         Red Hat Enterprise Linux 8
 
 == update 
 
-[source,bash]
+[source,shell]
 ----
 [root@host1 ~]# dnf -y update
 Updating Subscription Management repositories.
@@ -81,7 +81,7 @@ Here, the kernel is updated.
 Reboot to swap from the current kernel to the new one. 
 
 
-[source,bash]
+[source,shell]
 ----
 [root@host1 ~]# systemctl reboot
 [root@host1 ~]# Connection to host1 closed by remote host.

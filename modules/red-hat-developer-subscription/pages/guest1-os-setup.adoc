@@ -29,7 +29,7 @@ This is proper network admin.
 
 Copy your public key for easier and safer login. 
 
-[source,bash]
+[source,shell]
 ....
 ssh-copy-id nick@guest1
 ....
@@ -52,7 +52,7 @@ Disable root login.
 
 The kickstart process registered this machine with Red Hat and entitled it to receive updates. 
 
-[source,bash]
+[source,shell]
 ....
 [root@guest1 ~]# dnf -y update
 ...

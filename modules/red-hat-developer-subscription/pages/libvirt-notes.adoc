@@ -124,7 +124,7 @@ This XML has:
 
 === bridge ACL  
 
-[source,bash]
+[source,shell]
 ----
 sudo sh -c "echo 'allow virbr1' >> /etc/qemu-kvm/bridge.conf"
 ----
@@ -139,7 +139,7 @@ allow virbr1
 
 === storage pool
 
-[source,bash]
+[source,shell]
 ----
 # use a directory for the image pool
 POOL=guest_images
@@ -170,7 +170,7 @@ pool-guest_images.xml
 This bit turned out to be pointless. 
 libvirt sets the SELinux context of an image it uses. 
 
-[source,bash]
+[source,shell]
 ----
 # Change the label to ``virt_image_t``
 # 
@@ -206,7 +206,7 @@ Does Packagekit interfere?
 Requires these changes. 
 
 ./etc/libvirt/libvirtd.conf 
-[source,bash]
+[source,shell]
 ----
 # UNIX socket access controls
 #
@@ -226,7 +226,7 @@ unix_sock_rw_perms = "0770"
 Add config. Requires restart? 
 Add group members.
 
-[source,bash]
+[source,shell]
 ----
 echo '#--------' >> /etc/libvirt/libvirtd.conf
 echo 'unix_sock_group = "libvirt"' >> /etc/libvirt/libvirtd.conf
@@ -247,7 +247,7 @@ I defined a whole bunch of variables for each machine, then
 ran the same commands. 
 
 
-[source,bash]
+[source,shell]
 ----
 POOL=guest_images
 POOL_DIR=/home/nick/libvirt/$POOL
@@ -263,7 +263,7 @@ POOL_DIR=/home/nick/libvirt/$POOL
 * two IFs, connected to lab.example.com and private.example.com
 * memory - 14G: 14336M, 13G: 1024 * 13 = 13312, 12G: 12288
 
-[source,bash]
+[source,shell]
 ----
 [root@host1 libvirt]# virsh dumpxml guest1 | grep -i memory
   <memory unit='KiB'>12582912</memory>
@@ -273,7 +273,7 @@ POOL_DIR=/home/nick/libvirt/$POOL
 
 Change machine memory.
 
-[source,bash]
+[source,shell]
 ----
 # While machine is off 
 [root@host1 libvirt]# virsh setmaxmem guest1 14G --config
@@ -288,7 +288,7 @@ Change machine memory.
 
  
 
-[source,bash]
+[source,shell]
 ----
 HOST=guest1
 IMAGE=$HOST.qcow2
@@ -316,7 +316,7 @@ OS_VARIANT=rhel8.2
 * VM has most memory
 * two IFs, connected to lab.example.com and private.example.com
 
-[source,bash]
+[source,shell]
 ----
 HOST=guest2
 IMAGE=$HOST.qcow2
@@ -342,7 +342,7 @@ OS_VARIANT=rhel8.2
 * VM has most memory
 * two IFs, connected to lab.example.com and private.example.com
 
-[source,bash]
+[source,shell]
 ----
 HOST=guest3
 IMAGE=$HOST.qcow2
@@ -365,7 +365,7 @@ OS_VARIANT=rhel8.2
 
 === copy the image 
 
-[source,bash]
+[source,shell]
 ----
 # make a bigger copy of the downloaded image
 cd $POOL_DIR
@@ -377,14 +377,14 @@ virt-resize $VIRT_RESIZE_OPTIONS
 
 back out with 
 
-[source,bash]
+[source,shell]
 ----
 # virsh vol-delete --pool guest_images --vol guest1.qcow2
 ----
 
 customize image 
 
-[source,bash]
+[source,shell]
 ----
 # cloud-init package installed in rhel7 image, but not 8
 # harmless for rhel8 
@@ -409,7 +409,7 @@ fix
 `restorecon -Rv /etc/machine-info`
 
 
-[source,bash]
+[source,shell]
 ----
 #
 [nick@guest1 ~]$ hostnamectl
@@ -432,7 +432,7 @@ PRETTY_HOSTNAME=guest1.private.example.com
 
 create VM using disk image
 
-[source,bash]
+[source,shell]
 ----
 if [ -z $IF2_IP ] ; then 
   virt-install   \
@@ -462,7 +462,7 @@ fi
 
 use the console 
 
-[source,bash]
+[source,shell]
 ----
 virsh console $HOST
 ^]
@@ -480,7 +480,7 @@ matches _g1_, not  _guest1.lab.example.com_.
 
 /etc/hosts
 
-[source,bash]
+[source,shell]
 ----
 192.168.122.2    g1      guest1 guest1.lab.example.com
 ----
@@ -489,13 +489,13 @@ matches _g1_, not  _guest1.lab.example.com_.
 
 === add key login 
 
-[source,bash]
+[source,shell]
 ----
 ssh-copy-id guest1
 ssh guest1
 ----
 
-[source,bash]
+[source,shell]
 ----
 for HOST in guest2 guest3 
 do
@@ -511,7 +511,7 @@ done
 
 US timezone (America/New_York) built into these minimal images. 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# timedatectl status
       Local time: Mon 2020-07-06 07:14:12 EDT
@@ -543,7 +543,7 @@ Change running image.
 Or systemd-firstboot?
 https://www.freedesktop.org/software/systemd/man/timedatectl.html
 
-[source,bash]
+[source,shell]
 ----
 timedatectl set-timezone 'Europe/London'
 ----
@@ -553,7 +553,7 @@ timedatectl set-timezone 'Europe/London'
 
 Two admin accounts 
 
-[source,bash]
+[source,shell]
 ----
 for NAME in nick nick
 do
@@ -569,7 +569,7 @@ done
 
 === add swap
 
-[source,bash]
+[source,shell]
 ----
 # Add 4G swap 
 # 1024 K in M * 1024 M in G * 4 G = 4194304
@@ -592,7 +592,7 @@ rhel8
 * IF1 is defined with DHCP.
 * IF2 is defined but doesn't work. 
 
-[source,bash]
+[source,shell]
 ----
 CON_NAME='Wired connection 1'
 IF2_IP=192.168.152.2
@@ -608,7 +608,7 @@ rhel8
 
 * IF1 is defined but doesn't work.
 
-[source,bash]
+[source,shell]
 ----
 CON_NAME='System eth0'
 nmcli connection modify "$CON_NAME" ipv4.addresses 192.168.152.3/24
@@ -625,7 +625,7 @@ nmcli connection up "$CON_NAME"
 
 === first network interface - add static IP address 
 
-[source,bash]
+[source,shell]
 ----
 virsh console $HOST
 # only root login works 
@@ -646,7 +646,7 @@ RHEL 7 only
 
 RHEL 8 automatically defines new connection config named 'Wired connection 1'
 
-[source,bash]
+[source,shell]
 ----
 virsh console $HOST
 # only root login works 
@@ -676,7 +676,7 @@ I figured out how to add a second IF with two --network  options
 (see above) so this is no longer required. 
 
 
-[source,bash]
+[source,shell]
 ----
 virsh attach-interface $HOST \
    --type   bridge \
@@ -702,16 +702,16 @@ and partly some other problem.
 
 tried this on host, no luck.
 
-[source,bash]
+[source,shell]
 ----
 firewall-cmd --add-port=5900-5910/tcp --zone libvirt 
 firewall-cmd --add-port=5900-5910/tcp --zone libvirt --permanent 
-[source,bash]
+[source,shell]
 ----
 
 Missing this? 
 
-[source,bash]
+[source,shell]
 ----
 [root@host1 libvirt]# virsh dumpxml lee-kerker.lab.example.com
 ...
@@ -723,7 +723,7 @@ Missing this?
 
 === stop a guest you're logged into  
 
-[source,bash]
+[source,shell]
 ----
 sudo systemctl poweroff
 ----
@@ -732,7 +732,7 @@ sudo systemctl poweroff
 
 === start guests in the default network
 
-[source,bash]
+[source,shell]
 ----
 for HOST in guest1; do 
   sudo virsh start $HOST
@@ -754,7 +754,7 @@ with
 
 For isolated node tests 
 
-[source,bash]
+[source,shell]
 ----
 for HOST in guest2 guest3; do 
   sudo virsh start $HOST
@@ -774,7 +774,7 @@ Slices, Scopes, Services
 On the host, each machine process gets its own scope. 
 All the slices are in the machine slice. 
 
-[source,bash]
+[source,shell]
 ----
 [nick@host1 ~]$ systemd-cgls 
 Control group /:
@@ -799,7 +799,7 @@ Run `systemd-cgls` to see `machine-qemu\x2d2\x2dansiblet1.scope` in the tree of 
 That `x2d` is unicode hexadecimal for a normal hyphen (hyphen-minus). 
 
 
-[source,bash]
+[source,shell]
 ----
 [nick@host1 ~]$ systemctl show --all machine-qemu\x2d2\x2dansiblet1.scope | grep Weight
 CPUWeight=[not set]
@@ -819,7 +819,7 @@ StartupBlockIOWeight=[not set]
 
 === guest 
 
-[source,bash]
+[source,shell]
 ----
 ping -c3 192.168.122.1 # unreachable from private2
 ping -c3 192.168.152.1 # doesn't exist 
@@ -832,7 +832,7 @@ ip neighbor
 
 test access to host1 libvirt 
 
-[source,bash]
+[source,shell]
 ----
 virsh -c qemu+ssh://root@192.168.122.1/system list
 ----
@@ -843,14 +843,14 @@ virsh -c qemu+ssh://root@192.168.122.1/system list
 
 guest list 
 
-[source,bash]
+[source,shell]
 ----
 virsh list --all
 ----
 
 guest interfaces 
 
-[source,bash]
+[source,shell]
 ----
 for HOST in guest1 guest2 guest3 
 do
@@ -861,7 +861,7 @@ done
 
 firewall 
 
-[source,bash]
+[source,shell]
 ----
 [root@host1 ~]# firewall-cmd --list-all --zone=libvirt
 libvirt (active)
@@ -914,7 +914,7 @@ Open the cockpit console.  https://10.0.1.40:9090/
 Add a line for those web pages that might link using the server name.
 Or where you want a meaningful host name, not an IP address. 
 
-[source,bash]
+[source,shell]
 ----
 MacBook-Pro:~ nick$ cat /etc/hosts
 ...

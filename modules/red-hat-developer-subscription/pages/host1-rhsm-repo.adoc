@@ -10,7 +10,7 @@ These are configured in the file _/etc/yum.repos.d/redhat.repo_.
 All but two are disabled (see the _Enabled: 0_ line).
 Types of repo include source, debug and binary RPM repositories.
 
-[source,bash]
+[source,shell]
 ----
 [root@host1 ~]# subscription-manager repos --list
 +----------------------------------------------------------+
@@ -36,7 +36,7 @@ Only these two are enabled.
 * rhel-8-for-x86_64-appstream-rpms
 * rhel-8-for-x86_64-baseos-rpms
 
-[source,bash]
+[source,shell]
 ----
 [root@host1 ~]# subscription-manager repos --list-enabled
 +----------------------------------------------------------+
@@ -57,7 +57,7 @@ Enabled:   1
 
 == disable all repos 
 
-[source,bash]
+[source,shell]
 ----
 subscription-manager repos --disable "*"
 ----
@@ -66,7 +66,7 @@ subscription-manager repos --disable "*"
 
 re-enable the two default repos. 
 
-[source,bash]
+[source,shell]
 ----
 subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms 
 subscription-manager repos --enable=rhel-8-for-x86_64-appstream-rpms 
@@ -74,7 +74,7 @@ subscription-manager repos --enable=rhel-8-for-x86_64-appstream-rpms
 
 Enable the Ansible repo as well. 
 
-[source,bash]
+[source,shell]
 ----
 subscription-manager repos --enable=ansible-2-for-rhel-8-x86_64-rpms 
 ----
@@ -82,7 +82,7 @@ subscription-manager repos --enable=ansible-2-for-rhel-8-x86_64-rpms
 
 == check 
 
-[source,bash]
+[source,shell]
 ----
 [root@host1 ~]# subscription-manager repos --list-enabled
 +----------------------------------------------------------+

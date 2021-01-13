@@ -11,7 +11,7 @@ Nick Hardiman
 The micro-SD card is the storage device. 
 The OS gives this a special file in the /dev/ directory. 
 
-[source,bash]
+[source,shell]
 ----
 [nick@host1 ~]$ ls /dev/mmcblk1*
 /dev/mmcblk1  /dev/mmcblk1p1  /dev/mmcblk1p2  /dev/mmcblk1p3
@@ -21,7 +21,7 @@ The OS gives this a special file in the /dev/ directory.
 The partitions use 5GB of storage. 
 The rest is free. 
 
-[source,bash]
+[source,shell]
 ----
 [nick@host1 ~]$ sudo fdisk -l /dev/mmcblk1
 [sudo] password for nick: 
@@ -74,7 +74,7 @@ What can they all mean?
 And there are even more listed in the file /proc/filesystems.
 
 
-[source,bash]
+[source,shell]
 ----
 [nick@host1 ~]$ mount
 sysfs on /sys type sysfs (rw,nosuid,nodev,noexec,relatime,seclabel)
@@ -107,7 +107,7 @@ If you want to play with more filesystems that do store files permanently, there
 The first partition on the disk has to hold the EFI system. 
 It's mounted on the directory /boot/efi. 
 
-[source,bash]
+[source,shell]
 ----
 [nick@host1 ~]$ mount | grep mmcblk1
 /dev/mmcblk1p3 on / type ext4 (rw,relatime,seclabel)

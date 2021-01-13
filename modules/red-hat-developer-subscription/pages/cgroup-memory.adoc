@@ -19,7 +19,7 @@ Machine memory might be used, swapped, reserved, overcommitted like aircraft sea
 The RSS (Resident Set Size) column in this process list shows RAM usage. 
 It's process memory that is actually in the machine's memory.
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# ps  -ylC httpd
 S   UID     PID    PPID  C PRI  NI   RSS    SZ WCHAN  TTY          TIME CMD
@@ -53,7 +53,7 @@ MemoryLimit=40M
 
 Stop Apache. 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 log]# systemctl stop httpd.service
 [root@guest1 log]#
@@ -61,7 +61,7 @@ Stop Apache.
 
 Tell systemd about the new configuration.
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# systemctl daemon-reload
 [root@guest1 ~]# 
@@ -70,7 +70,7 @@ Tell systemd about the new configuration.
 The MemoryLimit value is copied to a cgroup configuration file.
 40 mebibytes is 41943040 bytes (1024 * 1024 * 40).
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# cat /sys/fs/cgroup/memory/system.slice/httpd.service/memory.limit_in_bytes 
 41943040
@@ -85,7 +85,7 @@ Open a second window.
 Watch the activity log. 
 
 
-[source,bash]
+[source,shell]
 ----
 [nick@guest1 ~]$ journalctl -f
 Hint: You are currently not seeing messages from other users and the system.
@@ -98,7 +98,7 @@ Hint: You are currently not seeing messages from other users and the system.
 Back to the first window. 
 Start Apache. 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# systemctl start httpd.service
 [root@guest1 ~]# 
@@ -106,7 +106,7 @@ Start Apache.
 
 Activity log in second window shows success. 
 
-[source,bash]
+[source,shell]
 ----
 Jun 30 04:27:39 guest1.lab.example.com systemd[1]: Starting The Apache HTTP Server...
 Jun 30 04:27:39 guest1.lab.example.com systemd[1]: Started The Apache HTTP Server.
@@ -118,7 +118,7 @@ Jun 30 04:27:39 guest1.lab.example.com httpd[3337]: Server configured, listening
 
 Start stressing Apache. 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# ab -c5  -n 10000 https://192.168.122.4/random.bin
 This is ApacheBench, Version 2.3 <$Revision: 1843412 $>
@@ -135,7 +135,7 @@ It is killed by the OS https://linux-mm.org/OOM_Killer[OOM_Killer].
 
 The log shows many system diagnostic messages. 
 
-[source,bash]
+[source,shell]
 ----
 Jun 30 04:34:33 guest1.lab.example.com kernel: httpd invoked oom-killer: gfp_mask=0x600040(GFP_NOFS), nodemask=(null), order=0, oom_score_adj=0
 ...
@@ -147,7 +147,7 @@ Jun 30 04:34:33 guest1.lab.example.com kernel: Memory cgroup out of memory: Kill
 
 Stop stressing apache. 
 
-[source,bash]
+[source,shell]
 ----
 ^C
 
@@ -164,7 +164,7 @@ Server Port:            443
 The old process 3339 is gone. 
 The parent spawned a new one to take its place.  
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# ps  -ylC httpd
 S   UID     PID    PPID  C PRI  NI   RSS    SZ WCHAN  TTY          TIME CMD
@@ -186,7 +186,7 @@ check out https://access.redhat.com/solutions/20985[/proc/$pid/oom_adj and OOM_D
 End Apache's suffering by raising the memory limit. 
 Use these commands. 
 
-[source,bash]
+[source,shell]
 ----
 echo -e "[Service]\nMemoryLimit=400M\n" > /usr/lib/systemd/system/httpd.service.d/memory.conf
 systemctl daemon-reload

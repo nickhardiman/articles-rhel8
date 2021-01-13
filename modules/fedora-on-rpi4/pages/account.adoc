@@ -26,7 +26,7 @@ https://github.com/fedora-infra/fas
 
 == create a user account
 
-[source,bash]
+[source,shell]
 ----
 $NAME=fatima
 useradd $NAME
@@ -34,7 +34,7 @@ useradd $NAME
 
 Set a password. 
 
-[source,bash]
+[source,shell]
 ----
 passwd --stdin $NAME
 ----
@@ -42,7 +42,7 @@ passwd --stdin $NAME
 
 Give the account administrative access. 
 
-[source,bash]
+[source,shell]
 ----
 usermod -a -G wheel $NAME
 ----
@@ -50,7 +50,7 @@ usermod -a -G wheel $NAME
 Create a few accounts. 
 Gvie them all the same password. 
 
-[source,bash]
+[source,shell]
 ----
 cat names.txt 
 user1

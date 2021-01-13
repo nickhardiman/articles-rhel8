@@ -12,7 +12,7 @@ Set up a couple modules to provide information.
 
 == install 
 
-[source,bash]
+[source,shell]
 ----
 dnf install httpd mod_ssl 
 ----
@@ -24,7 +24,7 @@ Config includes many systemd files.
 == systemd unit httpd.service
 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# ls -1d /usr/lib/systemd/system/httpd*
 /usr/lib/systemd/system/httpd.service
@@ -37,7 +37,7 @@ Config includes many systemd files.
 
 View the unit configuration. 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# systemctl cat httpd.service
 # /usr/lib/systemd/system/httpd.service
@@ -82,7 +82,7 @@ WantedBy=multi-user.target
 
 Start. 
 
-[source,bash]
+[source,shell]
 ----
 systemctl start httpd.service 
 systemctl enable httpd.service 
@@ -100,7 +100,7 @@ https://httpd.apache.org/docs/2.4/mod/mod_info.html[server-info] page.
 This must be enabled with extra config. 
 
 ./etc/httpd/conf.d/server-info.conf
-[source,bash]
+[source,shell]
 ----
 <Location "/server-info">
     SetHandler server-info
@@ -116,7 +116,7 @@ The https://httpd.apache.org/docs/2.4/mod/mod_status.html[status page]
 must be enabled with extra config. 
 
 ./etc/httpd/conf.d/server-status.conf
-[source,bash]
+[source,shell]
 ----
 <Location "/server-status">
     SetHandler server-status
@@ -131,7 +131,7 @@ https://httpd.apache.org/docs/2.4/mod/mpm_common.html[directives]
 like StartServers, MaxClients and ThreadsPerChild. 
 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 conf.d]# httpd -M | grep mpm
  mpm_event_module (shared)
@@ -142,7 +142,7 @@ Apache runs half a dozen processes.
 One parent, four children. 
 Each child has many threads. 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# pstree -cT 3337
 httpd─┬─httpd
@@ -168,7 +168,7 @@ apache      4815    4596  3 14:11 ?        00:00:07 /usr/sbin/httpd -DFOREGROUND
 
 The systemd unit httpd.service is in the cgroup system.slice.
 
-[source,bash]
+[source,shell]
 ----
 [nick@guest1 ~]$ systemd-cgls  --unit  httpd.service
 Unit httpd.service (/system.slice/httpd.service):
@@ -183,7 +183,7 @@ Unit httpd.service (/system.slice/httpd.service):
 
 Process numbers are stored. 
 
-[source,bash]
+[source,shell]
 ----
 [nick@guest1 ~]$ ls /sys/fs/cgroup/systemd/system.slice/httpd.service/
 cgroup.clone_children  cgroup.procs  notify_on_release  tasks
@@ -203,7 +203,7 @@ cgroup.clone_children  cgroup.procs  notify_on_release  tasks
 
 Create a 1MB file. 
 
-[source,bash]
+[source,shell]
 ----
 head -c 1000000 /dev/urandom > /var/www/html/random.bin
 ----
@@ -212,7 +212,7 @@ Start top in a different terminal.
 Use 
 https://httpd.apache.org/docs/2.4/programs/ab.html[ab (apache benchmark)].
 
-[source,bash]
+[source,shell]
 ----
 ab -c5  -n 10000 https://192.168.122.4/random.bin
 ----
@@ -222,7 +222,7 @@ Run top.
 top says the CPU is working flat out. 
 ab is using the most CPU, and apache is using what's left.
  
-[source,bash]
+[source,shell]
 ----
 top - 14:06:31 up 11:26,  2 users,  load average: 1.65, 1.08, 0.48
 Tasks: 124 total,   3 running, 121 sleeping,   0 stopped,   0 zombie

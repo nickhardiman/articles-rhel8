@@ -8,7 +8,7 @@ Nick Hardiman
 
 file as swap 
 
-[source,bash]
+[source,shell]
 ----
 # Add 4G swap 
 # 1024 K in M * 1024 M in G * 4 G = 4194304

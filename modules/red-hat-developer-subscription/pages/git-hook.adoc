@@ -20,7 +20,7 @@ This runs after the commit process - after content is added to or removed from  
 [nick@guest1 hooks]$ vi post-update
 ....
 
-[source,bash]
+[source,shell]
 ....
 #!/bin/sh
 USER=$(/usr/bin/whoami)

@@ -36,7 +36,7 @@ There is no RHEL8 version.
 sudo dnf install kernel-doc
 ----
 
-[source,bash]
+[source,shell]
 ----
 [nick@host1 Documents]$ ls /usr/share/doc/kernel-doc-4.18.0/Documentation/cgroup-v1/
 00-INDEX              cpuacct.txt  freezer-subsystem.txt  memory.txt    pids.txt
@@ -47,7 +47,7 @@ cgroups.txt           devices.txt  memcg_test.txt         net_prio.txt
 
 == mounts in rhel 8 
 
-[source,bash]
+[source,shell]
 ----
 [nick@host1 ~]$ mount | grep cgroup
 tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
@@ -71,7 +71,7 @@ cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,sec
 
 systemd 
 
-[source,bash]
+[source,shell]
 ----
 [nick@host1 ~]$ systemctl status cgconfig.service 
 ● cgconfig.service - Control Group configuration service
@@ -86,7 +86,7 @@ systemd
 ----
 
 
-[source,bash]
+[source,shell]
 ----
 [nick@host1 ~]$ cat  /etc/cgconfig.conf 
 #
@@ -134,7 +134,7 @@ group ansible-runner {
 
 systemd-cgls
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# systemd-run --unit=toptest --slice=test top -b
 Running as unit: toptest.service
@@ -163,7 +163,7 @@ Add config files for CPU, disk and memory.
 See changes with https://www.freedesktop.org/software/systemd/man/systemd-delta.html[systemd-delta].
 
 
-[source,bash]
+[source,shell]
 ----
 [nick@guest1 ~]$ systemd-delta
 [REDIRECTED] /etc/systemd/system/dbus-org.freedesktop.timedate1.service → /usr/lib/systemd/system/dbus-org.freedesktop.timedate1.se>

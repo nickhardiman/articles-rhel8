@@ -7,7 +7,7 @@ Nick Hardiman <nhardima@redhat.com>
 
 Only one of the two network interfaces, enp1s0 and enp2s0, is up.
 
-[source,bash]
+[source,shell]
 ....
 [nick@guest1 ~]$ ip addr
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
@@ -33,7 +33,7 @@ Only one of the two network interfaces, enp1s0 and enp2s0, is up.
 
 NetworkManager created a configuration to manage enp2s0, but it is not set to start automatically. 
 
-[source,bash]
+[source,shell]
 ....
 [nick@guest1 ~]$ nmcli con 
 NAME    UUID                                  TYPE      DEVICE 
@@ -46,7 +46,7 @@ enp2s0  82d6f9e9-1364-4685-89dd-143c676c946a  ethernet  --
 
 Turn on autoconnect and check again. 
 
-[source,bash]
+[source,shell]
 ....
 [nick@guest1 ~]$ sudo nmcli con mod enp2s0 connection.autoconnect yes
 [sudo] password for nick: 
@@ -63,7 +63,7 @@ The server issues an IP address to guest1.
 
 Check the interface. 
 
-[source,bash]
+[source,shell]
 ....
 [nick@guest1 ~]$ ip addr show dev enp2s0
 3: enp2s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
@@ -81,7 +81,7 @@ Open another terminal.
 
 Check on _host1_. 
 
-[source,bash]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo virsh net-dhcp-leases privbr0 
  Expiry Time           MAC address         Protocol   IP address          Hostname   Client ID or DUID
@@ -96,7 +96,7 @@ Check on _host1_.
 
 NetworkManager created two default network routes for the two interfaces. 
 
-[source,bash]
+[source,shell]
 ....
 [root@guest1 ~]# ip route list
 default via 192.168.1.254 dev enp1s0 proto dhcp metric 100 
@@ -111,7 +111,7 @@ The only default route should be for enp1s0.
 
 The attribute to change is never-default. 
 
-[source,bash]
+[source,shell]
 ....
 [root@guest1 ~]# nmcli con show enp2s0 | grep never-default
 ipv4.never-default:                     no
@@ -121,7 +121,7 @@ ipv6.never-default:                     no
 
 Change the attribute. 
 
-[source,bash]
+[source,shell]
 ....
 [root@guest1 ~]# nmcli connection modify enp2s0 ipv4.never-default yes
 [root@guest1 ~]# nmcli connection modify enp2s0 ipv6.never-default yes
@@ -130,7 +130,7 @@ Change the attribute.
 
 Restart the connectin. 
 
-[source,bash]
+[source,shell]
 ....
 [root@guest1 ~]# nmcli con down enp2s0
 Connection 'enp2s0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/2)
@@ -147,7 +147,7 @@ Check the routing table.
 
 Running _ip r_ is the same as running _ip route list_.
 
-[source,bash]
+[source,shell]
 ....
 [root@guest1 ~]# ip r
 default via 192.168.1.254 dev enp1s0 proto dhcp metric 100 
@@ -158,7 +158,7 @@ default via 192.168.1.254 dev enp1s0 proto dhcp metric 100
 
 Ping Google. 
 
-[source,bash]
+[source,shell]
 ....
 [root@guest1 ~]# ping -c1 8.8.8.8
 PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.

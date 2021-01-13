@@ -26,7 +26,7 @@ check.
 
 New file is added to the httpd.service configuration. 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# systemctl cat httpd.service
 # /usr/lib/systemd/system/httpd.service
@@ -42,7 +42,7 @@ CPUQuota=20%
 
 Register changes. 
 
-[source,bash]
+[source,shell]
 ----
 systemctl daemon-reload 
 systemctl restart apache 
@@ -51,7 +51,7 @@ systemctl restart apache
 Run ab. 
 test goes slower 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# ab -c5  -n 10000 https://192.168.122.4/random.bin
 This is ApacheBench, Version 2.3 <$Revision: 1843412 $>
@@ -68,7 +68,7 @@ top says httpd is using 20% CPU (6.0 + 5.0 + 5.0 + 4.7).
 ab is not working as hard, because it's spending more time waiting on Apache.
 
 
-[source,bash]
+[source,shell]
 ----
 top - 14:11:51 up 11:31,  2 users,  load average: 0.05, 0.73, 0.56
 Tasks: 123 total,   1 running, 122 sleeping,   0 stopped,   0 zombie
@@ -89,7 +89,7 @@ When ab ends, it shows results.
 These results are less impressive. 
 But nothing failed. 
 
-[source,bash]
+[source,shell]
 ----
 ...
 Time taken for tests:   175.076 seconds
@@ -111,7 +111,7 @@ Failed requests:        0
 
 End Apache's suffering by raising the CPU limit. 
 
-[source,bash]
+[source,shell]
 ----
 echo -e "[Service]\nCPUQuota=60%\n" > /usr/lib/systemd/system/httpd.service.d/cpu.conf
 systemctl daemon-reload

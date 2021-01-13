@@ -36,7 +36,7 @@ The naming policy for this file is "__machine_name__.ks".
 The storage policy is to stick everything in one directory off root's home. 
 This kickstart config file goes in the _libvirt_ directory, along with bridge scripts and libvirt XML definitions. 
 
-[source,bash]
+[source,shell]
 ....
 [root@host1 images]# cd
 [root@host1 ~]# mkdir libvirt
@@ -54,7 +54,7 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/pe
 
 An online https://access.redhat.com/labs/kickstartconfig/[kickstart generator] can create kickstart content. The administrator fills in a form and the generator converts it to kickstart config. 
 
-[source,bash]
+[source,shell]
 ....
 # kickstart file for guest1
 
@@ -140,7 +140,7 @@ The kickstart validation utility _ksvalidator_ provides a static analysis of the
 It's not installed by default. 
 The validator helps to catch mistakes like typos. 
 
-[source,bash]
+[source,shell]
 ....
 [root@host1 libvirt]# ksvalidator guest1.ks 
 The following problem occurred on line 3 of the kickstart file:
@@ -153,7 +153,7 @@ Unknown command: ingoredisk
 Install the kickstart tools package. 
 The package also contains tools _ksflatten_, _ksshell_ and _ksverdiff_.
 
-[source,bash]
+[source,shell]
 ....
 [root@host1 libvirt]# dnf install pykickstart 
 ...
@@ -164,7 +164,7 @@ Complete!
 Validate the file. 
 No news is good news. 
 
-[source,bash]
+[source,shell]
 ....
 [root@host1 libvirt]# ksvalidator guest1.ks 
 [root@host1 libvirt]# 

@@ -78,7 +78,7 @@ Perhaps your laptop has a full SD card slot and you need a card adapter, or perh
 Then, when it comes to copying, the OS may either help or get in your way. 
 You may have luck with https://fedoramagazine.org/make-fedora-usb-stick/[Fedora Media Writer], or with these Linux commands.
 
-[source,bash]
+[source,shell]
 ----
 unxz ./Fedora-Minimal-32-1.6.aarch64.raw.xz
 dd if=./Fedora-Minimal-32-1.6.aarch64.raw of=/dev/mmcblk0 bs=8M status=progress oflag=direct
@@ -100,7 +100,7 @@ After setup, the login prompt appears.
 Log in with the _root_ account. 
 The prompt shows the host name is set to _localhost_. 
 
-[source,bash]
+[source,shell]
 ----
 [root@localhost ~]# 
 ----

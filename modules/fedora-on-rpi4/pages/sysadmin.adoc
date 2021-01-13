@@ -30,7 +30,7 @@ There are a few other things to be set up at this point.
 
 The _hostname_ command shows the full name is _localhost.localdomain_.
 
-[source,bash]
+[source,shell]
 ----
 [root@localhost ~]# hostname
 localhost.localdomain

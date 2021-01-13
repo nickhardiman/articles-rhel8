@@ -53,7 +53,7 @@ host has many cgroup settings for each virtual machine.
 Each VM has a scope.
 
 
-[source,bash]
+[source,shell]
 ----
 [nick@host1 machine-qemu\x2d5\x2dguest1.scope]$ cat '/sys/fs/cgroup/blkio/machine.slice/machine-qemu\x2d5\x2dguest1.scope/blkio.throttle.io_service_bytes'
 8:0 Read 13824000
@@ -77,7 +77,7 @@ The read is instant.
 
 This guest machine has nearly 1G of spare memory, so it can fit a lot into its page cache. 
 
-[source,bash]
+[source,shell]
 ----
 free -h        # Look at the buff/cache value. 
 sync           
@@ -92,7 +92,7 @@ free -h        # The buff/cache value has dropped.
 
 set DefaultBlockIOAccounting to yes 
 
-[source,bash]
+[source,shell]
 ----
 set DefaultBlockIOAccounting to yes 
 [root@guest1 ~]# grep Account /etc/systemd/system.conf
@@ -108,14 +108,14 @@ DefaultBlockIOAccounting=yes
 
 Turn on accounting for the httpd.service unit. 
 
-[source,bash]
+[source,shell]
 ----
 systemctl set-property httpd.service BlockIOAccounting=true
 ----
 
 creates this file.
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# cat /etc/systemd/system.control/httpd.service.d/50-BlockIOAccounting.conf
 # This is a drop-in unit file extension, created via "systemctl set-property"
@@ -127,7 +127,7 @@ BlockIOAccounting=yes
 
 
 ./usr/lib/systemd/system/httpd.service.d/disk.conf
-[source,bash]
+[source,shell]
 ----
 [Service]
 BlockIOReadBandwidth=/var/www 100K
@@ -135,7 +135,7 @@ BlockIOReadBandwidth=/var/www 100K
 
 
 
-[source,bash]
+[source,shell]
 ----
 systemctl daemon-reload
 systemctl restart httpd.service
@@ -146,7 +146,7 @@ systemctl restart httpd.service
 
 New files show in _Drop-In_ section of the the service summary. 
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# systemctl status httpd.service
 ● httpd.service - The Apache HTTP Server
@@ -160,7 +160,7 @@ New files show in _Drop-In_ section of the the service summary.
 
 New systemctl settings  
 
-[source,bash]
+[source,shell]
 ----
 [root@guest1 ~]# systemctl show --all httpd.service | grep Block
 BlockIOAccounting=yes
@@ -174,7 +174,7 @@ DropInPaths=/etc/systemd/system.control/httpd.service.d/50-BlockIOAccounting.con
 
 New cgroup settings 
 
-[source,bash]
+[source,shell]
 ----
 with mounted /var/www/
 [root@guest1 ~]# cat /sys/fs/cgroup/blkio/system.slice/httpd.service/blkio.throttle.read_bps_device
@@ -190,7 +190,7 @@ For every subsequent read, the OS only pretends to read the disk.
 
 Use curl to make one request. 
 
-[source,bash]
+[source,shell]
 ----
 free -h        # Look at the buff/cache value. 
 curl -O -k https://192.168.122.4/random.bin # First request is slow. 
@@ -200,7 +200,7 @@ curl -O -k https://192.168.122.4/random.bin # Second request is instant.
 
 Clear the page cache. 
 
-[source,bash]
+[source,shell]
 ----
 sync
 echo 1 > /proc/sys/vm/drop_caches       # clear the page cache. 
@@ -209,7 +209,7 @@ free -h        # The buff/cache value has decreased.
 
 Try again. 
 
-[source,bash]
+[source,shell]
 ----
 curl -O -k https://192.168.122.4/random.bin # This request is slow. 
 ----

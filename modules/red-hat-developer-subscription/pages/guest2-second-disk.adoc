@@ -36,7 +36,7 @@ sudo virsh attach-disk guest2 /home/nick/libvirt/guest_images/second-disk.qcow2 
 ----
 
 persistent
-[source,bash]
+[source,shell]
 ----
 sudo virsh attach-disk guest2 \
   --source /home/nick/libvirt/guest_images/second-disk.qcow2 \
