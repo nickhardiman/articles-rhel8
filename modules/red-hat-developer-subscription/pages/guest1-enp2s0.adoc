@@ -141,14 +141,15 @@ Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkMa
 ....
 
 
-== check your work 
+== check routing 
 
 Check the routing table. 
 
+Running _ip r_ is the same as running _ip route list_.
+
 [source,bash]
 ....
-
-[root@guest1 ~]# ip route list
+[root@guest1 ~]# ip r
 default via 192.168.1.254 dev enp1s0 proto dhcp metric 100 
 192.168.1.0/24 dev enp1s0 proto kernel scope link src 192.168.1.217 metric 100 
 192.168.126.0/24 dev enp2s0 proto kernel scope link src 192.168.126.100 metric 101 

@@ -1,0 +1,192 @@
+= provide DNS with Bind 9 
+Nick Hardiman <nhardima@redhat.com>
+:source-highlighter: pygments
+:toc:
+:revdate: 11-01-2021
+
+
+Tell Bind to 
+
+* Answer questions about the _lab.example.com_ domain. Bind is authoritative for this domain, so it hands over records for hosts like guest1.lab.example.com. 
+* Forward requests for _private.example.com_ records to dnsmasq.
+* Forward all other questions to the home network's DNS server. 
+
+This is a simple config that does not cover anything fancy like DNSSEC or split DNS. 
+
+
+== add a zone file
+
+A zone is a set of names and addresses for a name like www.lab.example.com. 
+Add a zone file that describes lab.example.com. 
+
+Bind already has some zones defined. 
+The details are in files in the /var/named/ directory, such as named.ca which lists servers for the root domain. 
+Bind's config has _zone_ options which tell Bind where these files are. 
+One zone option is in /etc/named.conf and more are in /etc/named.rfc1912.zones
+https://tools.ietf.org/html/rfc1912[RFC 1912] is about "Common DNS Operational and Configuration Errors" and says "certain zones should always be present", so this config file ticks that box. 
+
+
+[source,bash]
+----
+[root@guest1 ~]# cd /var/named/
+[root@guest1 named]# 
+[root@guest1 named]# vi lab.example.com-records
+----
+
+
+These are the records. 
+The file is spaced out to look more like a table (that's another suggestion from RFC 1912). 
+
+[source,bash]
+----
+$TTL 3H
+@    IN SOA    @ root.lab.example.com (
+                    0    ; serial
+                    1D    ; refresh
+                    1H    ; retry
+                    1W    ; expire
+                    3H )    ; minimum
+; these records are names and addresses for lab.example.com
+             IN NS   dns1
+             A       192.168.1.217
+             AAAA    2a00:23c8:1d05:1e00:5054:ff:fe00:1
+; these records are names and addresses for (HOST).lab.example.com
+dns1         IN A    192.168.1.217
+satellite1   IN A    192.168.1.214
+satellite1.lab   IN A    192.168.1.214
+guest1     IN A    192.168.1.217
+----
+
+
+[source,bash]
+----
+$TTL 3H
+@    IN SOA    @ root.lab.example.com (
+                    0    ; serial
+                    1D    ; refresh
+                    1H    ; retry
+                    1W    ; expire
+                    3H )    ; minimum
+            IN NS   dns1.lab.example.com.
+217         IN PTR dns1.lab.example.com.
+214         IN PTR satellite1.lab.example.com.
+214         IN PTR satellite1.lab.lab.example.com.
+217         IN PTR guest1.lab.example.com.
+----
+
+
+
+[source,bash]
+----
+[root@guest1 named]# ls -la 
+total 28
+drwxrwx--T.  5 root  named  177 Dec  3 17:57 .
+drwxr-xr-x. 21 root  root  4096 Dec  2 16:50 ..
+-rw-r-----.  1 root  root   336 Dec  3 17:57 192.168.1-records
+drwxrwx---.  2 named named   23 Dec  2 16:55 data
+drwxrwx---.  2 named named   60 Dec  3 17:57 dynamic
+-rw-r-----.  1 root  named 2253 Aug 21 11:12 named.ca
+-rw-r-----.  1 root  named  152 Aug 21 11:12 named.empty
+-rw-r-----.  1 root  named  152 Aug 21 11:12 named.localhost
+-rw-r-----.  1 root  named  168 Aug 21 11:12 named.loopback
+-rw-r-----.  1 root  root   527 Dec  3 17:55 lab.example.com-records
+drwxrwx---.  2 named named    6 Aug 21 11:12 slaves
+[root@guest1 named]# 
+----
+
+Change the group to match the other files. 
+[source,bash]
+----
+[root@guest1 named]# chown .named lab.example.com-records 192.168.1-records 
+[root@guest1 named]# 
+----
+
+No need to change the SELinux file type - all the files are _named_zone_t_.
+
+
+=== more config 
+
+Tell Bind where the new zone records are. 
+Add these options to the bottom of /etc/named.conf.
+
+[source,bash]
+----
+zone "lab.example.com" IN {
+  type master;
+  file "lab.example.com-records";
+};
+
+zone "1.168.192.in-addr.arpa" IN {
+  type master;
+  file "192.168.1-records";
+};
+----
+
+
+Check the SOA records. 
+
+[source,bash]
+----
+[root@guest1 named]# host -t SOA lab.example.com localhost
+Using domain server:
+Name: localhost
+Address: ::1#53
+Aliases: 
+
+lab.example.com has SOA record lab.example.com. root.lab.example.com.lab.example.com. 0 86400 3600 604800 10800
+[root@guest1 named]# 
+[root@guest1 named]# host -t SOA 1.168.192.in-addr.arpa localhost
+Using domain server:
+Name: localhost
+Address: ::1#53
+Aliases: 
+
+1.168.192.in-addr.arpa has SOA record 1.168.192.in-addr.arpa. root.lab.example.com.1.168.192.in-addr.arpa. 0 86400 3600 604800 10800
+[root@guest1 named]#
+----
+
+Check the NS records. 
+
+[source,bash]
+----
+[root@guest1 named]# host -t NS lab.example.com localhost
+Using domain server:
+Name: localhost
+Address: ::1#53
+Aliases: 
+
+lab.example.com name server dns1.lab.example.com.
+[root@guest1 named]# 
+[root@guest1 named]# host -t NS 1.168.192.in-addr.arpa localhost 
+Using domain server:
+Name: localhost
+Address: ::1#53
+Aliases: 
+
+1.168.192.in-addr.arpa name server dns1.lab.example.com.
+[root@guest1 named]# 
+----
+
+Check one of the A records and the matching PTR record. 
+
+
+[source,bash]
+----
+[root@guest1 named]# host guest1.lab.example.com localhost
+Using domain server:
+Name: localhost
+Address: ::1#53
+Aliases: 
+
+guest1.lab.example.com has address 192.168.1.217
+[root@guest1 named]# host 192.168.1.217 localhost
+Using domain server:
+Name: localhost
+Address: ::1#53
+Aliases: 
+
+217.1.168.192.in-addr.arpa domain name pointer dns1.lab.example.com.
+217.1.168.192.in-addr.arpa domain name pointer guest1.lab.example.com.
+[root@guest1 named]# 
+----
+

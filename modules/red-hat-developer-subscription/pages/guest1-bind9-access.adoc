@@ -1,0 +1,402 @@
+= provide DNS with Bind 9 
+Nick Hardiman <nhardima@redhat.com>
+:source-highlighter: pygments
+:toc:
+:revdate: 11-01-2021
+
+
+Install https://www.isc.org/bind/[ISC Bind].
+Configure it to answer queries from the network. 
+
+
+public network - 
+  Gateway serves DHCP, DNS 
+
+.guest1 network 
+....
+  |  
+  | Internet
+  |
++-+-------------------------------------+
+|                                       |
+|     ISP router                        |
+|                                       |
++-+-------------------------------------+
+  |
+  | home network 
+  | 192.168.1.0/24
+  |
++-+-------------------------------------+
+| enp1s0                                |
+|    guest1.lab.example.com             |
+| enp2s0                                |
++-+-------------------------------------+
+  |
+  | private network 
+  | 192.168.152.0/24
+  | privbr0
+
+....
+
+
+=== connect using SSH
+
+[source,console]
+....
+[nick@host1 ~]$ ssh guest1
+The authenticity of host 'guest1 (192.168.1.123)' can't be established.
+ECDSA key fingerprint is SHA256:JcjI8AIHkUvat0qdM1OqDPzY0jughZC5ZOuU/uvApmk.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'guest1,192.168.1.123' (ECDSA) to the list of known hosts.
+nick@guest1's password: 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Fri May 29 12:15:41 2020
+[nick@guest1 ~]$ 
+....
+
+When finished, disconnect with _exit_. 
+
+[source,console]
+----
+[nick@guest1 ~]$ exit
+logout
+Connection to 192.168.152.218 closed.
+[nick@host1 ~]$ 
+----
+
+== install bind 
+
+The bind package provides the named service, database and administrator tools like rndc, named-checkconf.
+The bind_utils package provides more administrator tools like dig, dnssec-keygen and named-checkzone.
+
+[source,bash]
+----
+[nick@guest1 ~]$ sudo -i
+[root@guest1 ~]# 
+[root@guest1 ~]# dnf install bind bind-utils
+Updating Subscription Management repositories.
+Last metadata expiration check: 1:39:20 ago on Wed 13 Jan 2021 09:20:29 GMT.
+Dependencies resolved.
+================================================================================
+ Package        Arch   Version           Repository                        Size
+================================================================================
+Installing:
+ bind           x86_64 32:9.11.20-5.el8  rhel-8-for-x86_64-appstream-rpms 2.1 M
+ bind-utils     x86_64 32:9.11.20-5.el8  rhel-8-for-x86_64-appstream-rpms 445 k
+Installing dependencies:
+ bind-libs      x86_64 32:9.11.20-5.el8  rhel-8-for-x86_64-appstream-rpms 172 k
+ bind-libs-lite x86_64 32:9.11.20-5.el8  rhel-8-for-x86_64-appstream-rpms 1.2 M
+ bind-license   noarch 32:9.11.20-5.el8  rhel-8-for-x86_64-appstream-rpms 101 k
+ python3-bind   noarch 32:9.11.20-5.el8  rhel-8-for-x86_64-appstream-rpms 149 k
+ python3-ply    noarch 3.9-8.el8         rhel-8-for-x86_64-baseos-rpms    108 k
+
+Transaction Summary
+================================================================================
+Install  7 Packages
+
+Total download size: 4.2 M
+Installed size: 9.7 M
+Is this ok [y/N]: 
+----
+
+== start the named service
+
+[source,bash]
+----
+[root@guest1 ~]# systemctl status named
+● named.service - Berkeley Internet Name Domain (DNS)
+   Loaded: loaded (/usr/lib/systemd/system/named.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+[root@guest1 ~]# 
+----
+
+
+[source,bash]
+----
+[root@guest1 ~]# systemctl enable named
+Created symlink /etc/systemd/system/multi-user.target.wants/named.service → /usr/lib/systemd/system/named.service.
+[root@guest1 ~]# 
+[root@guest1 ~]# systemctl start named
+[root@guest1 ~]# 
+----
+
+after 
+
+[source,bash]
+----
+[root@guest1 named]# systemctl status named
+● named.service - Berkeley Internet Name Domain (DNS)
+   Loaded: loaded (/usr/lib/systemd/system/named.service; enabled; vendor prese>
+   Active: active (running) since Wed 2020-12-02 16:55:02 GMT; 3h 55min ago
+  Process: 6703 ExecStart=/usr/sbin/named -u named -c ${NAMEDCONF} $OPTIONS (co>
+  Process: 6700 ExecStartPre=/bin/bash -c if [ ! "$DISABLE_ZONE_CHECKING" == "y>
+ Main PID: 6705 (named)
+    Tasks: 5 (limit: 23328)
+   Memory: 59.5M
+   CGroup: /system.slice/named.service
+           └─6705 /usr/sbin/named -u named -c /etc/named.conf
+
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: zone 0.in-addr.arpa/IN: loaded >
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: zone 1.0.0.127.in-addr.arpa/IN:>
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: zone localhost/IN: loaded seria>
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: zone 1.0.0.0.0.0.0.0.0.0.0.0.0.>
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: zone localhost.localdomain/IN: >
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: all zones loaded
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: running
+Dec 02 16:55:02 guest1.lab.example.com systemd[1]: Started Berkeley Internet Name D>
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: managed-keys-zone: Key 20326 fo>
+Dec 02 16:55:02 guest1.lab.example.com named[6705]: resolver priming query complete
+[root@guest1 named]# 
+----
+
+This text is displayed by a pager, which truncates long lines to fit the screen. 
+Use arrow keys to scroll to the right and see the rest of the lines. 
+To see all of these long lines without the pager, add some options to this command: `systemctl --no-pager --full status named`.
+
+
+
+== Check fowarding 
+
+Name resolution is set to check two DNS servers - one on the home network, and one on the private network. 
+
+[source,bash]
+----
+[root@guest1 ~]# cat /etc/resolv.conf 
+# Generated by NetworkManager
+search home lab.example.com
+nameserver 192.168.1.254
+nameserver 192.168.152.1
+[root@guest1 ~]# 
+----
+
+NetworkManager received these details from DHCP services when it was bringing up the interfaces, when the OS booted up. 
+It copied the details to the /etc/resolv.conf file. 
+
+We don't want these settings. 
+We want to use our new local DNS server.
+
+The local name server also uses these nameserver settings.
+
+[source,bash]
+----
+[root@guest1 ~]# host www.google.com localhost
+Using domain server:
+Name: localhost
+Address: ::1#53
+Aliases: 
+
+www.google.com has address 216.58.212.196
+www.google.com has IPv6 address 2a00:1450:4009:80a::2004
+[root@guest1 ~]# 
+----
+
+
+
+== named only listens on lo 
+
+The new name server only responds to requests from guest1. 
+It is listening to the localhost interface _lo_, not the two network interfaces - _lo_ and _enp1s0_. 
+127.0.0.1 is the loopback interface's IPv4 address and [::1] is the IPv6 address. 
+
+[source,console]
+....
+[nick@guest1 ~]$ ss  -l '( sport = :domain or dport = :domain )'
+Netid  State    Recv-Q   Send-Q     Local Address:Port       Peer Address:Port  
+udp    UNCONN   0        0              127.0.0.1:domain          0.0.0.0:*     
+udp    UNCONN   0        0                  [::1]:domain             [::]:*     
+tcp    LISTEN   0        10             127.0.0.1:domain          0.0.0.0:*     
+tcp    LISTEN   0        10                 [::1]:domain             [::]:*     
+[nick@guest1 ~]$ 
+....
+
+The config file contains https://bind9.readthedocs.io/en/latest/reference.html?highlight=listen-on#interfaces[listen-on] options.
+These tell Bind to listen only to the loopback interface, so the rest of the network can't talk to it. 
+
+[source,bash]
+----
+[root@guest1 ~]# grep listen-on /etc/named.conf 
+  listen-on port 53 { 127.0.0.1; };
+	listen-on-v6 port 53 { ::1; };
+[root@guest1 ~]# 
+----
+
+https://bind9.readthedocs.io/en/latest/reference.html?highlight=allow-query#access-control[Access control] also prevents the network using Bind. 
+
+[source,bash]
+----
+[root@guest1 ~]# grep allow- /etc/named.conf
+	allow-query     { localhost; };
+[root@guest1 ~]# 
+----
+
+
+
+== listen to all interfaces 
+
+Make Bind listen to the network address. 
+This requires changing both the Bind config and firewalld's config. 
+
+* The IPv4 default is to listen to all interfaces. 
+* The IPv6 default is not to listen. 
+
+Edit the configuration. 
+
+[source,bash]
+----
+[root@guest1 ~]# vi /etc/named.conf
+----
+
+Comment out the IPv4 line. 
+
+[source,bash]
+----
+  #listen-on port 53 { 127.0.0.1; };
+  listen-on-v6 port 53 { ::1; };
+----
+
+Check the change is OK. 
+
+This is good. 
+
+[source,bash]
+----
+[root@guest1 ~]# named-checkconf /etc/named.conf
+[root@guest1 ~]# 
+----
+
+This is bad. The problem here is a https://en.wikipedia.org/wiki/Fat-finger_error[fat-finger error]: *~* instead of *#*. 
+
+[source,bash]
+----
+[root@guest1 ~]# named-checkconf /etc/named.conf
+/etc/named.conf:11: unknown option '~listen-on'
+[root@guest1 ~]# 
+----
+
+
+Reload the configuration. 
+
+[source,bash]
+----
+[root@guest1 ~]# systemctl reload named
+[root@guest1 ~]# 
+----
+
+Bind starts listening to all interfaces. 
+
+* the IPv4 address 192.168.1.217 was issued by the home network's DHCP service to enp1s0.
+* the IPv4 address 192.168.152.100 was issued by dnsmasq's DHCP service to enp2s0.
+
+[source,bash]
+----
+[root@guest1 ~]# ss -ln | grep :53
+udp                UNCONN              0                    0                                                          192.168.152.100:53               0.0.0.0:*                                                                               
+udp                UNCONN              0                    0                                                            192.168.1.217:53               0.0.0.0:*                                                                               
+udp                UNCONN              0                    0                                                                127.0.0.1:53               0.0.0.0:*                                                                               
+udp                UNCONN              0                    0                                                                    [::1]:53                  [::]:*                                                                               
+tcp                LISTEN              0                    10                                                         192.168.152.100:53               0.0.0.0:*                                                                               
+tcp                LISTEN              0                    10                                                           192.168.1.217:53               0.0.0.0:*                                                                               
+tcp                LISTEN              0                    10                                                               127.0.0.1:53               0.0.0.0:*                                                                               
+tcp                LISTEN              0                    10                                                                   [::1]:53                  [::]:*                                                                               
+[root@guest1 ~]# 
+----
+
+Check. 
+
+[source,bash]
+----
+[root@guest1 ~]# host www.google.com  192.168.1.217
+Using domain server:
+Name: 192.168.1.217
+Address: 192.168.1.217#53
+Aliases: 
+
+www.google.com has address 216.58.210.36
+www.google.com has IPv6 address 2a00:1450:4009:800::2004
+[root@guest1 ~]# 
+----
+
+
+== allow requests through the firewall 
+
+Check DNS. 
+Try a lookup from host _host1_. 
+
+Nothing happens, then the attempt times out. 
+
+[source,bash]
+----
+[nick@host1 ~]$ host www.google.com 192.168.1.217
+...(big pause)...
+;; connection timed out; no servers could be reached
+[nick@host1 ~]$ 
+----
+
+Edit the firewall on guest1. 
+
+[source,bash]
+----
+[root@guest1 ~]# firewall-cmd --add-service=dns
+success
+[root@guest1 ~]# firewall-cmd --add-service=dns --permanent
+success
+[root@guest1 ~]# 
+----
+
+Try again from host1. 
+
+This time the reply is instant, but it's refused. 
+Bind has a security feature that only allows queries from localhost. 
+That's the next thing to change. 
+
+[source,bash]
+----
+[nick@host1 ~]$ host www.google.com 192.168.1.217
+Using domain server:
+Name: 192.168.1.217
+Address: 192.168.1.217#53
+Aliases: 
+
+Host www.google.com not found: 5(REFUSED)
+[nick@host1 ~]$ 
+----
+
+
+== change access control 
+
+Bind has many https://bind9.readthedocs.io/en/latest/reference.html?highlight=listen-on#access-control[access control] options, and most of them start with _allow-_.
+The only one included in the default config file is _allow-query_. 
+
+Edit the configuration. 
+
+The default is to allow all queries, so comment out the statement. 
+
+[source,bash]
+----
+	#allow-query     { localhost; };
+----
+
+Reload the configuration with _systemctl reload named_.
+
+Check again from host1. 
+
+[source,bash]
+----
+[nick@host1 ~]$ host www.google.com 192.168.1.217
+Using domain server:
+Name: 192.168.1.217
+Address: 192.168.1.217#53
+Aliases: 
+
+www.google.com has address 216.58.212.196
+www.google.com has IPv6 address 2a00:1450:4009:80a::2004
+[nick@host1 ~]$ 
+----
+
+Bind is now talking to the network. 
+
+

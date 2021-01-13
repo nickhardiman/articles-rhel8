@@ -39,8 +39,9 @@
 *** xref:guest1-enp2s0.adoc[]
 *** xref:guest1-dnsmasq-ip-pool.adoc[]
 *** xref:guest1-dnsmasq-dhcp-dns.adoc[]
-*** xref:guest1-dns-bind9.adoc[]
-*** xref:guest1-dns-nmcli.adoc[]
+*** xref:guest1-bind9-access.adoc[]
+*** xref:guest1-bind9-zone.adoc[]
+*** xref:guest1-bind9-nmcli.adoc[]
 *** _guest2 things_
 *** xref:guest2-libguestfs-tools.adoc[]
 *** xref:guest2-dnsmasq-dhcp.adoc[]
