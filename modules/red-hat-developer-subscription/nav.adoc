@@ -22,6 +22,7 @@
 *** xref:host1-dnf-update.adoc[]
 *** xref:host1-dnf-module-view.adoc[] 
 *** xref:host1-more-shells.adoc[]
+*** xref:host1-cockpit.adoc[]
 *** _virtual network things_
 *** xref:libvirt-notes.adoc[]
 *** xref:host1-dnf-module-virt.adoc[] 
@@ -44,15 +45,14 @@
 *** xref:guest1-bind9-nmcli.adoc[]
 *** _guest2 things_
 *** xref:guest2-libguestfs-tools.adoc[]
+*** xref:guest2-virt-install.adoc[]
 *** xref:guest2-dnsmasq-dhcp.adoc[]
 *** xref:guest2-second-disk.adoc[]
 *** _guest3 things_
 *** _infrastructure things_
-*** xref:cockpit.adoc[]
 *** xref:chrony.adoc[] 
 *** xref:chrony-service.adoc[] 
 *** xref:journald.adoc[] 
-*** xref:dns-bind9.adoc[] 
 *** xref:kexec-kdump.adoc[] 
 *** _security things_
 *** xref:aide.adoc[]

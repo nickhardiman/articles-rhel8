@@ -1,8 +1,8 @@
-= cockpit 
+= use cockpit 
 Nick Hardiman
 :source-highlighter: pygments
 :toc: 
-:revdate: 01-06-2020
+:revdate: 14-01-2021
 
 
 https://cockpit-project.org/[Cockpit] is a server management system with a web-based control panel.
@@ -14,11 +14,11 @@ Connecting to a RHEL 8 host displays an MOTD (Message of the Day) that lets the 
 
 [source,console]
 ----
-somehost:~ nick$ ssh 10.0.1.45
+workstation:~ nick$ ssh 10.0.1.45
 Activate the web console with: systemctl enable --now cockpit.socket
 
 Last login: Thu May 14 17:29:53 2020 from 10.0.1.3
-[nick@rhel8 ~]$ 
+[nick@host1 ~]$ 
 ----
 
 == components 
@@ -34,28 +34,28 @@ Connecting to the socket starts cockpit.service.
 
 [source,console]
 ....
-[nick@host ~]$ systemctl status cockpit.socket
+[nick@host1 ~]$ systemctl status cockpit.socket
 ● cockpit.socket - Cockpit Web Service Socket
    Loaded: loaded (/usr/lib/systemd/system/cockpit.socket; disabled; vendor pre>
    Active: inactive (dead)
      Docs: man:cockpit-ws(8)
    Listen: [::]:9090 (Stream)
-[nick@host ~]$ 
-[nick@host ~]$ sudo systemctl enable --now cockpit.socket
+[nick@host1 ~]$ 
+[nick@host1 ~]$ sudo systemctl enable --now cockpit.socket
 [sudo] password for nick: 
 Created symlink /etc/systemd/system/sockets.target.wants/cockpit.socket → /usr/lib/systemd/system/cockpit.socket.
-[nick@host ~]$ 
+[nick@host1 ~]$ 
 ....
 
 After it's enabled, the MOTD message changes. 
 
 [source,console]
 ----
-somehost:~ nick$ ssh 10.0.1.45
+workstation:~ nick$ ssh 10.0.1.45
 Web console: https://host.lab.example.com:9090/ or https://10.0.1.40:9090/
 
 Last login: Thu May 14 17:29:53 2020 from 10.0.1.3
-[nick@rhel8 ~]$ 
+[nick@host1 ~]$ 
 ----
 
 
@@ -65,12 +65,16 @@ The service is available on port 9090, with an URL along the lines of https://10
 
 The default server config uses a self-signed certificate.
 
+from `man remotectl`: 
+The remotectl program is a tool for configuring remote access to this system. 
+Currently it manages cockpit's SSL certificate.
+
 [source,console]
 ----
-[nick@guest1 ~]$ sudo remotectl certificate
+[nick@host1 ~]$ sudo remotectl certificate
 [sudo] password for nick: 
 certificate: /etc/cockpit/ws-certs.d/0-self-signed.cert
-[nick@guest1 ~]$ 
+[nick@host1 ~]$ 
 ----
 
  Web browsers don't like self-signed certificates. 
@@ -90,7 +94,7 @@ The journal may contain many _gnutls_handshake_ errors.
 
 [source,console]
 ----
-[nick@guest1 ~]$ sudo journalctl -f
+[nick@host1 ~]$ sudo journalctl -f
 ...
 Jul 23 17:43:02 host1 cockpit-tls[14712]: cockpit-tls: gnutls_handshake failed: A TLS fatal alert has been received.
 ----
@@ -124,48 +128,11 @@ Servers are copied to the config file
 /etc/cockpit/machines.d/99-webui.json.
 
 
-== satellite integration 
+=== from cockpit to remote machines
 
-https://100things.wzzrd.com/2018/06/27/Running-cockpit-on-a-Satellite-Capsule-Foreman-Proxy.html[Running cockpit on a Satellite Capsule / Foreman Proxy]
-
-https://theforeman.org/plugins/foreman_remote_execution/1.7/index.html
-
-3.6 Cockpit integration
-
-To automatically sign to managed host’s Cockpit web interface, click on “Web Console” button on the host detail page. The button only appears when plugin was installed with --enable-foreman-proxy-plugin-remote-execution-cockpit option. The managed host must also have the cockpit-system package installed.
-
-Chris Proctor's mail 
-
-On the satellite server you need to do:
-
-[source,console]
-----
-foreman-installer --scenario satellite --enable-foreman-plugin-remote-execution-cockpit
-----
-
-which adds the "web console" button to the satellite gui. Thats the bit I'd missed 🙄
-
-
-Then on the client you need to install the packages with `yum install cockpit`.
-
-You don't need to enable the socket or anything like that, just install the packages.
-
-You also need to allow the foreman-proxy to login to the server via ssh without a password.
-
-[source,console]
-----
-ssh-copy-id ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub root@client
-----
-
-If you want to use a different user then you can change the user the remote execution uses to log in. In satellite go to Administer-> Settings and on the Remote Execution tab change the  "SSH User" setting to a valid user on the client, then use ssh-copy-id to copy the foreman-proxy user's ssh key to the appropriate home directory on the client, e.g.:
-
-[source,console]
-----
-ssh-copy-id ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub user@client
-----
-
-and at that point the "web console" button will take you into cockpit running as the non-privileged user, so you will be able to view settings, but to change them you will need the appropriate sudo settings.
-
-Cockpit itself works by having a web interface (running on the satellite in our case) that talks to the client using ssh as a transport mechanism, but instead of running a bash shell on the client it runs cockpit-bridge which uses the cockpit pam stack to authenticate and can run commands, talk to dbus etc and sends the results back in a way the gui can understand. So we need ssh ports open between the satellite and the client but shouldn't need anything else.
+Cockpit itself works by having a web interface that talks to the client using SSH as a transport mechanism
+Instead of running a bash shell on the client, it runs cockpit-bridge.
+This uses the cockpit PAM stack to authenticate and run commands, talk to dbus, etc. and sends the results back in a way the GUI can understand. 
+So we need ssh ports open between the cockpit and clients.
 
 
