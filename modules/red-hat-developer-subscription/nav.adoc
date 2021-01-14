@@ -23,6 +23,7 @@
 *** xref:host1-dnf-module-view.adoc[] 
 *** xref:host1-more-shells.adoc[]
 *** xref:host1-cockpit.adoc[]
+*** xref:host1-cockpit-machines.adoc[]
 *** _virtual network things_
 *** xref:libvirt-notes.adoc[]
 *** xref:host1-dnf-module-virt.adoc[] 
