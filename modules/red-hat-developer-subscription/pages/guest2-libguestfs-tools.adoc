@@ -1,4 +1,4 @@
-= copy an image using libguestfs-tools 
+= copy a golden image using libguestfs-tools 
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: pygments
 :toc: 
@@ -11,6 +11,20 @@ A new virtual machine is built by copying the golden image and customizing the c
 ----
 sudo dnf install libguestfs-tools  # for virt-resize and virt-customize
 ----
+
+
+== a golden image 
+
+Creating a VM using a golden image is quicker than a fresh install. 
+Creating many VMs using a golden image does not mean they are all identical - Each new image is edited to make a few configuration changes. 
+A new machine may need a unique MAC address, host name and private key. 
+A golden image is often a base OS, rather than a complete installation. 
+It contains a minimal set of packages, ready to extend for business applications. 
+
+An alternative process is a _fresh install_, where all packages are  installed  from scratch onto an empty volume.
+The _guest1_ VM is a fresh install, using a kickstart file to automate the process. 
+
+
 
 == examine the golden image 
 

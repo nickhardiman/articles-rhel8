@@ -1,0 +1,224 @@
+= create the guest2 VM 
+Nick Hardiman 
+:source-highlighter: pygments
+:toc: 
+:revdate: 14-01-2021
+
+
+
+Use libvirt to create a virtual machine for Satellite. 
+
+Use a  *golden image* process. 
+Use a disk file that already has the OS installed - this is the golden image. 
+Make a copy of this image.
+
+The ready-made _guest2_ disk image is a copy of the golden image (the RHEL 8 KVM file).
+This is a minimal install containing a couple hundred packages. 
+This new copy is used to build the new _guest2_ virtual machine. 
+
+
+
+
+
+== create the libvirt domain 
+
+Create a VM using the ready-made _guest2_ disk image. 
+
+
+=== using XML config 
+
+A new VM can be created using a command like ``virsh define my-machine.xml``, 
+similar to the way a storage pool can be created using ``virsh pool-define storage-pool.xml``.
+
+ut the XML configuration that defines a virtual machine is complicated. 
+It's easier to use the ``virt-install`` command to do the hard work. 
+
+
+=== using the virt-install command
+
+This ``virt-install`` command is pretty long, so it's split over many lines to make it a little clearer. 
+And the values are parameterized to make them clearer, too.  
+
+These are the values.
+
+[source,bash]
+----
+HOST=guest2 
+CPUS=1
+MEMORY=2048
+POOL=images
+VOLUME=$HOST.qcow2
+OS_VARIANT=rhel8.3
+IF1_MAC=52:54:00:00:00:03
+IF1_BRIDGE=privbr0
+----
+
+This version of the virt-install command is different to the ones used to create _myfirstvm_ and _guest1_. 
+
+[source,bash]
+----
+virt-install   \
+    --name       $HOST   \
+    --vcpus      $CPUS \
+    --memory     $MEMORY \
+    --disk       vol=$POOL/$VOLUME  \
+    --os-variant $OS_VARIANT \
+    --network    bridge:${IF1_BRIDGE},mac=$IF1_MAC   \
+    --import   \
+    --noautoconsole
+----
+
+Here's an explanation of what's going on. 
+
+* --name sets the name that libvirt uses (not the OS hostname). 
+* --vcpus, --ram, --disk - The next three options add resources - 1 CPU, 2048MiB memory and a 10GiB disk.
+* --boot sets the firmware -   UEFI rather than the older BIOS.
+* --os-variant sets up some default values. 
+The command ``osinfo-query os`` lists all the choices. 
+* --network defines the ethernet interface and which libvirt network it's connected to.
+* --import - use the disk to boot the new VM. 
+* --noautoconsole - when the virt-install command kicks off the build of the VM, don't hang around and connect to the console. 
+That's done as a seperate step. 
+
+Read `man virt-install` for all the options (and there are a truck-load). 
+The virt-install tool has a lot of default settings, so there is no need to specify options like `--connect qemu:///system` for the hypervisor and `--graphics spice` for a graphical desktop. 
+
+
+
+Create a new VM using a ready-made disk image.
+Copy and paste the values, then the virt-install command. 
+
+The command is pretty quick. 
+
+[source,console]
+----
+[root@rpi4 images]# virt-install \
+>   --name="does-it-work" \
+>   --vcpus=1 \
+>   --ram=1024 \
+>   --disk path=/var/lib/libvirt/images/does-it-work.raw \
+>   --boot uefi \
+>   --os-variant fedora33 \
+>   --graphics none \
+>   --noautoconsole
+
+Starting install...
+Domain creation completed.
+[root@rpi4 images]# 
+----
+
+libvirt adds XML configuration 
+
+Now there is a VM.
+
+[source,console]
+----
+[root@rpi4 images]# virsh list --all
+ Id   Name           State
+------------------------------
+ 1    does-it-work   running
+
+[root@rpi4 images]# 
+----
+
+
+A storage pool has been automatically created. 
+Libvirt creates a new XML configuration file /etc/libvirt/storage/images.xml. 
+
+[source,console]
+....
+[root@rpi4 images]# virsh pool-list
+ Name     State    Autostart
+------------------------------
+ images   active   yes
+
+[root@rpi4 images]# 
+....
+
+
+
+
+== use the console 
+
+Connect to the console with the ``virsh console`` command.
+It takes a minute for boot-up to finish, so you may see many boot-up messages appearing on the console. 
+Finally anaconda starts to handle the install process, and stops at the first interactive prompt. 
+
+
+[source,console]
+----
+[root@rpi4 images]# virsh console does-it-work
+Connected to domain does-it-work
+Escape character is ^] (Ctrl + ])
+[  OK  ] Finished Rebuild Hardware Database.
+         Starting Rule-based Manage…for Device Events and Files...
+[  OK  ] Started Rule-based Manager for Device Events and Files.
+[  OK  ] Finished Monitoring of LVM… dmeventd or progress polling.
+...
+================================================================================
+1) [x] Language settings                 2) [x] Time settings
+       (English (United States))                (US/Eastern timezone)
+3) [x] Network configuration             4) [x] Root password
+       (Wired (enp1s0) connected)               (Disabled. Set password to
+                                                enable root account.)
+5) [ ] User creation
+       (No user will be created)
+
+Please make a selection from the above ['c' to continue, 'q' to quit, 'r' to
+refresh]: 
+----
+
+That's enough to prove the virtual machine runs. 
+
+Disconnect from the console. 
+The disconnection command is ``ctrl`` + ``]``
+
+[source,console]
+----
+^]
+[root@rpi4 images]# 
+----
+
+
+== stop the VM
+
+Usually we stop a VM with the command ``virsh shutdown guest1``. 
+This is a graceful shutdown, like running ``systemctl poweroff``.
+
+But here we want to pull the plug, using ``virsh destroy guest1``.
+Despite the dramatic _destroy_ name, this does not delete anything. 
+
+[source,console]
+----
+[root@rpi4 images]# virsh destroy does-it-work
+Domain does-it-work destroyed
+
+[root@rpi4 images]# 
+----
+
+
+== delete the VM
+
+Delete the new VM with the command  ``virsh undefine``.
+
+[source,console]
+----
+[root@rpi4 images]# virsh undefine --nvram does-it-work 
+Domain does-it-work has been undefined
+
+[root@rpi4 images]# 
+----
+
+Check it's gone. 
+
+[source,console]
+....
+[root@rpi4 images]# virsh list --all
+ Id   Name   State
+--------------------
+
+[root@rpi4 images]# 
+....
+
+
+
