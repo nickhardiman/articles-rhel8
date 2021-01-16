@@ -1,5 +1,5 @@
 site:
-  title: Nick Hardiman, Red Hat consultant
+  title: Nick Hardiman, caveman with a keyboard
   url: https://nickhardiman.netlify.app
   start_page: articles:ROOT:index.adoc
 content:
@@ -8,6 +8,5 @@ content:
     branches: main
 ui: 
   bundle:
-    url: https://github.com/nickhardiman/antora-ui/blob/master/build/ui-bundle.zip
+    url: https://github.com/nickhardiman/antora-ui/raw/master/build/ui-bundle.zip
     snapshot: true
-
