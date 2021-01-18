@@ -1,0 +1,37 @@
+= use an NFS share
+Nick Hardiman
+:source-highlighter: pygments
+:toc: 
+:revdate: 18-01-2021
+
+
+
+=== create a file 
+
+Temporarily mount the NFS share and create a new empty file.
+
+[source,shell]
+----
+[root@guest2 nfs]# mount guest1:/var/nfs/pv1 /mnt
+[root@guest2 nfs]# 
+[root@guest2 nfs]# touch /mnt/hello
+[root@guest2 nfs]# 
+[root@guest2 nfs]# umount /mnt
+[root@guest2 nfs]# 
+----
+
+== check on guest1 
+
+Check the file. 
+It's owned by nobody. 
+
+[source,shell]
+----
+[root@guest1 nfs]# ls -la /var/nfs/pv1
+total 0
+drwxrwxrwx. 2 root   root   19 Jan 18 15:38 .
+drwxr-xr-x. 5 root   root   39 Jan 18 15:34 ..
+-rw-r--r--. 1 nobody nobody  0 Jan 18 15:38 hello
+[root@guest1 nfs]# 
+----
+

@@ -10,6 +10,9 @@ https://en.wikipedia.org/wiki/Network_File_System[NFS (Network File System)] all
 Set up an NFS server. 
 Use the latest version 4 - this has been around for many years. 
 
+== a share and an export 
+
+
 == install 
 
 The core of NFS is built into the kernel. 
@@ -116,23 +119,47 @@ vers4.2 = y
 
 Disable the older versions. 
 
+Don't set _vers4_ to _n_.  
+The service will complain "rpc.nfsd: no version specified" and refuse to start. 
+
+[source,shell]
+----
+[root@guest1 ~]# nfsconf --set nfsd vers4.1 n
+[root@guest1 ~]# nfsconf --set nfsd vers4.0 n
+[root@guest1 ~]# nfsconf --set nfsd vers3 n
+[root@guest1 ~]# 
+----
 
 
 === systemd  
 
-before 
+The NFS service does not run by default.  
 
+[source,shell]
+----
 [root@guest1 ~]# systemctl status nfs-server
 ● nfs-server.service - NFS server and services
    Loaded: loaded (/usr/lib/systemd/system/nfs-server.service; disabled; vendor preset: disabled)
    Active: inactive (dead)
 [root@guest1 ~]# 
+[root@guest1 ~]# systemctl start nfs-server
+[root@guest1 ~]# 
+----
 
-after 
+Enable and run. 
 
 [source,shell]
 ----
-[root@helper pv1]# systemctl status nfs-server
+[root@guest1 ~]# systemctl enable nfs-server
+Created symlink /etc/systemd/system/multi-user.target.wants/nfs-server.service → /usr/lib/systemd/system/nfs-server.service.
+[root@guest1 ~]# 
+----
+
+Check. 
+
+[source,shell]
+----
+[root@guest1 pv1]# systemctl status nfs-server
 ● nfs-server.service - NFS server and services
    Loaded: loaded (/usr/lib/systemd/system/nfs-server.service; enabled; vendor preset: disabled)
   Drop-In: /run/systemd/generator/nfs-server.service.d
@@ -145,8 +172,29 @@ after
 
 Oct 20 02:47:33 helper systemd[1]: Starting NFS server and services...
 Oct 20 02:47:34 helper systemd[1]: Started NFS server and services.
-[root@helper pv1]# 
+[root@guest1 pv1]# 
 ----
+
+The service exited, but things are working. 
+
+The kernel loads some modules related to nfs. 
+
+[source,shell]
+----
+[root@guest1 ~]# lsmod | grep nfs
+nfsd                  471040  13
+auth_rpcgss           114688  1 nfsd
+nfs_acl                16384  1 nfsd
+lockd                 122880  1 nfsd
+grace                  16384  2 nfsd,lockd
+sunrpc                479232  14 nfsd,auth_rpcgss,lockd,nfs_acl
+[root@guest1 ~]# 
+----
+
+New processes are running, including the NFSv4 Client Tracking Daemon _nfsdcld_ and some NFS server processes _nfsd_.
+NFS processes are described in https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/managing_file_systems/mounting-nfs-shares_managing-file-systems[Red Hat's user guide]. 
+
+
 
 == share directories 
 
@@ -154,26 +202,24 @@ Oct 20 02:47:34 helper systemd[1]: Started NFS server and services.
 
 [source,shell]
 ----
-[root@helper ~]# mkdir /var/nfs
-[root@helper ~]# 
-[root@helper ~]# cd /var/nfs
-[root@helper nfs]# 
-[root@helper nfs]# mkdir pv1
-[root@helper nfs]# mkdir pv2
-[root@helper nfs]# mkdir pv3
-[root@helper nfs]# 
+[root@guest1 ~]# mkdir /var/nfs
+[root@guest1 ~]# 
+[root@guest1 ~]# cd /var/nfs
+[root@guest1 nfs]# 
+[root@guest1 nfs]# mkdir pv1 pv2 pv3
+[root@guest1 nfs]# 
 ----
 
 [source,shell]
 ----
-[root@helper nfs]# ls -l
+[root@guest1 nfs]# ls -l
 total 0
 drwxr-xr-x. 2 root root 6 Oct 20 09:15 pv1
 drwxr-xr-x. 2 root root 6 Oct 20 09:15 pv2
 drwxr-xr-x. 2 root root 6 Oct 20 09:15 pv3
-[root@helper ~]# 
-[root@helper nfs]# chmod 777 *
-[root@helper nfs]# 
+[root@guest1 ~]# 
+[root@guest1 nfs]# chmod 777 *
+[root@guest1 nfs]# 
 ----
 
 
@@ -183,120 +229,143 @@ Add config for the new exports.
 
 [source,shell]
 ----
-[root@helper nfs]# vi /etc/exports
+[root@guest1 nfs]# vi /etc/exports
 
-/export	*(rw,sync,root_squash)
 /var/nfs/pv1	*(rw,sync,root_squash)
 /var/nfs/pv2	*(rw,sync,root_squash)
 /var/nfs/pv3	*(rw,sync,root_squash)
-[root@helper pv1]# 
+[root@guest1 pv1]# 
 ----
 
 Tell the NFS service about the new exports.
 
 [source,shell]
 ----
-[root@helper pv1]# exportfs -ra
-[root@helper pv1]# 
+[root@guest1 pv1]# exportfs -ra
+[root@guest1 pv1]# 
 ----
 
 Check.
 
 [source,shell]
 ----
-[root@helper pv1]# exportfs 
+[root@guest1 pv1]# exportfs 
 /export       	<world>
 /var/nfs/pv1  	<world>
 /var/nfs/pv2  	<world>
 /var/nfs/pv3  	<world>
-[root@helper pv1]#
+[root@guest1 pv1]#
 ----
 
 == open the firewall 
 
-NFS v3 and v4 ports 
+The file 
+/usr/lib/firewalld/services/nfs.xml
+contains the port needed for NFSv4, 2049/tcp.
 
-* 111/tcp 
-* 2049/tcp 
-* 20048/tcp 
-
+Open the port. 
 
 [source,shell]
 ----
-[root@helper pv1]# firewall-cmd --list-all
+[root@guest1 ~]# firewall-cmd --add-service=nfs 
+success
+[root@guest1 ~]# firewall-cmd --add-service=nfs --permanent
+success
+[root@guest1 ~]# 
+----
+
+Check. 
+
+[source,shell]
+----
+[root@guest1 ~]# firewall-cmd --list-all
 public (active)
   target: default
   icmp-block-inversion: no
-  interfaces: enp1s0
+  interfaces: enp1s0 enp2s0
   sources: 
-  services: cockpit dhcpv6-client ssh
-  ports: 67/udp 53/tcp 53/udp 443/tcp 80/tcp 8080/tcp 6443/tcp 6443/udp 22623/tcp 22623/udp 9000/tcp 69/udp 111/tcp 2049/tcp 20048/tcp 50825/tcp 53248/tcp
+  services: cockpit dhcpv6-client dns http https nfs ssh
+  ports: 
   protocols: 
   masquerade: no
   forward-ports: 
   source-ports: 
   icmp-blocks: 
   rich rules: 
-	
-[root@helper pv1]# 
+[root@guest1 ~]# 
 ----
 
-[source,shell]
-----
-[nick@host2 ~]$ ping helper
-PING helper.ocp4.example.com (192.168.7.77) 56(84) bytes of data.
-64 bytes from api.ocp4.example.com (192.168.7.77): icmp_seq=1 ttl=64 time=0.189 ms
-64 bytes from api.ocp4.example.com (192.168.7.77): icmp_seq=2 ttl=64 time=0.175 ms
-^C
---- helper.ocp4.example.com ping statistics ---
-2 packets transmitted, 2 received, 0% packet loss, time 62ms
-rtt min/avg/max/mdev = 0.175/0.182/0.189/0.007 ms
-[nick@host2 ~]$ 
-----
 
-== check your work 
+
+== check NFS
 
 Mount an export. 
+Do this on the same machine, not across the network. 
+
+The _/mnt/_ directory is often used as a mount point for NFS. 
 
 [source,shell]
 ----
-[nick@host2 ~]$ ls /mnt
-[nick@host2 ~]$ 
+[root@guest1 ~]# ls /mnt
+[root@guest1 ~]#
+[root@guest1 nfs]# df /mnt
+Filesystem            1K-blocks    Used Available Use% Mounted on
+/dev/mapper/rhel-root  40854028 2390688  38463340   6% /
+[root@guest1 nfs]# 
 ----
-Not that way!
+
+=== mount and unmount 
+
+Mount a share. 
 
 [source,shell]
 ----
-[nick@host2 ~]$ mount helper:/var/nfs/pv1 /mnt
-mount: only root can do that
-[nick@host2 ~]$ 
-----
-
-This way.
-
-[source,shell]
-----
-[nick@host2 ~]$ sudo mount helper:/var/nfs/pv1 /mnt
-[sudo] password for nick: 
-[nick@host2 ~]$ 
+[root@guest1 nfs]# mount guest1:/var/nfs/pv1 /mnt
+[root@guest1 nfs]# 
 ----
 
 Check.
 
 [source,shell]
 ----
-[nick@host2 ~]$ df 
-Filesystem            1K-blocks      Used Available Use% Mounted on
-...
-helper:/var/nfs/pv1    51089408   3995648  47093760   8% /mnt
-[nick@host2 ~]$ 
+[root@guest1 nfs]# df /mnt
+Filesystem          1K-blocks    Used Available Use% Mounted on
+guest1:/var/nfs/pv1  40854528 2391040  38463488   6% /mnt
+[root@guest1 nfs]#  
 ----
 
 Unmount. 
 
 [source,shell]
 ----
-[nick@host2 ~]$ sudo umount /mnt
-[nick@host2 ~]$ 
+[root@guest1 nfs]# umount /mnt
+[root@guest1 nfs]# 
+----
+
+=== create a file 
+
+Temporarily mount the NFS share and create a new empty file.
+
+[source,shell]
+----
+[root@guest1 nfs]# mount guest1:/var/nfs/pv1 /mnt
+[root@guest1 nfs]# 
+[root@guest1 nfs]# touch /mnt/hello
+[root@guest1 nfs]# 
+[root@guest1 nfs]# umount /mnt
+[root@guest1 nfs]# 
+----
+
+Check the file. 
+It's owned by nobody. 
+
+[source,shell]
+----
+[root@guest1 nfs]# ls -la /var/nfs/pv1
+total 0
+drwxrwxrwx. 2 root   root   19 Jan 18 15:38 .
+drwxr-xr-x. 5 root   root   39 Jan 18 15:34 ..
+-rw-r--r--. 1 nobody nobody  0 Jan 18 15:38 hello
+[root@guest1 nfs]# 
 ----
 
