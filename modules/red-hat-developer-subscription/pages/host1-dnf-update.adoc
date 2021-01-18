@@ -6,7 +6,6 @@ Nick Hardiman
 
 Connect with SSH and update packages with DNF.
 
-
 == errata (updates, bug fixes and security patches)
 
 Red Hat calls package updates _errata_ or _advisories_. There are three types. 
@@ -16,6 +15,29 @@ Red Hat calls package updates _errata_ or _advisories_. There are three types.
 * A Red Hat Enhancement Advisory (RHEA) provides new features. 
 
 For more information, read the article https://access.redhat.com/articles/2130961[Explaining Red Hat Errata (RHSA, RHBA, and RHEA)].
+
+== install 
+
+DNF packages are already installed. 
+There's the dnf package which provides dnf itself, dnf-plugins-core which extends what dnf can do, python3-dnf which fills up /usr/lib/python3.6/site-packages/dnf/, and others.   
+
+These packages provide DNF version 4. 
+
+[source,shell]
+----
+[root@host1 images]# dnf --version
+4.2.23
+  Installed: dnf-0:4.2.23-4.el8.noarch at Tue 05 Jan 2021 13:49:10 GMT
+  Built    : Red Hat, Inc. <http://bugzilla.redhat.com/bugzilla> at Wed 29 Jul 2020 12:23:18 GMT
+
+  Installed: rpm-0:4.14.3-4.el8.x86_64 at Tue 05 Jan 2021 13:46:56 GMT
+  Built    : Red Hat, Inc. <http://bugzilla.redhat.com/bugzilla> at Fri 26 Jun 2020 15:03:24 GMT
+[root@host1 images]# 
+----
+
+
+
+== view errata
 
 Use DNF to list all the updates this machine can get. 
 
