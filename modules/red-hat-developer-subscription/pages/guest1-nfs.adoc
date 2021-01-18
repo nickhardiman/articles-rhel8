@@ -1,22 +1,61 @@
-= NFS
+= share directories with NFS
 Nick Hardiman
 :source-highlighter: pygments
 :toc: 
 :revdate: 05-12-2020
 
 
+https://en.wikipedia.org/wiki/Network_File_System[NFS (Network File System)] allows a local directory to be shared by many remote machines. 
+
+Set up an NFS server. 
+Use the latest version 4 - this has been around for many years. 
 
 == install 
 
-?
+The core of NFS is built into the kernel. 
+The user-space tools to manage NFS are not included in a minimal installation. 
 
-== configure  
+Use the root account. 
 
-/etc/nfs.conf 
+Install the NFS utilities package. 
 
 [source,console]
 ----
-[nick@guest1 ~]$ grep -v -E '^#' /etc/nfs.conf 
+[root@guest1 ~]# dnf install nfs-utils
+Updating Subscription Management repositories.
+Last metadata expiration check: 1:04:57 ago on Mon 18 Jan 2021 09:21:41 GMT.
+Dependencies resolved.
+====================================================================================================================================
+ Package                        Architecture        Version                        Repository                                  Size
+====================================================================================================================================
+Installing:
+ nfs-utils                      x86_64              1:2.3.3-35.el8                 rhel-8-for-x86_64-baseos-rpms              494 k
+Installing dependencies:
+ gssproxy                       x86_64              0.8.0-16.el8                   rhel-8-for-x86_64-baseos-rpms              118 k
+ keyutils                       x86_64              1.5.10-6.el8                   rhel-8-for-x86_64-baseos-rpms               63 k
+ libverto-libevent              x86_64              0.3.0-5.el8                    rhel-8-for-x86_64-baseos-rpms               16 k
+ python3-pyyaml                 x86_64              3.12-12.el8                    rhel-8-for-x86_64-baseos-rpms              193 k
+ quota                          x86_64              1:4.04-10.el8                  rhel-8-for-x86_64-baseos-rpms              214 k
+ quota-nls                      noarch              1:4.04-10.el8                  rhel-8-for-x86_64-baseos-rpms               94 k
+ rpcbind                        x86_64              1.2.5-7.el8                    rhel-8-for-x86_64-baseos-rpms               70 k
+
+Transaction Summary
+====================================================================================================================================
+Install  8 Packages
+
+Total download size: 1.2 M
+Installed size: 3.7 M
+Is this ok [y/N]: 
+
+== configure  
+
+The _/etc/nfs.conf_ file is an https://en.wikipedia.org/wiki/INI_file[INI file]. 
+A fresh install has a lot of headings, but only one value (`use-gss-proxy=1`). 
+Use `man nfs.conf` to find out more about this file. 
+
+[source,console]
+----
+[root@guest1 ~]$ grep -v -E '^#' /etc/nfs.conf 
 [general]
 [exportfs]
 [gssd]
@@ -27,31 +66,69 @@ use-gss-proxy=1
 [nfsd]
 [statd]
 [sm-notify]
-[nick@guest1 ~]$ 
+[root@guest1 ~]$ 
 ----
 
-set a variable 
+
+
+
+=== use version 4 only
+
+Versions 3 and 4 are enabled. 
+Version 4.2 has been around for a few years, so it's safe to keep this one and disable the others. 
 
 [source,console]
 ----
-[nick@guest1 ~]$ sudo nfsconf --set nfsd vers4.2 y
-[sudo] password for nick: 
-[nick@guest1 ~]$ 
+[root@guest1 ~]# grep vers /etc/nfs.conf 
+# reverse-lookup=n
+# vers2=n
+# vers3=y
+# vers4=y
+# vers4.0=y
+# vers4.1=y
+# vers4.2=y
+[root@guest1 ~]# 
 ----
+
+Enable version 4.2.
+This is enabled by default, so this change only makes it more obvious. 
+
+This file can be changed by editing it or by using the nfsconf utility. 
 
 [source,console]
 ----
-[nick@guest1 ~]$ grep -v -E '^#' /etc/nfs.conf 
+[root@guest1 ~]$ nfsconf --set nfsd vers4.2 y
+[root@guest1 ~]$ 
+----
+
+Check.  
+
+[source,console]
+----
+[root@guest1 ~]$ grep -v -E '^#' /etc/nfs.conf 
 ...
 [nfsd]
 vers4.2 = y
 [statd]
 [sm-notify]
-[nick@guest1 ~]$ 
+[root@guest1 ~]$ 
 ----
 
+Disable the older versions. 
 
-== systemd  
+
+
+=== systemd  
+
+before 
+
+[root@guest1 ~]# systemctl status nfs-server
+● nfs-server.service - NFS server and services
+   Loaded: loaded (/usr/lib/systemd/system/nfs-server.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+[root@guest1 ~]# 
+
+after 
 
 [source,console]
 ----
@@ -71,7 +148,9 @@ Oct 20 02:47:34 helper systemd[1]: Started NFS server and services.
 [root@helper pv1]# 
 ----
 
-== make directories to share 
+== share directories 
+
+=== make directories to share 
 
 [source,console]
 ----
@@ -96,6 +175,9 @@ drwxr-xr-x. 2 root root 6 Oct 20 09:15 pv3
 [root@helper nfs]# chmod 777 *
 [root@helper nfs]# 
 ----
+
+
+=== tell NFS about these directories 
 
 Add config for the new exports. 
 
@@ -172,7 +254,9 @@ rtt min/avg/max/mdev = 0.175/0.182/0.189/0.007 ms
 [nick@host2 ~]$ 
 ----
 
-== mount an export 
+== check your work 
+
+Mount an export. 
 
 [source,console]
 ----

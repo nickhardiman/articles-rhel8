@@ -66,7 +66,7 @@
 *** xref:vdo.adoc[]
 *** xref:swap.adoc[]
 *** xref:lvm.adoc[]
-*** xref:nfs.adoc[]
+*** xref:guest1-nfs.adoc[]
 *** _cgroup things_
 *** xref:cgroups.adoc[]
 *** xref:cgroup-apache.adoc[]
