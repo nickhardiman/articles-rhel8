@@ -39,7 +39,7 @@ The bash shell is already running.
 Use _ps_ to find the process ID. 
 Use _pstree_ to draw a diagram of what's running. 
 
-[source,console]
+[source,shell]
 ---- 
 [nick@host1 ~]$ ps
     PID TTY          TIME CMD
@@ -54,7 +54,7 @@ bash───pstree
 Start another shell, dash. 
 This one has a different way of dealing with the shell prompt. 
  
-[source,console]
+[source,shell]
 ---- 
 [nick@host1 ~]$ dash
 $ 
@@ -63,7 +63,7 @@ $
 Start a few more shells. 
 These cause the prompt to change again. 
 
-[source,console]
+[source,shell]
 ---- 
 $ csh
 [nick@host1 ~]$ 
@@ -89,7 +89,7 @@ nick@host1 ~ 4$ busybox ash
 
 That's a bunch of different shells running now.
 
-[source,console]
+[source,shell]
 ----
 ~ $ pstree 1486
 bash───dash───csh───ksh───yash───busybox───pstree
@@ -99,7 +99,7 @@ bash───dash───csh───ksh───yash───busybox───p
 Stop the new shells. 
 All five shells understand the _exit_ command. 
 
-[source,console]
+[source,shell]
 ----
 ~ $ exit
 nick@host1 ~ 4$ exit
@@ -137,7 +137,7 @@ If you want to create an interactive shell in your favorite programming language
 
 https://www.tcl-lang.org/[TCL (Tool Control Language)]
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ tclsh
 % puts {hello world}
@@ -148,7 +148,7 @@ hello world
 
 https://www.perl.org/[Perl]
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ perl
 print "hello world\n"
@@ -160,7 +160,7 @@ hello world
 https://www.python.org/[Python]. 
 For more Python shells, read the article https://fedoramagazine.org/enhance-python-interactive-shell/[Enhance your Python with an interactive shell].
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ python3
 Python 3.8.5 (default, Aug 12 2020, 00:00:00) 
@@ -174,7 +174,7 @@ hello world
 
 https://www.haskell.org/[Haskell]
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ ghci
 GHCi, version 8.6.5: http://www.haskell.org/ghc/  :? for help
@@ -187,7 +187,7 @@ Leaving GHCi.
 
 https://www.erlang.org/[Erlang]
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ erl
 Erlang/OTP 22 [erts-10.7.2.4] [source] [64-bit] [smp:1:1] [ds:1:1:10] [async-threads:1] [hipe]
@@ -210,7 +210,7 @@ Specialized shells like cephfs-shell, sqlsh and pdsh help with the hard jobs.
 Rssh and scponly are security shells that restrict what users can do.
 Xonsh is written in Python, not C - the first challenge with xonsh is figuring out how to say xonsh. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ xonsh
 

@@ -14,7 +14,7 @@ The shell is a pillar of developer and sysadmin worlds, up there with the toolch
 
 After logging in, you find yourself using GNU Bash, version 5. 
 
-[source,console]
+[source,shell]
 ----
 [nick@localhost ~]$ ps
     PID TTY          TIME CMD
@@ -63,7 +63,7 @@ The home directory contains five configuration files.
 They are also known as dotfiles, or hidden files - they start with "." and Bash doesn't display them.
 Four of these are used by Bash.
 
-[source,console]
+[source,shell]
 ---- 
 [nick@localhost ~]$ ls -a
 .  ..  .bash_history  .bash_logout  .bash_profile  .bashrc  .ssh
@@ -90,7 +90,7 @@ To see the interactiive option, use the variable *$-* to display a list of shell
 The option _i_ means interactive.
 If you want to know what the other letters mean, run _man bash_ and look for _set_ in the _BASH BUILTIN COMMANDS_ section.
 
-[source,console]
+[source,shell]
 ---- 
 [nick@localhost ~]$ echo $-
 himBHs
@@ -116,7 +116,7 @@ When a script runs, it gets its own shell but there is no login.
 
 If a bash shell runs a command and exits, it doesn't need to be a login shell.
 
-[source,console]
+[source,shell]
 ---- 
 [nick@localhost ~]$ shopt login_shell
 login_shell    	on
@@ -128,7 +128,7 @@ login_shell    	off
 
 Another sign of a login shell - a peculiar one - is a hyphen added to the name.
 
-[source,console]
+[source,shell]
 ---- 
 [nick@localhost ~]$ echo $0
 -bash
@@ -153,14 +153,14 @@ If you just want some simple gratification, play around with these.
 
 === prompt 
 
-[source,console]
+[source,shell]
 ---- 
 [nick@localhost ~]$ 
 ----
 
 A special set of symbols define how the prompt looks. 
 
-[source,console]
+[source,shell]
 ---- 
 [nick@localhost ~]$ echo $PS1
 [\u@\h \W]\$
@@ -181,7 +181,7 @@ It's not good for all commands.
 If you want to type _hostnamectl_, then _hos⇥_ gets you _host_. 
 Another tab displays three commands that all start with _host_.
 
-[source,console]
+[source,shell]
 ---- 
 [nick@localhost ~]$ host⇥
 hostid       hostname     hostnamectl  

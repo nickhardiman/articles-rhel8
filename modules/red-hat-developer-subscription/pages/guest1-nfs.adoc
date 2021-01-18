@@ -19,7 +19,7 @@ Use the root account.
 
 Install the NFS utilities package. 
 
-[source,console]
+[source,shell]
 ----
 [root@guest1 ~]# dnf install nfs-utils
 Updating Subscription Management repositories.
@@ -53,7 +53,7 @@ The _/etc/nfs.conf_ file is an https://en.wikipedia.org/wiki/INI_file[INI file].
 A fresh install has a lot of headings, but only one value (`use-gss-proxy=1`). 
 Use `man nfs.conf` to find out more about this file. 
 
-[source,console]
+[source,shell]
 ----
 [root@guest1 ~]$ grep -v -E '^#' /etc/nfs.conf 
 [general]
@@ -77,7 +77,7 @@ use-gss-proxy=1
 Versions 3 and 4 are enabled. 
 Version 4.2 has been around for a few years, so it's safe to keep this one and disable the others. 
 
-[source,console]
+[source,shell]
 ----
 [root@guest1 ~]# grep vers /etc/nfs.conf 
 # reverse-lookup=n
@@ -95,7 +95,7 @@ This is enabled by default, so this change only makes it more obvious.
 
 This file can be changed by editing it or by using the nfsconf utility. 
 
-[source,console]
+[source,shell]
 ----
 [root@guest1 ~]$ nfsconf --set nfsd vers4.2 y
 [root@guest1 ~]$ 
@@ -103,7 +103,7 @@ This file can be changed by editing it or by using the nfsconf utility.
 
 Check.  
 
-[source,console]
+[source,shell]
 ----
 [root@guest1 ~]$ grep -v -E '^#' /etc/nfs.conf 
 ...
@@ -130,7 +130,7 @@ before
 
 after 
 
-[source,console]
+[source,shell]
 ----
 [root@helper pv1]# systemctl status nfs-server
 ● nfs-server.service - NFS server and services
@@ -152,7 +152,7 @@ Oct 20 02:47:34 helper systemd[1]: Started NFS server and services.
 
 === make directories to share 
 
-[source,console]
+[source,shell]
 ----
 [root@helper ~]# mkdir /var/nfs
 [root@helper ~]# 
@@ -164,7 +164,7 @@ Oct 20 02:47:34 helper systemd[1]: Started NFS server and services.
 [root@helper nfs]# 
 ----
 
-[source,console]
+[source,shell]
 ----
 [root@helper nfs]# ls -l
 total 0
@@ -181,7 +181,7 @@ drwxr-xr-x. 2 root root 6 Oct 20 09:15 pv3
 
 Add config for the new exports. 
 
-[source,console]
+[source,shell]
 ----
 [root@helper nfs]# vi /etc/exports
 
@@ -194,7 +194,7 @@ Add config for the new exports.
 
 Tell the NFS service about the new exports.
 
-[source,console]
+[source,shell]
 ----
 [root@helper pv1]# exportfs -ra
 [root@helper pv1]# 
@@ -202,7 +202,7 @@ Tell the NFS service about the new exports.
 
 Check.
 
-[source,console]
+[source,shell]
 ----
 [root@helper pv1]# exportfs 
 /export       	<world>
@@ -221,7 +221,7 @@ NFS v3 and v4 ports
 * 20048/tcp 
 
 
-[source,console]
+[source,shell]
 ----
 [root@helper pv1]# firewall-cmd --list-all
 public (active)
@@ -241,7 +241,7 @@ public (active)
 [root@helper pv1]# 
 ----
 
-[source,console]
+[source,shell]
 ----
 [nick@host2 ~]$ ping helper
 PING helper.ocp4.example.com (192.168.7.77) 56(84) bytes of data.
@@ -258,14 +258,14 @@ rtt min/avg/max/mdev = 0.175/0.182/0.189/0.007 ms
 
 Mount an export. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host2 ~]$ ls /mnt
 [nick@host2 ~]$ 
 ----
 Not that way!
 
-[source,console]
+[source,shell]
 ----
 [nick@host2 ~]$ mount helper:/var/nfs/pv1 /mnt
 mount: only root can do that
@@ -274,7 +274,7 @@ mount: only root can do that
 
 This way.
 
-[source,console]
+[source,shell]
 ----
 [nick@host2 ~]$ sudo mount helper:/var/nfs/pv1 /mnt
 [sudo] password for nick: 
@@ -283,7 +283,7 @@ This way.
 
 Check.
 
-[source,console]
+[source,shell]
 ----
 [nick@host2 ~]$ df 
 Filesystem            1K-blocks      Used Available Use% Mounted on
@@ -294,7 +294,7 @@ helper:/var/nfs/pv1    51089408   3995648  47093760   8% /mnt
 
 Unmount. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host2 ~]$ sudo umount /mnt
 [nick@host2 ~]$ 

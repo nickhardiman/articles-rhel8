@@ -33,7 +33,7 @@ https://en.wikipedia.org/wiki/Fully_qualified_domain_name[FQDN (Fully Qualified 
 
 Changing network details while the machine is running can stop the interface working.
 
-[source,console]
+[source,shell]
 ....
 virsh shutdown guest1
 ....
@@ -56,7 +56,7 @@ Add the domain _private.example.com_ before adding the name _guest1.private.exam
 dnsmasq has a security feature that ignores DNS domains it doesn't recognize. 
 The privbr0 configuration has no domain, so adding a full FQDN for the VM (_guest1.private.example.com_) won't work. Journalctl would show an error like this. 
 
-[source,console]
+[source,shell]
 ....
 May 29 18:17:15 host.private.example.com dnsmasq-dhcp[2380]: Ignoring domain private.example.com for DHCP host name guest1
 ....
@@ -66,7 +66,7 @@ Add a domain by editing the XML configuration and adding the line ``<domain name
 Adding a domain is a little painful, both because editing XML is never fun, and because the network must be stopped and started after this edit to pick up the configuration change. 
 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo virsh net-edit privbr0
 ....
@@ -92,7 +92,7 @@ Add the _domain_ line.
 
 Save and exit. 
 
-[source,console]
+[source,shell]
 ....
 Network privbr0 XML configuration edited.
 ....
@@ -102,7 +102,7 @@ Network privbr0 XML configuration edited.
 
 Restart the network. Check its state before and after - it changes from _inactive_ to _active_. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo virsh net-destroy privbr0
 Network privbr0 destroyed
@@ -127,7 +127,7 @@ Network privbr0 started
 
 Virsh updates the dnsmasq config.
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo grep private.example.com /var/lib/libvirt/dnsmasq/privbr0.conf
 local=/private.example.com/
@@ -144,7 +144,7 @@ The command contains the line of XML to be added.
 The name in the _name_ attribute matches the hostname set by the ``virt-customize`` command.
 The ``--live`` and ``--config`` options make sure both the current configuration and the stored config are updated.
 
-[source,console]
+[source,shell]
 ....
 sudo virsh net-update privbr0 add ip-dhcp-host \
     "<host  mac='52:54:00:00:00:02' name='guest1.private.example.com' ip='192.168.152.100' />" \
@@ -154,7 +154,7 @@ sudo virsh net-update privbr0 add ip-dhcp-host \
 
 Add the host line. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo virsh net-update privbr0 add ip-dhcp-host "<host mac='52:54:00:00:00:02' name='guest1.private.example.com' ip='192.168.152.100' />" --live --config
 Updated network privbr0 persistent config and live state
@@ -170,7 +170,7 @@ Libvirt knows about your new machine, but your host machine has no idea.
 
 Add a line to /etc/hosts. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo bash -c 'echo "192.168.152.100 guest1 guest1.private.example.com" >> /etc/hosts'
 [nick@host1 ~]$ 
@@ -190,7 +190,7 @@ When the _guest1_ VM starts, it uses DHCP to obtain an IP address.
 The guest VM starts by broadcasting a 'looking for DHCP server' message and gets an answer from dnsmasq on the host machine. 
 You can see the conversation taking place using ``journalctl``.
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ journalctl -f
 ...
@@ -208,7 +208,7 @@ May 29 18:08:12 host.example.com dnsmasq-dhcp[2380]: DHCPACK(privbr0) 192.168.15
 Look up the new name using dnsmasq's DNS server. 
 Dnsmasq services for privbr0 only listen to the network address, 192.168.152.1. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ host guest1.private.example.com 192.168.152.1
 Using domain server:
@@ -227,7 +227,7 @@ Can the host find it?
 
 This is good. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ ping -c1 192.168.152.100
 PING 192.168.152.100 (192.168.152.100) 56(84) bytes of data.
@@ -241,7 +241,7 @@ rtt min/avg/max/mdev = 0.226/0.226/0.226/0.000 ms
 
 This is bad. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# ping -c1 192.168.152.100
 PING 192.168.152.100 (192.168.152.100) 56(84) bytes of data.

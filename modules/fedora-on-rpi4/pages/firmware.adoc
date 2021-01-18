@@ -54,7 +54,7 @@ Usually this means reading the SD card, finding the first partition, and running
 On a running Fedora system, the first partition is mounted on /boot/efi/ so you can see _start4x.elf_ in that directory.
 
 .bootloader firmware
-[source,console]
+[source,shell]
 ----
 [root@localhost ~]# file /boot/efi/start4x.elf 
 /boot/efi/start4x.elf: ELF 32-bit LSB executable, Broadcom VideoCore III, version 1 (SYSV), statically linked, stripped
@@ -98,7 +98,7 @@ Mac OS X, Windows, Linux and BSD all work with UEFI.
 The first partition contains all the files that make up the UEFI system.
 
 .UEFI partition
-[source,console]
+[source,shell]
 ----
 [root@localhost ~]# df -h /boot/efi
 Filesystem      Size  Used Avail Use% Mounted on
@@ -121,7 +121,7 @@ The code is stored in hundreds of files in the /lib/firmware/ directory.
 Most of these files are not useful on the Raspberry Pi, except for Broadcom firmware. 
 The Broadcom brcmfmac driver (the driver for the wifi chip) requests firmware. 
 
-[source,console]
+[source,shell]
 ----
 [root@localhost firmware]# dmesg | grep brcmfmac
 [   19.412655] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43455-sdio for chip BCM4345/6
@@ -140,7 +140,7 @@ All the firmware objects are in the /sys/firmware directory.
 
 The /sys/firmware/devicetree/base/ directory holds nearly two thousand https://en.wikipedia.org/wiki/Device_tree[device tree] files. These hold data on everything from audio devices to thermal sensors. The _model_ file holds the computer name. 
 
-[source,console]
+[source,shell]
 ----
 [root@localhost efivars]# cat /sys/firmware/devicetree/base/model
 Raspberry Pi 4 Model B Rev 1.4[root@localhost efivars]# 
@@ -151,7 +151,7 @@ The _dmidecode_ command displays this table in a readable format.
 
 /sys/firmware/efi/ holds a few EFI variables and values, such as whether this is a 32 bit or 64 bit UEFI system.
 
-[source,console]
+[source,shell]
 ----
 [root@localhost ~]#  cat /sys/firmware/efi/fw_platform_size
 64

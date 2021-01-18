@@ -78,7 +78,7 @@ There is no IP masquerading and forwarding, so there is no communication with th
 
 Only the default network exists.
 
-[source,console]
+[source,shell]
 ....
 [root@host1 libvirt]# virsh net-list --all
  Name      State    Autostart   Persistent
@@ -116,7 +116,7 @@ https://libvirt.org/formatnetwork.html#examplesPrivate[libvirt example].
 
 Create the new network. Run ``sudo virsh net-define net-privbr0.xml``
 
-[source,console]
+[source,shell]
 ....
 [root@host1 libvirt]# virsh net-define net-privbr0.xml
 Network privbr0 defined from net-privbr0.xml
@@ -127,7 +127,7 @@ Network privbr0 defined from net-privbr0.xml
 The network is created and is persistent - it will still exist across reboots. 
 But it is not in use.
 
-[source,console]
+[source,shell]
 .... 
 [root@host1 libvirt]# virsh net-list --all
  Name      State      Autostart   Persistent
@@ -141,7 +141,7 @@ But it is not in use.
 
 Set the new network to start on boot, and start it now. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 libvirt]# virsh net-start privbr0
 Network privbr0 started
@@ -166,7 +166,7 @@ Libvirt creates a new bridge.
 Two new interfaces appear on the host, *privbr0* and *privbr0-nic*.
 There is no need to create a bridge manually using ``nmcli connection``, ``ip link`` or ``bridge link`` commands. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ ip addr show
 ...
@@ -190,7 +190,7 @@ It won't let anyone use the new _privbr0_ interface.
 Let the VMs use the new network by copying permissions for the current _virbr0_ interface. 
 Permissions for _virbr0_ are set in qemu's config file. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ cat /etc/qemu-kvm/bridge.conf 
 allow virbr0
@@ -198,7 +198,7 @@ allow virbr0
 ....
 
 Add a similar line for the new bridge interface. 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo sh -c 'echo "allow privbr0" >> /etc/qemu-kvm/bridge.conf'
 [nick@host1 ~]$ 

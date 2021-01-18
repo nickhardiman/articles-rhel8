@@ -73,7 +73,7 @@ The physical host machine probably uses UEFI, unless its several years old.
 
 not using EFI
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ ls /sys/firmware/efi
 ls: cannot access '/sys/firmware/efi': No such file or directory
@@ -100,7 +100,7 @@ There are a few GRUB programs, run in this sequence.
 https://www.gnu.org/software/grub/manual/grub/html_node/Images.html[boot.img] file from the MBR (the very start of the disk). This boot image is a program that does nothing except kick off the next GRUB program. There isn't enough room in the MBR to store anything interesting. 
 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest3 ~]$ sudo parted -l
 [sudo] password for nick: 

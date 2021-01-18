@@ -17,7 +17,7 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/sy
 
 already installed 
 
-[source,console]
+[source,shell]
 ----
 [root@guest1 ~]# rpm -q kexec-tools
 kexec-tools-2.0.20-14.el8.x86_64
@@ -49,7 +49,7 @@ Description  : kexec-tools provides /usr/sbin/kexec binary that facilitates a ne
 
 == content 
 
-[source,console]
+[source,shell]
 ----
 [root@guest1 ~]# ls -la /var/crash/
 total 4
@@ -63,7 +63,7 @@ drwxr-xr-x. 23 root root 4096 Sep  9 15:01 ..
 Can do NFS, SSH, or mount a partition. 
 Out of the box, uses local directory /var/crash.
 
-[source,console]
+[source,shell]
 ----
 [root@guest1 ~]# grep -v -E '^#|^$' /etc/kdump.conf 
 path /var/crash
@@ -71,7 +71,7 @@ core_collector makedumpfile -l --message-level 1 -d 31
 [root@guest1 ~]# 
 ----
 
-[source,console]
+[source,shell]
 ----
 [root@guest1 ~]# grep crash /etc/default/grub 
 GRUB_CMDLINE_LINUX="console=ttyS0 console=ttyS0,115200n8 no_timer_check net.ifnames=0 crashkernel=auto"
@@ -81,7 +81,7 @@ GRUB_CMDLINE_LINUX="console=ttyS0 console=ttyS0,115200n8 no_timer_check net.ifna
 
 == makedumpfile 
 
-[source,console]
+[source,shell]
 ----
 /usr/sbin/makedumpfile
 /etc/makedumpfile.conf.sample
@@ -89,7 +89,7 @@ GRUB_CMDLINE_LINUX="console=ttyS0 console=ttyS0,115200n8 no_timer_check net.ifna
 
 == systemd 
 
-[source,console]
+[source,shell]
 ----
 [root@guest1 ~]# systemctl status kdump.service
 ● kdump.service - Crash recovery kernel arming
@@ -110,13 +110,13 @@ Sep 09 09:16:16 guest1.lab.example.com systemd[1]: Started Crash recovery kernel
 
 == test 
 
-[source,console]
+[source,shell]
 ----
 echo 1 > /proc/sys/kernel/sysrq
 echo c > /proc/sysrq-trigger
 ----
 
-[source,console]
+[source,shell]
 ----
 [root@guest2 ~]# echo 1 > /proc/sys/kernel/sysrq
 
@@ -125,13 +125,13 @@ echo c > /proc/sysrq-trigger pasted in but not echoed back
 
 [root@guest2 ~]# client_loop: send disconnect: Broken pipe
 [nick@host1 ~]$ 
-[source,console]
+[source,shell]
 ----
 
 wait for boot 
 log in again
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ ssh nick@guest2.lab.example.com
 ...
@@ -166,7 +166,7 @@ man debuginfo-install
 Install the associated debuginfo packages for a given package specification.
 Package kernel-debuginfo is big, takes a while. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest2 ~]$ sudo yum info crash
 [sudo] password for nick: 
@@ -237,7 +237,7 @@ Complete!
 
 before 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest2 ~]$ ls /usr/lib/debug/lib/
 [nick@guest2 ~]$ 
@@ -245,7 +245,7 @@ before
 
 === install 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest2 ~]$ sudo debuginfo-install kernel
 Updating Subscription Management repositories.
@@ -300,7 +300,7 @@ Complete!
 
 after 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest2 ~]$ ls -lh /usr/lib/debug/lib/modules/4.18.0-193.el8.x86_64/vmlinux 
 -rwxr-xr-x. 1 root root 729M Mar 27 10:56 /usr/lib/debug/lib/modules/4.18.0-193.el8.x86_64/vmlinux
@@ -312,7 +312,7 @@ after
 === use 
 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest2 ~]$ sudo crash /usr/lib/debug/lib/modules/4.18.0-193.el8.x86_64/vmlinux  /var/crash/127.0.0.1-2020-09-09-10\:52\:57/vmcore
 
@@ -369,6 +369,6 @@ crash>
 
 crash> q
 [nick@guest2 ~]$ 
-[source,console]
+[source,shell]
 ----
 

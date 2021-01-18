@@ -40,7 +40,7 @@ Vyssotsky says "The programs which tell a computer how to switch a telephone cal
 
 Details about the OS release are stored in files in the /etc/ directory. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ ls -l /etc/*release
 lrwxrwxrwx. 1 root root 22 Sep 23 10:38 /etc/os-release -> ..//usr/lib/os-release
@@ -51,7 +51,7 @@ lrwxrwxrwx. 1 root root 14 Sep 23 10:38 /etc/system-release -> redhat-release
 
 The https://www.freedesktop.org/software/systemd/man/os-release.html[os-release file] contains operating system identification data, presented as a list of variables. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ cat /usr/lib/os-release
 NAME="Red Hat Enterprise Linux"
@@ -76,7 +76,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="8.3"
 The redhat-release file is a one-line summary of the OS. 
 This file is installed by the redhat-release package, along with many other release files. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ cat /etc/redhat-release 
 Red Hat Enterprise Linux release 8.3 (Ootpa)

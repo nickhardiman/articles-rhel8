@@ -42,7 +42,7 @@ The _default_ and _privbr0_ networks do.
 
 Running the command ``systemctl status dnsmasq`` says dnsmasq isn't running. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 libvirt]# ps -fwwC dnsmasq
 UID          PID    PPID  C STIME TTY          TIME CMD
@@ -63,7 +63,7 @@ root       16757   16756  0 20:16 ?        00:00:00 /usr/sbin/dnsmasq --conf-fil
 
 The DHCP lease is stored in a status file. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# cat /var/lib/libvirt/dnsmasq/privbr0.status
 [
@@ -82,7 +82,7 @@ The DHCP lease is stored in a status file.
 
 The dnsmasq server uses the config file at /var/lib/libvirt/dnsmasq/default.conf. This ``dhcp-range`` line tells dnsmasq what IP pool to manage. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo grep dhcp-range /var/lib/libvirt/dnsmasq/default.conf
 dhcp-range=192.168.152.2,192.168.152.254
@@ -96,7 +96,7 @@ These are all listed further down.
 
 Here's the libvirt config that creates dnsmasq's _dhcp-range_ line. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo virsh net-dumpxml default
 ...
@@ -112,7 +112,7 @@ Here's the libvirt config that creates dnsmasq's _dhcp-range_ line.
 
 These are IP addresses leased from the pool. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo virsh net-dhcp-leases privbr0 
 [sudo] password for nick: 

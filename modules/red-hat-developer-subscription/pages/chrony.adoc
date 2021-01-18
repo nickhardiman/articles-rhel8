@@ -45,7 +45,7 @@ Chrony collects time from a few servers.
 The configuration file /etc/chrony.conf names one pool of servers to collect time from. 
 The NTP servers are hidden behind this pool's DNS name - nne name points to many IP addresses.
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ grep pool  /etc/chrony.conf
 # Use public servers from the pool.ntp.org project.
@@ -69,7 +69,7 @@ When a client resolves the name, their DNS checks what part of the world the cli
 To see how that DNS name resolves to IP addresses, use the _host_ command. 
 This command isn't included with a minimal system, so install the _bind-utils_ package first. 
 
-[source,console]
+[source,shell]
 ....
 [root@guest1 ~]# dnf install bind-utils
 ...
@@ -88,7 +88,7 @@ Complete!
 
 To see which random IP addresses were picked for chronyd, use the _chronyc_ utility.
 
-[source,console]
+[source,shell]
 ....
 [root@guest1 ~]# chronyc -n sources
 210 Number of sources = 4
@@ -113,7 +113,7 @@ The time is reset.
 
 Check the config and current time. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ grep step /etc/chrony.conf 
 # Allow the system clock to be stepped in the first three updates
@@ -134,7 +134,7 @@ System clock synchronized: yes
 Mess with time. 
 Turn off chronyd.
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ sudo systemctl stop chronyd
 [nick@guest1 ~]$ 
@@ -142,7 +142,7 @@ Turn off chronyd.
 
 Roll the clock back. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ sudo timedatectl set-time yesterday
 [nick@guest1 ~]$ 
@@ -159,7 +159,7 @@ System clock synchronized: no
 
 Reboot. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ sudo systemctl reboot 
 Connection to g1 closed by remote host.
@@ -170,7 +170,7 @@ Connection to g1 closed.
 Log in and check. 
 System time is fixed, but the RTC is not. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ timedatectl
                Local time: Wed 2020-07-29 11:38:39 BST
@@ -195,7 +195,7 @@ Change the `RTC in local TZ` setting from `no` to `yes`.
 We don't really want an RTC telling local time - that causes extra work dealing with Summer clock changes.
 Change this setting back to `no`.
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ sudo timedatectl set-local-rtc yes
 [nick@guest1 ~]$ 

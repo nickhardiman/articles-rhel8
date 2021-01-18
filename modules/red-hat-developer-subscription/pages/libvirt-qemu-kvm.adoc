@@ -26,12 +26,12 @@ Run ``lsmod | grep kvm`` to see the kernel modules.
 
 == QEMU 
 
-[source,console]
+[source,shell]
 ----
 /usr/libexec/qemu-kvm --version
 ----
 
-[source,console]
+[source,shell]
 ----
 yum info qemu-kvm
 ----
@@ -47,7 +47,7 @@ libvirt-daemon manages the virtualization.
 The version is a https://libvirt.org/news.html[couple years old]. 
 This libvirt version was included in Fedora 28, which was used as the base of RHEL 8. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ /usr/sbin/libvirtd --version
 /usr/sbin/libvirtd (libvirt) 4.5.0
@@ -65,7 +65,7 @@ Libvirt created a couple network devices.
 
 Run ``nmcli device status`` to see theses. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# nmcli device status
 DEVICE          TYPE      STATE                   CONNECTION 
@@ -85,7 +85,7 @@ From man systemd-machined
 
 systemd-machined is a system service that keeps track of virtual machines and containers, and processes belonging to them.
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ machinectl 
 MACHINE       CLASS SERVICE      OS VERSION ADDRESSES
@@ -97,7 +97,7 @@ qemu-1-guest1 vm    libvirt-qemu -  -       -
 
 Unit file /usr/lib/systemd/system/systemd-machined.service runs /usr/lib/systemd/systemd-machined
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ systemctl status machined
 Unit machined.service could not be found.

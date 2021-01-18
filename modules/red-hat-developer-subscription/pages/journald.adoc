@@ -9,7 +9,7 @@ Nick Hardiman
 Journald stores its logs in /run/log/journal/. 
 The /run directory is a tmpfs file system, so these logs are actually stored in memory. 
  
-[source,console]
+[source,shell]
 ---- 
 [nick@guest1 ~]$ df -h /run
 Filesystem      Size  Used Avail Use% Mounted on

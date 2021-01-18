@@ -29,7 +29,7 @@ The local cockpit web console also provides a link to the cloud site.
 When you SSH to your fresh RHEL 8 install, you see this MOTD (Message Of The Day).
 If you're on the Gnome desktop, you can only see these messages by looking at their files - ``cat /etc/motd.d/*``.
 
-[source,console]
+[source,shell]
 ----
 workstation:~ nick$ ssh 10.0.1.4
 Activate the web console with: systemctl enable --now cockpit.socket
@@ -43,7 +43,7 @@ Last login: Thu May 14 17:29:53 2020 from 10.0.1.3
 
 That Insights message is defined here, in the config directory.
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ sudo cat /etc/insights-client/insights-client.motd 
 This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
@@ -60,7 +60,7 @@ Manage Insights on your local machine with the _insights-client_ application.
 
 Register.
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ sudo insights-client --register
 [sudo] password for nick: 
@@ -72,7 +72,7 @@ Starting to collect Insights data for host.lab.example.com
 
 After a few seconds, Insights is done.
 
-[source,console]
+[source,shell]
 ----
 Uploading Insights data.
 Successfully uploaded report from host.lab.example.com to account 5341919.
@@ -84,7 +84,7 @@ View the Red Hat Insights console at https://cloud.redhat.com/insights/
 
 Check. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ sudo insights-client --status
 System is registered locally via .registered file. Registered at 2020-06-01T18:17:53.296845
@@ -94,7 +94,7 @@ Insights API confirms registration.
 
 Ask the remote Red Hat Insights service for results. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ sudo insights-client --check-results 
 [nick@host1 ~]$ 
@@ -102,7 +102,7 @@ Ask the remote Red Hat Insights service for results.
 
 Display what the Red Hat Insights service found. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ sudo insights-client --show-results
 [
@@ -130,7 +130,7 @@ Display what the Red Hat Insights service found.
 
 The easiest way to see what  _insights-client_ does is to run the application and watch the logs. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# /usr/bin/insights-client --retry 3
 Starting to collect Insights data for host1.lab.example.com
@@ -168,7 +168,7 @@ For a description, run _man insights-client.conf_.
 
 The insights-client creates a https://access.redhat.com/solutions/2462091[UUID].
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ cat /etc/insights-client/machine-id
 ed125aea-c063-43c7-a891-3f9a24c4dfb9[nick@host1 ~]$ 

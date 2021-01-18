@@ -11,7 +11,7 @@ Add systemd config for your new container.
 The container must already exist. 
 This procedure uses a container called `mojoservice`, owned by _root_.  
 
-[source,console]
+[source,shell]
 ----
 [nick@guest3 ~]$ sudo podman ps -a
 [sudo] password for nick: 
@@ -26,7 +26,7 @@ CONTAINER ID  IMAGE                    COMMAND               CREATED         STA
 Carry out these commands as root. 
 This procedure adds a file to /etc/systemd/system/, and only root can write to that directory. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest3 ~]$ sudo su -
 [sudo] password for nick: 
@@ -36,7 +36,7 @@ Last login: Thu Aug  6 12:39:14 EDT 2020 on pts/0
 
 Decide what to call the new service unit file. 
 
-[source,console]
+[source,shell]
 ----
 [root@guest3 ~]# UNIT=mojo.service
 [root@guest3 ~]# 
@@ -50,7 +50,7 @@ Instead, it uses the full container ID, a huge string of 126 characters
 (the command `podman ps` only shows the first 12 characters). 
 
 
-[source,console]
+[source,shell]
 ----
 [root@guest3 ~]# podman generate systemd mojoservice
 # container-635ee754fd2ff25990ae1cd77ed4e89cccdb4eeb5b5aad75eab23463826e2de5.service
@@ -82,7 +82,7 @@ Systemd doesn't monitor its config files for changes.
 Tell systemd to re-read the config. 
 Check the status of our new unit.
 
-[source,console]
+[source,shell]
 ----
 [root@guest3 ~]# podman generate systemd mojoservice > /etc/systemd/system/$UNIT
 [root@guest3 ~]# 
@@ -99,7 +99,7 @@ Check the status of our new unit.
 Does it work?
 Start the service and check. 
 
-[source,console]
+[source,shell]
 ----
 [root@guest3 ~]# systemctl start $UNIT
 [root@guest3 ~]# 
@@ -127,7 +127,7 @@ Make the container start when the system starts.
 
 The systemd config line `WantedBy=multi-user.target default.target` tells systemd to create two symlinks. 
 
-[source,console]
+[source,shell]
 ----
 [root@guest3 ~]# systemctl enable $UNIT
 Created symlink /etc/systemd/system/multi-user.target.wants/mojo.service → /etc/systemd/system/mojo.service.
@@ -138,7 +138,7 @@ Created symlink /etc/systemd/system/default.target.wants/mojo.service → /etc/s
 
 Try a final test. Does the container still respond after a reboot?
 
-[source,console]
+[source,shell]
 ----
 [root@guest3 ~]# systemctl reboot
 Connection to guest3 closed by remote host.

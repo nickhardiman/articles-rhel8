@@ -65,7 +65,7 @@ But it's fine for this self-contained development environment.
 Check access. 
 Use the address of the Internet gateway. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ ip route list
 default via 192.168.122.1 dev eth0 proto dhcp metric 100 
@@ -145,7 +145,7 @@ all:
 
 === ansible-target role 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ mkdir -p ansible/roles
 [nick@guest1 ~]$ mkdir inventory

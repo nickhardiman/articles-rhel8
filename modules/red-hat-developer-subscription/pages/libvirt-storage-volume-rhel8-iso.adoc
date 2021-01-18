@@ -37,7 +37,7 @@ Some of this nonsense is authorization tokens embedded in the URL.
 The download link is only valid for a few minutes, so this is a bad time for a coffee break. 
 If using _curl_, like this example does, the link must be put in quotes so the ampersand *&* does not fool Bash into starting a background job. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# cd /var/lib/libvirt/images/
 [root@host1 images]# 
@@ -56,7 +56,7 @@ If the file was downloaded somewhere else and moved, it may well have a differen
 This file was downloaded to a user's home dir first, then moved. 
 It has a SELinux file type of __user_home_t__ (__admin_home_t__ belongs to root's home directory).
 
-[source,console]
+[source,shell]
 ....
 [root@host1 images]# pwd
 /var/lib/libvirt/images
@@ -71,7 +71,7 @@ total 9244672
 
 Fix the file type. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# restorecon -Rv /var/lib/libvirt/images/
 Relabeled /var/lib/libvirt/images/rhel-8.3-x86_64-dvd.iso from unconfined_u:object_r:user_home_t:s0 to unconfined_u:object_r:virt_image_t:s0
@@ -84,7 +84,7 @@ Relabeled /var/lib/libvirt/images/rhel-8.3-x86_64-dvd.iso from unconfined_u:obje
 
 Libvirt doesn't notice the new ISO file.
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# virsh vol-list images
  Name   Path
@@ -96,7 +96,7 @@ Libvirt doesn't notice the new ISO file.
 Refresh the pool. 
 This tells libvirt to take another look at what's stored in _images_. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# 
 [root@host1 ~]# virsh pool-refresh images
@@ -107,7 +107,7 @@ Pool images refreshed
 
 The new file is now listed. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# virsh vol-list images
  Name                      Path

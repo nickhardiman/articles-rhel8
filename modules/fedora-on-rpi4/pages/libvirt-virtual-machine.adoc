@@ -32,7 +32,7 @@ This image is not an install ISO - the OS is already installed.
 
 No VMs exist yet. 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh list --all
  Id   Name   State
@@ -58,7 +58,7 @@ Use a CLI to get the image.
 * Use the root account. 
 * Look at the HTTP headers. You don't get the file, you get a redirect to another service. The URL https://download.fedoraproject.org/pub/fedora-secondary/releases/33/Spins/aarch64/images/Fedora-Minimal-33-1.3.aarch64.raw.xz will return a 302 code and another location for the image file.
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 ~]# cd /var/lib/libvirt/images/
 [root@rpi4 images]# 
@@ -84,7 +84,7 @@ x-fedora-requestid: X7j0obpARiOhchQcD-yVLQAKAgk
 
 * Download, telling curl to follow redirects like the one in these headers (that's what the --location option does here) and to save the file with the same name (--remote-name).
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# curl --location --remote-name $FILE
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -96,7 +96,7 @@ x-fedora-requestid: X7j0obpARiOhchQcD-yVLQAKAgk
 
 * Extract the image from the downloaded file. Uncompressing the file takes a while because write speed on an SD card is not great. 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# unxz  Fedora-Minimal-33-1.3.aarch64.raw.xz 
 [root@rpi4 images]# 
@@ -105,7 +105,7 @@ x-fedora-requestid: X7j0obpARiOhchQcD-yVLQAKAgk
 
 *  Check SELinux. The SELinux file type is _virt_image_t_. That's fine. 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# getenforce
 Enforcing
@@ -121,7 +121,7 @@ drwxr-xr-x. 10 root root system_u:object_r:virt_var_lib_t:s0         4096 Nov 20
 Create a copy of this raw image. 
 The copy gets used by the machine, leaving the downloaded version untouched. 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# cp Fedora-Minimal-33-1.3.aarch64.raw does-it-work.raw
 [root@rpi4 images]# 
@@ -147,7 +147,7 @@ There are no graphics, so this machine can only be connected to using a serial c
 And finally the virt-install command kicks off the build of the VM but doesn't hang around and connect to the console. 
 That's done as a seperate step. 
 
-[source,console]
+[source,shell]
 ----
 virt-install \
   --name="does-it-work" \
@@ -162,7 +162,7 @@ virt-install \
 
 libvirt adds XML configuration 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virt-install \
 >   --name="does-it-work" \
@@ -181,7 +181,7 @@ Domain creation completed.
 
 Now there is a VM.
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh list --all
  Id   Name           State
@@ -195,7 +195,7 @@ Now there is a VM.
 A storage pool has been automatically created. 
 Libvirt creates a new XML configuration file /etc/libvirt/storage/images.xml. 
 
-[source,console]
+[source,shell]
 ....
 [root@rpi4 images]# virsh pool-list
  Name     State    Autostart
@@ -215,7 +215,7 @@ It takes a minute for boot-up to finish, so you may see many boot-up messages ap
 Finally anaconda starts to handle the install process, and stops at the first interactive prompt. 
 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh console does-it-work
 Connected to domain does-it-work
@@ -243,7 +243,7 @@ That's enough to prove the virtual machine runs.
 Disconnect from the console. 
 The disconnection command is ``ctrl`` + ``]``
 
-[source,console]
+[source,shell]
 ----
 ^]
 [root@rpi4 images]# 
@@ -258,7 +258,7 @@ This is a graceful shutdown, like running ``systemctl poweroff``.
 But here we want to pull the plug, using ``virsh destroy guest1``.
 Despite the dramatic _destroy_ name, this does not delete anything. 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh destroy does-it-work
 Domain does-it-work destroyed
@@ -271,7 +271,7 @@ Domain does-it-work destroyed
 
 Delete the new VM with the command  ``virsh undefine``.
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh undefine --nvram does-it-work 
 Domain does-it-work has been undefined
@@ -281,7 +281,7 @@ Domain does-it-work has been undefined
 
 Check it's gone. 
 
-[source,console]
+[source,shell]
 ....
 [root@rpi4 images]# virsh list --all
  Id   Name   State

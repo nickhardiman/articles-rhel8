@@ -59,7 +59,7 @@ The _default_ and _privbr0_ networks do.
 
 Running the command ``systemctl status dnsmasq`` says dnsmasq isn't running. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 libvirt]# ps -fwwC dnsmasq
 UID          PID    PPID  C STIME TTY          TIME CMD
@@ -81,7 +81,7 @@ root       16757   16756  0 20:16 ?        00:00:00 /usr/sbin/dnsmasq --conf-fil
 
 The dnsmasq server uses the config file at /var/lib/libvirt/dnsmasq/default.conf. This ``dhcp-range`` line tells dnsmasq what IP pool to manage. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo grep dhcp-range /var/lib/libvirt/dnsmasq/default.conf
 dhcp-range=192.168.122.2,192.168.122.254
@@ -95,7 +95,7 @@ These are all listed further down.
 
 Here's the IP pool config.  
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo virsh net-dumpxml default
 ...
@@ -122,7 +122,7 @@ Add the domain _private.example.com_ before adding the name _guest2.private.exam
 dnsmasq has a security feature that ignores DNS domains it doesn't recognize. 
 The default configuration has no domain, so adding a full FQDN for the VM (_guest2.private.example.com_) won't work. Journalctl would show an error like this. 
 
-[source,console]
+[source,shell]
 ....
 May 29 18:17:15 host.private.example.com dnsmasq-dhcp[2380]: Ignoring domain private.example.com for DHCP host name guest2
 ....
@@ -132,7 +132,7 @@ Add a domain by editing the XML configuration and adding the line ``<domain name
 Adding a domain is a little painful, both because editing XML is never fun, and because the network must be stopped and started after this edit to pick up the configuration change. 
 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo virsh net-edit default
 ....
@@ -166,7 +166,7 @@ Save and exit.
 
 Restart the network. Check its state before and after - it changes from _inactive_ to _active_. 
 
-[source,console]
+[source,shell]
 ....
 Network default XML configuration edited.
 
@@ -193,7 +193,7 @@ Network default started
 
 Virsh updates the dnsmasq config.
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo grep private.example.com /var/lib/libvirt/dnsmasq/default.conf
 local=/private.example.com/
@@ -210,7 +210,7 @@ The command contains the line of XML to be added.
 The name in the _name_ attribute matches the hostname set by the ``virt-customize`` command.
 The ``--live`` and ``--config`` options make sure both the current configuration and the stored config are updated.
 
-[source,console]
+[source,shell]
 ....
 sudo virsh net-update default add ip-dhcp-host \
     "<host  mac='52:54:00:00:00:01' name='guest2.private.example.com' ip='192.168.122.100' />" \
@@ -220,7 +220,7 @@ sudo virsh net-update default add ip-dhcp-host \
 
 Add the host line. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo virsh net-update default add ip-dhcp-host "<host mac='52:54:00:00:00:01' name='guest2.private.example.com' ip='192.168.122.100' />" --live --config
 Updated network default persistent config and live state
@@ -236,7 +236,7 @@ Libvirt knows about your new machine, but your host machine has no idea.
 
 Add a line to /etc/hosts. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo bash -c 'echo "192.168.122.100 guest2 guest2.private.example.com" >> /etc/hosts'
 [nick@host1 ~]$ 
@@ -251,7 +251,7 @@ When the _guest2_ VM starts, it uses DHCP to obtain an IP address.
 The guest VM starts by broadcasting a 'looking for DHCP server' message and gets an answer from dnsmasq on the host machine. 
 You can see the conversation taking place using ``journalctl``.
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ journalctl -f
 ...
@@ -276,7 +276,7 @@ Start with ``virsh shutdown guest2``.
 
 dnsmasq only listens to the libvirt network interface. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ host guest2 192.168.122.1
 Using domain server:
@@ -290,7 +290,7 @@ guest2.private.example.com has address 192.168.122.100
 
 Can the host find it?
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ ping -c1 guest2
 PING guest2 (192.168.122.100) 56(84) bytes of data.
@@ -305,7 +305,7 @@ rtt min/avg/max/mdev = 0.226/0.226/0.226/0.000 ms
 
 === connect using SSH
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ ssh guest2
 The authenticity of host 'guest2 (192.168.122.100)' can't be established.
@@ -324,7 +324,7 @@ Last login: Fri May 29 12:15:41 2020
 
 Disconnect. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest2 ~]$ exit
 logout

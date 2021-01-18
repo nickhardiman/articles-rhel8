@@ -90,7 +90,7 @@ Copy and paste the values, then the virt-install command.
 
 The command is pretty quick. 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virt-install \
 >   --name="does-it-work" \
@@ -111,7 +111,7 @@ libvirt adds XML configuration
 
 Now there is a VM.
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh list --all
  Id   Name           State
@@ -125,7 +125,7 @@ Now there is a VM.
 A storage pool has been automatically created. 
 Libvirt creates a new XML configuration file /etc/libvirt/storage/images.xml. 
 
-[source,console]
+[source,shell]
 ....
 [root@rpi4 images]# virsh pool-list
  Name     State    Autostart
@@ -145,7 +145,7 @@ It takes a minute for boot-up to finish, so you may see many boot-up messages ap
 Finally anaconda starts to handle the install process, and stops at the first interactive prompt. 
 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh console does-it-work
 Connected to domain does-it-work
@@ -173,7 +173,7 @@ That's enough to prove the virtual machine runs.
 Disconnect from the console. 
 The disconnection command is ``ctrl`` + ``]``
 
-[source,console]
+[source,shell]
 ----
 ^]
 [root@rpi4 images]# 
@@ -188,7 +188,7 @@ This is a graceful shutdown, like running ``systemctl poweroff``.
 But here we want to pull the plug, using ``virsh destroy guest1``.
 Despite the dramatic _destroy_ name, this does not delete anything. 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh destroy does-it-work
 Domain does-it-work destroyed
@@ -201,7 +201,7 @@ Domain does-it-work destroyed
 
 Delete the new VM with the command  ``virsh undefine``.
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh undefine --nvram does-it-work 
 Domain does-it-work has been undefined
@@ -211,7 +211,7 @@ Domain does-it-work has been undefined
 
 Check it's gone. 
 
-[source,console]
+[source,shell]
 ....
 [root@rpi4 images]# virsh list --all
  Id   Name   State

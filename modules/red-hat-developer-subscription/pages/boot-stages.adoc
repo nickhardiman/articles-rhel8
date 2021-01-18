@@ -77,7 +77,7 @@ The core image is stored in its own small disk partition, called the https://en.
 In this output, it's the Number 1 partition, marked with the flag _bios_grub_.
 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest3 ~]$ sudo parted -l
 [sudo] password for nick: 
@@ -110,7 +110,7 @@ Each kernel version has a few files.
 
 The kernel release name is rather long. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ uname -r
 4.18.0-193.6.3.el8_2.x86_64
@@ -147,7 +147,7 @@ After setting up the system, the kernel runs one program named _/sbin/init_.
 This used to be a script that start the SysV init system. 
 Now it's a symlink to a compiled systemd program.
 
-[source,console]
+[source,shell]
 ----
 [nick@guest3 ~]$ ls -l /sbin/init
 lrwxrwxrwx. 1 root root 22 Apr 15 10:51 /sbin/init -> ../lib/systemd/systemd
@@ -159,7 +159,7 @@ lrwxrwxrwx. 1 root root 22 Apr 15 10:51 /sbin/init -> ../lib/systemd/systemd
 
 Since systemd runs first, it gets the first process ID. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ ps -fC systemd
 UID          PID    PPID  C STIME TTY          TIME CMD

@@ -51,7 +51,7 @@ application account
 
 === networks 
 
-[source,console]
+[source,shell]
 ----
 for N in default private1
 do

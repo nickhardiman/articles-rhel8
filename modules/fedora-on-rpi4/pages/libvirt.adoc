@@ -27,7 +27,7 @@ used by the bridge.
 Run ``nmcli device status`` to see network devices.
 There is no bridge.  
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# nmcli device status
 DEVICE         TYPE      STATE         CONNECTION         
@@ -43,7 +43,7 @@ lo             loopback  unmanaged     --
 
 It's not a module. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# dnf module list
 Fedora 33 openh264 (From Cisco) - aarch64                                3.4 kB/s | 990  B     00:00    
@@ -85,7 +85,7 @@ All included in group?
 What about ``qemu-kvm``?
 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# yum install qemu-system-arm
 Fedora 33 openh264 (From Cisco) - aarch64       829  B/s | 2.5 kB     00:03    
@@ -118,7 +118,7 @@ Is this ok [y/N]:
 
 The libvirt daemon is not running. 
 
-[source,console]
+[source,shell]
 ----
 [nick@rpi4 ~]$ systemctl status libvirtd
 ● libvirtd.service - Virtualization daemon
@@ -136,7 +136,7 @@ TriggeredBy: ● libvirtd-ro.socket
 I may have this confused. 
 It is enabled, but can't start without something qemu provides? 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# systemctl status --no-pager -l libvirtd 
 ● libvirtd.service - Virtualization daemon
@@ -176,7 +176,7 @@ Nov 20 18:11:17 rpi4 dnsmasq-dhcp[13213]: read /var/lib/libvirt/dnsmasq/default.
 The /dev/ directory has a new character device. 
 You can tell it's a character device because the long list starts with a "c".
 
-[source,console]
+[source,shell]
 ----
 [nick@rpi4 ~]$ ls -l /dev/kvm 
 crw-rw-rw-. 1 root kvm 10, 232 Sep 30 01:00 /dev/kvm
@@ -197,7 +197,7 @@ network interface virbr0-nic doesn't handle traffic.
 The only job of this interface is to provide a MAC address that doesn't change. 
 https://www.redhat.com/archives/libvirt-users/2012-September/msg00038.html
 
-[source,console]
+[source,shell]
 ----
 [nick@rpi4 ~]$ nmcli con show
 NAME                UUID                                  TYPE      DEVICE 

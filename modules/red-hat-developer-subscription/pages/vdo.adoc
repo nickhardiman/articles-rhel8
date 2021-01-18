@@ -56,7 +56,7 @@ Have a look at the current state of the system, so you can see what changes are 
 
 The ``lsblk`` command shows a good summary. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ lsblk
 NAME                                          MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
@@ -88,7 +88,7 @@ There will be many, from hub to mouse.
 Everything in Linux is represented as a file. 
 These files are the disk and its partitions.
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ ls /dev/sd*
 /dev/sda  /dev/sda1  /dev/sda2
@@ -101,7 +101,7 @@ These files are the disk and its partitions.
 Open a terminal and watch activity log messages. 
 When you plug in the USB drive, dozens of messages will be displayed here. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ journalctl -f
 -- Logs begin at Wed 2020-05-20 07:50:29 BST. --
@@ -143,7 +143,7 @@ We're going to force VDO to overwrite the USB content.
 
 There are now more device node files in /dev/. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ ls /dev/sd*
 /dev/sda  /dev/sda1  /dev/sda2  /dev/sdb  /dev/sdb1  /dev/sdb2
@@ -165,7 +165,7 @@ The command option  ``--vdoLogicalSize=640G`` is about right for a 64GB USB driv
 VDO plays it safe by refusing to overwrite an existing VDO volume or file system.
 Since this USB drive holds data, ``vdo create`` fails. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo vdo create --name=my_vdo --device=/dev/sdb --vdoLogicalSize=160G
 Creating VDO my_vdo
@@ -175,7 +175,7 @@ vdo: ERROR - Device /dev/sdb excluded by a filter.
 
 The ``--force`` option causes VDO to overwrite everything. Are you ready to lose your data? 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo vdo create --name=my_vdo --device=/dev/sdb --vdoLogicalSize=640G --force
 Creating VDO my_vdo
@@ -191,7 +191,7 @@ VDO instance 0 volume is ready at /dev/mapper/my_vdo
 
 Now there's a new https://en.wikipedia.org/wiki/Device_mapper[device mapper] file.
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ ls -l /dev/mapper/my_vdo 
 lrwxrwxrwx. 1 root root 7 May 20 11:11 /dev/mapper/my_vdo -> ../dm-4
@@ -200,7 +200,7 @@ lrwxrwxrwx. 1 root root 7 May 20 11:11 /dev/mapper/my_vdo -> ../dm-4
 
 That's the end of the VDO setup work. The new VDO device is now defined. If you remove the USB drive and reboot the workstation, this definition will still exist.
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo vdo list --all
 my_vdo
@@ -216,7 +216,7 @@ Add RHEL 8's https://access.redhat.com/articles/3129891[default file system] to 
 The ``-K`` option tells ``mkfs`` to not discard blocks - it's an option related to SSD maintenance. If you want to find out more about discarding blocks, have a look at Alan Formy-Duval's article https://opensource.com/article/20/2/trim-solid-state-storage-linux[Extend the life of your SSD drive with fstrim].
 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo mkfs.xfs -K /dev/mapper/my_vdo 
 meta-data=/dev/mapper/my_vdo     isize=512    agcount=4, agsize=41943040 blks
@@ -235,7 +235,7 @@ realtime =none                   extsz=4096   blocks=0, rtextents=0
 Wait for the udev event queue to clear.
 If https://en.wikipedia.org/wiki/Udev[udev] means nothing to you, don't worry - that's perfectly normal. Read https://opensource.com/article/20/2/linux-systemd-udevd[Managing your attached hardware on Linux with systemd-udevd] to find out what it means. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ udevadm settle
 [nick@host ~]$ 
@@ -248,7 +248,7 @@ If https://en.wikipedia.org/wiki/Udev[udev] means nothing to you, don't worry - 
 Create a new mount point and mount your new VDO device. Use the device mapper node, not the block device (/dev/mapper/my_vdo, not /dev/sdb).
 These changes are all temporary, and disappear when the system is powered off. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo mount /dev/mapper/my_vdo /mnt/my_mount/
 [nick@host ~]$ 
@@ -256,7 +256,7 @@ These changes are all temporary, and disappear when the system is powered off.
 
 Allow all the https://en.wikipedia.org/wiki/Wheel_(computing)[big wheels] to use the new VDO device. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo chown .wheel /mnt/my_mount/
 [nick@host ~]$ sudo chmod 775 /mnt/my_mount/
@@ -270,7 +270,7 @@ Have a look around the system, now VDO is operational.
 
 Kernel modules are loaded. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ lsmod | grep -E 'vdo|uds'
 kvdo                  581632  1
@@ -282,7 +282,7 @@ dm_mod                151552  20 kvdo,dm_crypt,dm_log,dm_mirror,dm_bufio
 
 Journalctl says the VDO service is working.
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ journalctl _SYSTEMD_UNIT=vdo.service
 -- Logs begin at Thu 2020-05-28 13:34:36 BST, end at Thu 2020-05-28 14:14:22 BST. --
@@ -297,7 +297,7 @@ Don't worry, nothing is broken.
 VDO code is not included in the upstream kernel - these modules are built seperately.
 For more information, see https://access.redhat.com/solutions/3320911[Why is UDS and/or KVDO tainting the kernel?].
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ journalctl | grep taints
 May 28 13:35:10 host.example.com kernel: uds: loading out-of-tree module taints kernel.
@@ -310,7 +310,7 @@ May 28 13:35:10 host.example.com kernel: uds: loading out-of-tree module taints 
 
 The ``lsblk`` command output has a couple more lines. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ lsblk
 NAME                                          MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
@@ -330,7 +330,7 @@ sr0                                            11:0    1  1024M  0 rom
 No files have been copied to this device yet, but some space is used - it's reserved by VDO. 
 The ``df`` and ``vdostats`` command have different views on how the space is being used.  
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ df -h /mnt/my_mount/
 Filesystem          Size  Used Avail Use% Mounted on
@@ -349,7 +349,7 @@ Device                    Size      Used Available Use% Space saving%
 Copy a file from the workstation's store to the new VDO store. This 20GB file is a QEMU disk image. The image holds 12 GB of OS files, and has not been shrunk in any way (it's not compressed or sparse) so it's mostly unused space. 
 VDO will use https://github.com/lz4/lz4[LZ4] to compress the copy. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ ls -lh guest-images/guest1.qcow2 
 -rw-------. 1 nick nick 20G May 15 18:28 guest-images/guest1.qcow2
@@ -365,7 +365,7 @@ The drag is mostly caused by the appalling write speed of old USB devices, and p
 Use the ``rsync`` command to copy the file, not the old classic ``cp``,  
 because the ``-P`` option shows progress.
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ rsync -P guest-images/guest1.qcow2 /mnt/my_mount/
 guest1.qcow2
@@ -375,7 +375,7 @@ guest1.qcow2
 
 Check the storage space used. VDO says the amount of space used has gone up from 4.5G to 5.8G.
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ df -h /mnt/my_mount/
 Filesystem          Size  Used Avail Use% Mounted on
@@ -399,7 +399,7 @@ If you are using an old USB2 drive, this boot test may fail. The read speed may 
 Create a new VM using the image.
 The command has no less than 7 options.
 
-[source,console]
+[source,shell]
 ----
 virt-install \
     --network bridge:virbr0 \
@@ -413,7 +413,7 @@ virt-install \
 
 Check the VM's state. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ virsh list
  Id    Name                           State
@@ -434,7 +434,7 @@ A workstation reboot won't do the trick. A reboot will remove the VM and mount, 
 
 Stop the VM and delete the configuration with these commands. 
 
-[source,console]
+[source,shell]
 ----
 virsh destroy vm_vdo
 virsh undefine vm_vdo
@@ -451,7 +451,7 @@ If the definition exists but the USB drive is not inserted, this service fails t
 Command ``sudo systemctl status vdo`` shows the error messages. 
 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo vdo remove -n my_vdo --force
 Removing VDO my_vdo
@@ -466,7 +466,7 @@ If you want to remove the USB device, run these commands first.
 ``vdo stop`` does some clean-up work, including removing the device mapper node.
 ``udisksctl power-off`` checks no process is using the drive, clears caches and disables the USB port. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo vdo stop -n my_vdo
 Stopping VDO my_vdo
@@ -478,7 +478,7 @@ Stopping VDO my_vdo
 if you did not remove the VDO config _my_vdo_, VDO is now a little upset. 
 It will recover when the USB drive is plugged in again. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo vdo status
 [sudo] password for nick: 
@@ -498,7 +498,7 @@ When you insert the USB drive, the kernel handles the USB work automatically and
 VDO can then see this volume. 
 But the device mapper node is gone and the volume isn't mounted.
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo vdo status
 VDO status:
@@ -528,7 +528,7 @@ VDO instance 0 volume is ready at /dev/mapper/my_vdo
 Run these commands to remount the volume. 
 This article doesn't cover any mounting configuration, like adding an entry in /etc/fstab or setting up USB auto-mount.
 
-[source,console]
+[source,shell]
 ----
 sudo mount /dev/mapper/my_vdo /mnt/my_mount/
 sudo chown .wheel /mnt/my_mount/
@@ -537,7 +537,7 @@ sudo chmod 775 /mnt/my_mount/
 
 All OK? Is the file still available? 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ ls -lah /mnt/my_mount/
 total 20G

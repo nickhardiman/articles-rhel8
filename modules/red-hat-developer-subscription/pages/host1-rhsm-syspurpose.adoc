@@ -29,7 +29,7 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/pe
 command to describe what this machine is used for. 
 
 
-[source,console]
+[source,shell]
 ----
 [nick@rhel8 ~]$ sudo syspurpose set role 'Red Hat Enterprise Linux Workstation'
 role set to "Red Hat Enterprise Linux Workstation".
@@ -46,7 +46,7 @@ To remove these, run ``sudo syspurpose unset role``,  ``sudo syspurpose unset sl
 
 Check. The output is JSON.
 
-[source,console]
+[source,shell]
 ----
 [nick@rhel8 ~]$ sudo syspurpose show
 {
@@ -62,14 +62,14 @@ Check. The output is JSON.
 
 Use RHSM (Red Hat Subscription Manager) to https://access.redhat.com/solutions/253273[register and subscribe] your new machine.
 
-[source,console]
+[source,shell]
 ----
 subscription-manager register --username <username> --password <password> --auto-attach
 ----
 
 The first time subscription-manager runs, it displays a warning about enabling a few plugins.
 
-[source,console]
+[source,shell]
 ----
 [nick@rhel8 ~]$ sudo subscription-manager register --username nicktastic --password ';1!eB9-aW' --auto-attach
 [sudo] password for nick: 
@@ -95,7 +95,7 @@ Remove this registration with the command ``sudo subscription-manager unregister
 
 Check subscription status. 
 
-[source,console]
+[source,shell]
 ----
 [nick@rhel8 ~]$ sudo subscription-manager status 
 +-------------------------------------------+
@@ -120,7 +120,7 @@ Subscription manager compares syspurpose fields with the consumed subscription f
 
 The syspurpose fields "role", "service_level_agreement" and "usage" are compared to these subscription-manager fields. 
 
-[source,console]
+[source,shell]
 ----
 [root@rhel8 ~]# subscription-manager list --consumed
 +-------------------------------------------+
@@ -138,7 +138,7 @@ The "Roles" and "Usage" fields are empty in a developer subscription, so the sys
 
 Unsetting those two syspurpose values removes those _mismatched_ messages and resets ``System Purpose Status`` to ``Not Specified``.
 
-[source,console]
+[source,shell]
 ----
 sudo syspurpose unset role
 sudo syspurpose unset usage
@@ -156,7 +156,7 @@ Subscription-manager attempts to match fields in the available subscriptions.
 
 Subscription  manager tries to match fields in each subscription record. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# subscription-manager list --consumed
 +-------------------------------------------+
@@ -177,7 +177,7 @@ Setting service level changes the line 'System Purpose Status: Not Specified' to
 
 No value is set. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# subscription-manager service-level --show
 Service level preference not set
@@ -186,7 +186,7 @@ Service level preference not set
 
 List choices.
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# subscription-manager service-level --list
 +-------------------------------------------+
@@ -203,7 +203,7 @@ Pick a value.
 This subscription is _Self-Support_.
 If the wrong value is entered, remove the value with _subscription-manager service-level --unset_. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# subscription-manager service-level --set=Self-Support
 service_level_agreement set to "Self-Support".
@@ -212,7 +212,7 @@ service_level_agreement set to "Self-Support".
 
 Check. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# subscription-manager status
 +-------------------------------------------+
@@ -229,7 +229,7 @@ System Purpose Status: Matched
 
 The usage field is similar. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# subscription-manager usage --list
 +-------------------------------------------+
@@ -240,7 +240,7 @@ The usage field is similar.
 [root@host1 ~]# 
 ....
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# subscription-manager usage --set Development/Test
 usage set to "Development/Test".
@@ -249,14 +249,14 @@ usage set to "Development/Test".
 
 Setting this to something the machine is not entitled to shows a warning. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# subscription-manager usage --set Production
 usage set to "Production".
 [root@host1 ~]# 
 ....
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# subscription-manager status
 +-------------------------------------------+

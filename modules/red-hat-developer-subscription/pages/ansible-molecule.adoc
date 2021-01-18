@@ -11,7 +11,7 @@ Configure, create, converge and destroy.
 Python3, podman.
 ansible? or is venv ansible ok?
 
-[source,console]
+[source,shell]
 ----
 subscription-manager register
 subscription-manager attach --pool=1234567890abcdef1234567890abcdef
@@ -26,7 +26,7 @@ The python virtual environment supplies other requirements like ansiblelint, yam
 
 Create a new virtual environment. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest2 ~]$ python3 -m venv molecule-venv
 [nick@guest2 ~]$ 
@@ -39,7 +39,7 @@ Create a new virtual environment.
 
 Install. 
 
-[source,console]
+[source,shell]
 ----
 pip install --upgrade pip
 pip install "molecule[lint]"
@@ -53,7 +53,7 @@ Exception: Failed to detect selinux python bindings
 
 Create a new ansible role, with molecule additions. 
 
-[source,console]
+[source,shell]
 ----
 (molecule-venv) [nick@guest2 ~]$ molecule init role my-new-role --driver-name=podman
 --> Initializing new role my-new-role...
@@ -67,7 +67,7 @@ defaults  files  handlers  meta  molecule  README.md  tasks  templates  tests  v
 ----
 
 
-[source,console]
+[source,shell]
 ----
 (molecule-venv) [nick@guest2 my-new-role]$ molecule create
 --> Test matrix
@@ -93,7 +93,7 @@ CONTAINER ID  IMAGE                       COMMAND               CREATED        S
 (molecule-venv) [nick@guest2 my-new-role]$
 ----
 
-[source,console]
+[source,shell]
 ----
 (molecule-venv) [nick@guest2 my-new-role]$ molecule converge
 --> Test matrix
@@ -117,7 +117,7 @@ These are the same.
 * molecule login -h centos
 * podman exec -it centos /bin/bash
 
-[source,console]
+[source,shell]
 ----
 (molecule-venv) [nick@guest2 my-new-role]$ molecule login -h centos
 [root@70ab49e9b85b /]# 
@@ -135,7 +135,7 @@ exit
 
 molecule destroy
 
-[source,console]
+[source,shell]
 ----
 (molecule-venv) [nick@guest2 my-new-role]$ molecule destroy
 --> Test matrix

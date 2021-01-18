@@ -44,7 +44,7 @@ Log in over SSH.
 When you SSH to your fresh install, you see this MOTD (Message Of The Day).
 If you're on the Gnome desktop, you can only see these messages by looking at their files - ``cat /etc/motd.d/*``.
 
-[source,console]
+[source,shell]
 ----
 somehost:~ nick$ ssh 10.0.1.4
 Activate the web console with: systemctl enable --now cockpit.socket

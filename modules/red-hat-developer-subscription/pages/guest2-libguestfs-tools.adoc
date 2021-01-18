@@ -7,7 +7,7 @@ Nick Hardiman <nhardima@redhat.com>
 Use rhel-8.3-x86_64-kvm.qcow2 as a golden image.
 A new virtual machine is built by copying the golden image and customizing the copy.
 
-[source,console]
+[source,shell]
 ----
 sudo dnf install libguestfs-tools  # for virt-resize and virt-customize
 ----
@@ -33,7 +33,7 @@ produces a vast amount of data.
 
 List partitions. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 images]# virt-filesystems --parts --add rhel-8.3-x86_64-kvm.qcow2  
 /dev/sda1
@@ -45,7 +45,7 @@ List partitions.
 Take a closer look at those partitions by listing file systems. 
 The root file system is _/dev/sda3_, which is is nearly 10GiB in size (10629414912 bytes). 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 images]# virt-filesystems --filesystems --long --add rhel-8.3-x86_64-kvm.qcow2 
 Name       Type        VFS   Label  Size         Parent
@@ -66,7 +66,7 @@ Create an empty qcow2 image file.
 The command _virsh vol-create-as_ needs a pool name, the new file name and how big the volume should be. 
 If you can't remember your pool name, run _virsh pool-list_ to check.
 
-[source,console]
+[source,shell]
 ----
 [root@host1 images]# MY_COPY=guest2.qcow2
 [root@host1 images]# SIZE=300G
@@ -80,7 +80,7 @@ This huge 300G volume is contained in a very small 1.3G file.
 This is a sparse volume. 
 The whole 300 GiB is not allocated now - space is added later, when it is required.
 
-[source,console]
+[source,shell]
 ----
 [root@host1 images]# ls -lh
 total 1.3G
@@ -95,7 +95,7 @@ If you want to remove this new file and start again, delete it with _virsh vol-d
 Don't use the bash command _rm_ because it removes the file and leaves behind libvirt's configuration about this file. 
 The _vol-delete_ command removes both the file and libvirt's config. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 images]# virsh vol-delete $MY_COPY --pool images
 Vol guest2 deleted
@@ -115,7 +115,7 @@ Virt_resize expands the volume in the second file while it's copying.
 
 Libvirt does come with a volume copying command, _virsh vol-clone_. It can make a new copy, but it can't change its size. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 images]# MY_COPY=guest2.qcow2
 [root@host1 images]# GOLDEN_IMAGE=rhel-8.3-x86_64-kvm.qcow2 
@@ -149,7 +149,7 @@ carefully check that the resized disk boots and works correctly.
 
 The file is much bigger now, but still a fraction of its defined size. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 images]# ls -lh
 total 3.6G
@@ -167,7 +167,7 @@ Change this and a few other things with the ``virt-customize`` command.
 Check out that insecure password. 
 
 
-[source,console]
+[source,shell]
 ----
 virt-customize \
   --add            guest2.qcow2  \
@@ -179,7 +179,7 @@ virt-customize \
 
 The command takes a few seconds. ``virt-customize``` prints an activity log, along with seconds elapsed.
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ virt-customize --add guest-images/guest2.qcow2 --root-password password:'x%5ckA-1' --hostname guest2.private.example.com
 [   0.0] Examining the guest ...

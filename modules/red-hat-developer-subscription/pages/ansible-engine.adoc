@@ -58,7 +58,7 @@ Start the VM.
 
 Log in.
 
-[source,console]
+[source,shell]
 ....
 [nick@host ~]$ ssh 192.168.122.218
 nick@192.168.122.218's password: 
@@ -80,7 +80,7 @@ Most users ignore repositories ending in ``-source-rpms`` and ``-debug-rpms``.
 Source packages are useful to those who know how to code and compile. 
 Debug packages contain compiled programs with extra information, useful for those who know their way around a debugger.
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ sudo subscription-manager repos --list | grep ansible
 [sudo] password for nick: 
@@ -102,7 +102,7 @@ If you want to know more about the repo, have a look at the configuration file /
 * Attributes starting with ``gpg`` are used to check package integrity. 
 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ grep -A12 ansible-2-for-rhel-8-x86_64-rpms /etc/yum.repos.d/redhat.repo 
 [ansible-2-for-rhel-8-x86_64-rpms]
@@ -126,7 +126,7 @@ enabled_metadata = 1
 
 Enable the repository ``ansible-2-for-rhel-8-x86_64-rpms``. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ sudo subscription-manager repos --enable=ansible-2-for-rhel-8-x86_64-rpms
 [sudo] password for nick: 
@@ -137,7 +137,7 @@ Repository 'ansible-2-for-rhel-8-x86_64-rpms' is enabled for this system.
 Check your work by viewing available ansible packages. 
 The name of the Ansible Engine package is 'ansible'.
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ sudo dnf search ansible
 Updating Subscription Management repositories.
@@ -162,7 +162,7 @@ Ansible uses the OS's python, not any python installed by the user.
 
 Check your work by displaying the default configuration.
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ ansible --version
 ansible 2.9.9
@@ -181,7 +181,7 @@ Try a few safe commands.
 
 Use the ping module. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ ansible -m ping localhost
 localhost | SUCCESS => {
@@ -193,7 +193,7 @@ localhost | SUCCESS => {
 
 List the thousands of included modules.
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ ansible-doc -l
 a10_server                                                    Manage A10 Ne...

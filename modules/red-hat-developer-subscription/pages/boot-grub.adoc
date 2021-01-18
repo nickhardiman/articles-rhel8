@@ -17,7 +17,7 @@ The core image is stored in its own small disk partition, called the https://en.
 In this output, it's the Number 1 partition, marked with the flag _bios_grub_.
 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest3 ~]$ sudo parted -l
 [sudo] password for nick: 
@@ -49,7 +49,7 @@ Each kernel version has a few files.
 
 The kernel release name is rather long. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ uname -r
 4.18.0-193.6.3.el8_2.x86_64
@@ -81,7 +81,7 @@ GRUB configuration defines a default kernel to run, if the user doesn't choose d
 The default kernel is usually the latest one.
 The last entry in this list is the newest. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ ls -lart /boot/vmlinuz-*
 -rwxr-xr-x. 1 root root 8913760 Mar 27 14:48 /boot/vmlinuz-4.18.0-193.el8.x86_64
@@ -94,7 +94,7 @@ The last entry in this list is the newest.
 
 The grubby command manages configuration. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ sudo grubby --info=/boot/vmlinuz-$KERNEL_RELEASE
 [sudo] password for nick: 
@@ -113,7 +113,7 @@ The grub2-reboot command can tell GRUB which kernel to use on the next reboot.
 
 Check the current release, list options and choose an earlier kernel release.
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ uname -r
 4.18.0-193.13.2.el8_2.x86_64
@@ -131,7 +131,7 @@ title="Red Hat Enterprise Linux (0-rescue-5b3bf4e5791e42a283a85f36070e5fcc) 8.2 
 
 Use that kernel. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ sudo systemctl reboot 
 Connection to guest1.lab.example.com closed by remote host.
@@ -146,7 +146,7 @@ Connection to guest1.lab.example.com closed.
 
 Return to the default. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ sudo grub2-reboot "Red Hat Enterprise Linux (4.18.0-193.13.2.el8_2.x86_64) 8.2 (Ootpa)"
 [sudo] password for nick: 

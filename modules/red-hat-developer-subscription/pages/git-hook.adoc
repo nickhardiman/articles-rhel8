@@ -13,7 +13,7 @@ This runs after the commit process - after content is added to or removed from  
 
 == write a bash script
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ cd /var/git/content1.git/hooks
 [nick@guest1 hooks]$
@@ -29,7 +29,7 @@ USER=$(/usr/bin/whoami)
 
 Make it executable and check it works. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 hooks]$ chmod 775 post-update
 [nick@guest1 hooks]$ ./post-update
@@ -38,7 +38,7 @@ Make it executable and check it works.
 
 Watch the log. 
 
-[source,console]
+[source,shell]
 ....
 [root@guest1 ~]# journalctl -f
 -- Logs begin at Fri 2020-07-03 02:45:22 EDT. --
@@ -54,7 +54,7 @@ Many messages appear, not just one.
 Most are related to SSH login.
 Only one message is from the new script.  
 
-[source,console]
+[source,shell]
 ....
 Jul 03 13:45:05 guest1.lab.example.com systemd[1]: Starting SSSD Kerberos Cache Manager...
 Jul 03 13:45:05 guest1.lab.example.com systemd[1]: Started SSSD Kerberos Cache Manager.

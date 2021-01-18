@@ -29,7 +29,7 @@ Instead of installing packages and configuring the system using a kickstart file
 
 == create a storage volume 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# cd /var/lib/libvirt/images/
 [root@host1 images]# ls
@@ -51,7 +51,7 @@ It's easier to use the ``virt-install`` command to do the hard work.
 This ``virt-install`` command creates a virtual machine.
 The ``--os-variant`` option sets some values, including 2 CPUs and 1536 MB memory.
 
-[source,console]
+[source,shell]
 ----
 virt-install \
   --name myfirstvm \
@@ -65,7 +65,7 @@ This command creates a _guest domain_. In https://libvirt.org/goals.html[libvirt
 
 If you're wondering about the odd-looking MAC address ``52:54:00:00:00:01``, it's not one you'd find in public - it's a https://en.wikipedia.org/wiki/MAC_address#Universal_vs._local[locally administered address]. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# virt-install   --name myfirstvm   --disk vol=images/myfirstvm.qcow2   --os-variant rhel8.2   --noautoconsole    --import
 Using rhel8.2 default --memory 1536
@@ -86,7 +86,7 @@ The login prompt may not appear until you hit the ``Enter`` key.
 The hostname is _localhost_. 
 The ``--name`` option in the virt-install command doesn't change the hostname, or indeed anything in the KVM image. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]$ virsh console myfirstvm
 Connected to domain myfirstvm
@@ -104,7 +104,7 @@ We can't log in, because no root password is set.
 
 Disconnect from the console. ``ctrl`` + ``]``
 
-[source,console]
+[source,shell]
 ----
 myfirstvm login:  ^]
 [root@host1 ~]$ 
@@ -118,7 +118,7 @@ This is a graceful shutdown, like running ``systemctl poweroff``.
 
 If you want to pull the plug, use ``virsh destroy myfirstvm``.
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]$ virsh shutdown myfirstvm
 Domain myfirstvm is being shutdown
@@ -140,7 +140,7 @@ Restart the new VM with the command ``virsh start myfirstvm``.
 This ``virsh start`` command runs a huge ``qemu-kvm`` command with dozens of options. 
 You can see it by running ``ps -fwwwC qemu-kvm``.
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]$ virsh start myfirstvm
 Domain myfirstvm started
@@ -163,7 +163,7 @@ Delete the new VM with the command  ``virsh destroy myfirstvm``.
 
 Power off the machine and remove its configuration. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]$ virsh destroy myfirstvm
 Domain myfirstvm destroyed

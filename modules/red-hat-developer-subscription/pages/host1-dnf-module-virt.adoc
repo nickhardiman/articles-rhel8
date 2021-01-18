@@ -9,7 +9,7 @@ Nick Hardiman
 
 == the DNF module virt  
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo dnf module list virt
 Updating Subscription Management repositories.
@@ -41,7 +41,7 @@ The Postgresql module has two profiles, *client* and *server*.
 The client profile installs one package, _postgesql_, which pulls in a few dependencies . 
 The server profile is similar, installing _postgesql-server_. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo dnf module info virt
 Updating Subscription Management repositories.
@@ -60,7 +60,7 @@ Hint: [d]efault, [e]nabled, [x]disabled, [i]nstalled, [a]ctive
 ....
 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo dnf module info virt --profile
 Updating Subscription Management repositories.
@@ -90,7 +90,7 @@ A profile is a collection of packages for one purpose, so it can't be enabled or
 
 Install virt, stream _rhel_, profile _common_.
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo dnf module install virt 
 Updating Subscription Management repositories.
@@ -140,7 +140,7 @@ Remove all the module packages.
 
 This removes a lot more than it added. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo dnf module remove --all virt 
 Updating Subscription Management repositories.
@@ -172,7 +172,7 @@ Complete!
 
 Erase your configuration change. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo dnf module reset virt
 Updating Subscription Management repositories.

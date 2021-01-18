@@ -168,7 +168,7 @@ This is top, copied after starting satellite1, capsule1 and isolatedn1.
 These three do not take up 32GB (14 + 14 + 4).
 Satellite is installed on satellite1, but no applications have yet been installed on the other two. 
 
-[source,console]
+[source,shell]
 ----
 Tasks: 293 total,   1 running, 292 sleeping,   0 stopped,   0 zombie
 %Cpu(s):  1.7 us,  0.4 sy,  0.0 ni, 97.8 id,  0.0 wa,  0.1 hi,  0.0 si,  0.0 st

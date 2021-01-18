@@ -14,7 +14,7 @@ Find the version.
 Actually, the version isn't very informative. 
 The release is. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# uname --kernel-version
 #1 SMP Wed Dec 16 03:30:52 EST 2020
@@ -44,7 +44,7 @@ The /boot/ directory holds the compressed version (vmlinuz) and the name has the
 
 Use the _file_ command to describe the kernel file. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 module2]# file /boot/vmlinuz-4.18.0-240.10.1.el8_3.x86_64
 /boot/vmlinuz-4.18.0-240.10.1.el8_3.x86_64: Linux kernel x86 boot executable bzImage, version 4.18.0-240.10.1.el8_3.x86_64 (mockbuild@x86-vm-08.build.eng.bos.redhat.com) #1 SMP Wed Dec 16 0, RO-rootFS, swap_dev 0x9, Normal VGA
@@ -60,7 +60,7 @@ The first upgrade usually adds another kernel package, and the /boot directory s
 The GRUB menu lets the user choose which one to boot. 
 
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ sudo dnf list kernel
 [sudo] password for nick: 
@@ -77,7 +77,7 @@ kernel.x86_64        4.18.0-240.10.1.el8_3        @rhel-8-for-x86_64-baseos-rpms
 
 Grub menu line is defined here. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# grep CMDLINE /etc/default/grub 
 GRUB_CMDLINE_LINUX="crashkernel=auto resume=/dev/mapper/rhel-swap rd.lvm.lv=rhel/root rd.lvm.lv=rhel/swap rhgb quiet"
@@ -89,7 +89,7 @@ The command line that was actually used is here.
 
 The second half of this line matches the line in /etc/default/grub. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 boot]# cat /proc/cmdline 
 BOOT_IMAGE=(hd0,msdos2)/vmlinuz-4.18.0-240.10.1.el8_3.x86_64 root=/dev/mapper/rhel-root ro crashkernel=auto resume=/dev/mapper/rhel-swap rd.lvm.lv=rhel/root rd.lvm.lv=rhel/swap rhgb quiet
@@ -113,7 +113,7 @@ These days, a server machine has no screen, let alone someone looking at it.
 
 View the kernel log with the _journalctl_ command. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 boot]# journalctl --dmesg 
 -- Logs begin at Thu 2021-01-07 09:58:25 GMT, end at Thu 2021-01-07 16:22:56 GMT. --
@@ -131,7 +131,7 @@ These tasks are called threads, and are started by the kernel thread daemon.
 
 Use the _ps_ command to see the kernel thread daemon and its children. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 module2]# ps faux 
 USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
@@ -150,7 +150,7 @@ Many modules are loaded by the RHEL 8 kernel.
 
 List modules with the _lsmod_ command. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 module2]# lsmod 
 Module                  Size  Used by

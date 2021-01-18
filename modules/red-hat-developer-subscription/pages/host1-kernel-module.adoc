@@ -21,7 +21,7 @@ Security people don't like to leave tools on servers where hackers could possibl
 
 This is a dangling symlink
 
-[source,console]
+[source,shell]
 ----
 ls -la  /lib/modules/$(uname -r)/build
 # install development package for building kernel modules
@@ -35,7 +35,7 @@ cd /root/printk/module
 
 Install the development package for building kernel modules, and libraries for handling ELF object files.
 
-[source,console]
+[source,shell]
 ----
 dnf install kernel-devel
 dnf install elfutils-libelf-devel
@@ -46,7 +46,7 @@ dnf install elfutils-libelf-devel
 
 Make a directory to hold your files. 
 
-[source,console]
+[source,shell]
 ----
 mkdir -p /root/printk/module
 cd /root/printk/module
@@ -54,7 +54,7 @@ cd /root/printk/module
 
 Edit the new source file.
 
-[source,console]
+[source,shell]
 ----
 vi hello-1.c
 ----
@@ -95,14 +95,14 @@ module_exit(hello_cleanup);
 
 Create a Makefile. 
 
-[source,console]
+[source,shell]
 ----
 vi Makefile 
 ----
 
 Use tabs, not spaces, to indent those _make_ and _clean_ lines.  
 
-[source,console]
+[source,shell]
 ----
 obj-m += hello-1.o
 all:
@@ -118,7 +118,7 @@ Now you have two files.
 
 Run _make_ or _make all_ (these do the same thing).
 
-[source,console]
+[source,shell]
 ----
 [root@host1 module]# make
 make -C /lib/modules/4.18.0-240.10.1.el8_3.x86_64/build M=/root/printk/module modules
@@ -138,7 +138,7 @@ If you want to remove these and start again, run _make clean_.
 
 Check the new module file. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 module]# file hello-1.ko 
 hello-1.ko: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), BuildID[sha1]=6815bd01fd8870239e59ba3c08057a6a9840e65e, with debug_info, not stripped
@@ -155,7 +155,7 @@ The commands _journalctl --dmesg --follow_ and _dmesg --ctime --follow_ do prett
 And you can get similar results with commands _cat  /proc/kmsg_, _cat /dev/kmsg_, and _dd if=/dev/kmsg iflag=nonblock_.
 
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ journalctl --dmesg --follow
 -- Logs begin at Fri 2021-01-08 10:27:33 GMT. --
@@ -166,7 +166,7 @@ Jan 08 14:48:13 host1.silvan.uk kernel: IPv6: ADDRCONF(NETDEV_UP): wlp3s0: link 
 Return to the first terminal.
 Insert the new module. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 module]# insmod hello-1.ko 
 [root@host1 module]# 
@@ -174,7 +174,7 @@ Insert the new module.
 
 Kernel messages appear. 
 
-[source,console]
+[source,shell]
 ----
 [18199.795667] Hello world 1. My priority is info, level 6.
 [18199.795668] Hello world 2. My priority is error, level 3.
@@ -183,7 +183,7 @@ Kernel messages appear.
 List kernel modules.
 There's the new module, listed along with many others. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 module2]# lsmod 
 Module                  Size  Used by
@@ -196,7 +196,7 @@ rfcomm                 86016  4
 == remove the new module
 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 module]# rmmod hello-1.ko 
 [root@host1 module]# 
@@ -204,7 +204,7 @@ rfcomm                 86016  4
 
 Another kernel message appears. 
 
-[source,console]
+[source,shell]
 ----
 Jan 08 15:37:28 host1.silvan.uk kernel: Goodbye, World!
 ----
@@ -231,7 +231,7 @@ High priority messages have low numbers, which can be a little confusing.
 Console shows message priorities at or below a certain number.
 The first number here is the current level, set by adding _quiet_ to the Linux command line. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 module]# sysctl kernel.printk
 kernel.printk = 4	4	1	7

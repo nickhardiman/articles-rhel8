@@ -10,7 +10,7 @@ https://cockpit-project.org/[Cockpit] is a server management system with a web-b
 
 == install 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 tmp]# dnf install cockpit-machines
 Updating Subscription Management repositories.

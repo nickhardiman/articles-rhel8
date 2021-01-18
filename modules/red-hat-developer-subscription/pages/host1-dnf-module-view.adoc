@@ -38,7 +38,7 @@ Many DNF commands like `dnf install`, `dnf provides` and `dnf info` work for mod
 
 The appstream repo contains dozens of modules. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ dnf module list
 ...
@@ -58,7 +58,7 @@ Hint: [d]efault, [e]nabled, [x]disabled, [i]nstalled
 
 List only postgresql modules. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ sudo dnf module list postgresql
 Updating Subscription Management repositories.
@@ -104,7 +104,7 @@ Postgresql has two profiles, *client* and *server*.
 The client profile installs one package, _postgesql_, which pulls in a few dependencies . 
 The server profile is similar, installing _postgesql-server_. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ dnf module info postgresql --profile 
 ...

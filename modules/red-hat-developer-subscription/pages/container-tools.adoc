@@ -52,7 +52,7 @@ The https://access.redhat.com/support/policy/updates/containertools[Container To
 * 1.0 is a stable stream that was released with RHEL 8.0. 
 * 2.0 is the current stable stream, released with RHEL 8.2. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ sudo dnf module list container-tools
 Updating Subscription Management repositories.
@@ -86,7 +86,7 @@ Pull this from the Internet to a local registry.
 Check our local image store. 
 It's empty. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ podman images
 REPOSITORY   TAG   IMAGE ID   CREATED   SIZE
@@ -95,7 +95,7 @@ REPOSITORY   TAG   IMAGE ID   CREATED   SIZE
 
 Get a local copy of the ubi8 image.
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ podman pull registry.access.redhat.com/ubi8/ubi
 Trying to pull registry.access.redhat.com/ubi8/ubi...
@@ -111,7 +111,7 @@ Storing signatures
 
 Is the store still empty? No, there's the image, named after the place we pulled it from. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ podman images 
 REPOSITORY                            TAG      IMAGE ID       CREATED       SIZE
@@ -135,7 +135,7 @@ Give it something to do by adding a command on the end of the _run_ command.
 These commands create a container and run one command. 
 When the command exits, so does the container. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ podman run registry.access.redhat.com/ubi8/ubi whoami
 root
@@ -151,7 +151,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="8.2"
 
 View the current and previous container runs. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ podman ps -a
 CONTAINER ID  IMAGE                                       COMMAND               CREATED             STATUS                         PORTS  NAMES

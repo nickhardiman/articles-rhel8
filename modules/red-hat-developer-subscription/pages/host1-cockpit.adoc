@@ -12,7 +12,7 @@ is installed on RHEL 8 hosts, but not enabled.
 
 Connecting to a RHEL 8 host displays an MOTD (Message of the Day) that lets the user know cockpit is waiting to be enabled.
 
-[source,console]
+[source,shell]
 ----
 workstation:~ nick$ ssh 10.0.1.45
 Activate the web console with: systemctl enable --now cockpit.socket
@@ -32,7 +32,7 @@ Last login: Thu May 14 17:29:53 2020 from 10.0.1.3
 Enable and start the systemd unit cockpit.socket. 
 Connecting to the socket starts cockpit.service.
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ systemctl status cockpit.socket
 ● cockpit.socket - Cockpit Web Service Socket
@@ -49,7 +49,7 @@ Created symlink /etc/systemd/system/sockets.target.wants/cockpit.socket → /usr
 
 After it's enabled, the MOTD message changes. 
 
-[source,console]
+[source,shell]
 ----
 workstation:~ nick$ ssh 10.0.1.45
 Web console: https://host.lab.example.com:9090/ or https://10.0.1.40:9090/
@@ -69,7 +69,7 @@ from `man remotectl`:
 The remotectl program is a tool for configuring remote access to this system. 
 Currently it manages cockpit's SSL certificate.
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ sudo remotectl certificate
 [sudo] password for nick: 
@@ -80,7 +80,7 @@ certificate: /etc/cockpit/ws-certs.d/0-self-signed.cert
  Web browsers don't like self-signed certificates. 
  Chrome displays this warning.
 
-[source,console]
+[source,shell]
 ----
 Your connection is not private
 Attackers might be trying to steal your information from 10.0.1.45 (for example, passwords, messages or credit cards). Learn more
@@ -92,7 +92,7 @@ Luckily it still offers the option to `Proceed to 10.0.1.45 (unsafe)`.
 Chrome continues to cause problems behind the scenes. 
 The journal may contain many _gnutls_handshake_ errors. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host1 ~]$ sudo journalctl -f
 ...
@@ -106,7 +106,7 @@ https://10.0.1.40:9090/@guest2.lab.example.com
 
 First attempt shows
 
-[source,console]
+[source,shell]
 ----
 Couldn't connect to the machine 
 Cannot connect to an unknown machine 
@@ -115,7 +115,7 @@ Troubleshoot
 
 Troubleshoot button displays a second page.
 
-[source,console]
+[source,shell]
 ----
 Add machine to dashboard 
 Address 192.168.122.3

@@ -81,7 +81,7 @@ Libvirt reads this file when it starts.
 
 This is the only change made on the host machine. 
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]$ sudo bash -c 'echo "192.168.122.4 git git.lab.example.com" >> /etc/hosts'
 [sudo] password for nick: 
@@ -92,7 +92,7 @@ This is the only change made on the host machine.
 
 Check.
 
-[source,console]
+[source,shell]
 ....
 [nick@host1 ~]# host git1.lab.example.com 192.168.122.1
 Using domain server:
@@ -125,7 +125,7 @@ Rather than typing _sudo_ every time, use the root account.
 These tasks are only done once. 
 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ sudo su -
 [root@guest1 ~]# groupadd scm
@@ -139,7 +139,7 @@ These tasks are only done once.
 Create a common directory. 
 Change the group ownership.
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ sudo su -
 [root@guest1 ~]# groupadd scm
@@ -158,7 +158,7 @@ Add git user configuration.
 Configure git. 
 Otherwise, committing the file fails with a 'fatal: empty ident name not allowed' error. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ git config --global user.email "nick@lab.example.com"
 [nick@guest1 ~]$ git config --global user.name "Nick Hardiman"
@@ -177,7 +177,7 @@ Create a common git repo to share with the group.
 
 These tasks are repeated for every new git repo. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ sudo su -
 [root@guest1 ~]#  cd /var/git/
@@ -200,7 +200,7 @@ Copy the common repo.
 
 A warning appears about the suspiciously empty directory. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ git clone git1:/var/git/content1.git
 Cloning into 'content1'...
@@ -219,7 +219,7 @@ Create a bash script on guest1.
 Check out the tricky quoting and special characters in that echo line. 
 Check it. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ cd content1/
 [nick@guest1 content1]$ echo -e '#!'"/bin/bash\necho 'hello world'\n" > hello-world.sh
@@ -237,7 +237,7 @@ Script works. Time to store it somewhere safe.
 
 local 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 content1]$ git add hello-world.sh 
 [nick@guest1 content1]$ git commit -m 'create hello-world.sh'
@@ -249,7 +249,7 @@ local
 
 remote 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 content1]$ git push 
 Enumerating objects: 3, done.
@@ -271,7 +271,7 @@ That gets tiresome.
 Git provides credential helpers for web access, but not for SSH. 
 Set up public key access so SSH won't prompt for a password. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ cat .ssh/id_rsa.pub  >> .ssh/authorized_keys 
 [nick@guest1 ~]$ 
@@ -279,7 +279,7 @@ Set up public key access so SSH won't prompt for a password.
 
 Check.
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 content1]$ ssh git1.lab.example.com
 The authenticity of host 'git1.lab.example.com (192.168.122.4)' can't be established.
@@ -307,7 +307,7 @@ Connection to git1.lab.example.com closed.
 Use someuser. 
 Must be in scm group. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ sudo su - someuser
 [someuser@guest1 ~]$ 
@@ -316,7 +316,7 @@ Must be in scm group.
 Copy the repo. 
 
 
-[source,console]
+[source,shell]
 ----
 [someuser@guest1 ~]$ git clone git1:/var/git/content1.git
 Cloning into 'content1'...
@@ -342,7 +342,7 @@ hello-world.sh  post-update-test
 Add to the repo. 
 Use these commands to add a new file.
 
-[source,console]
+[source,shell]
 ----
 git config --global user.email "someuser@lab.example.com"
 git config --global user.name "Some User"
@@ -355,7 +355,7 @@ git push
 
 Done. 
 
-[source,console]
+[source,shell]
 ----
 [someuser@guest1 ~]$ logout
 [nick@guest1 ~]$ 

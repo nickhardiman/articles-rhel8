@@ -8,7 +8,7 @@ Use RHSM (Red Hat Subscription Manager) to https://access.redhat.com/solutions/2
 
 A new machine's status is usually unknown. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# subscription-manager status
 +-------------------------------------------+
@@ -27,14 +27,14 @@ System Purpose Status: Unknown
 Add the machine to your account in the customer portal. 
 
 
-[source,console]
+[source,shell]
 ----
 subscription-manager register --username <username> --password <password> --auto-attach
 ----
 
 The first time subscription-manager runs, it displays a warning about enabling a few plugins.
 
-[source,console]
+[source,shell]
 ----
 [nick@rhel8 ~]$ sudo subscription-manager register --username nick --password ';1!eB9-aW' --auto-attach
 [sudo] password for nick: 
@@ -68,21 +68,21 @@ Use the _subscription-manager_ command to manage subscriptions for products.
 
 With a developer subscription, there is only one. 
 
-[source,console]
+[source,shell]
 ----
 subscription-manager list --available 
 ----
 
 === attach your system to your subscription 
 
-[source,console]
+[source,shell]
 ----
 subscription-manager attach --pool=1234567890abcdef1234567890abcdef
 ----
 
 === check  
 
-[source,console]
+[source,shell]
 ....
 [root@host1 ~]# subscription-manager list
 +-------------------------------------------+

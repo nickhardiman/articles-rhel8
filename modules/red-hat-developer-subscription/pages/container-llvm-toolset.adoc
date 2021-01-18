@@ -17,7 +17,7 @@ Copy this from Red Hat's central store at _registry.redhat.io_ and use it to cre
 Some parts of registry.redhat.io are password-protected. 
 You can search for a container anonymously, but you must log in before pulling one.  
 
-[source,console]
+[source,shell]
 ---- 
 [nick@guest3 ~]$ podman search llvm-toolset
 INDEX        NAME                                                         DESCRIPTION                                       STARS   OFFICIAL   AUTOMATED
@@ -43,7 +43,7 @@ If you don't log in, you can't get this image.
 Instead, you get this error. 
 It complains about not being able to fid an _auth token_.
 
-[source,console]
+[source,shell]
 ---- 
 [nick@guest3 ~]$ podman pull registry.redhat.io/rhel8/llvm-toolset
 Trying to pull registry.redhat.io/rhel8/llvm-toolset...
@@ -58,7 +58,7 @@ The auth token is a copy of your login credentials (username and password).
 The /run directory is stored in memory, so when you first boot up your machine, this _auth.json_ file does not exist. The command `podman login` creates it for you.
 
 
-[source,console]
+[source,shell]
 ---- 
 [nick@guest3 ~]$ ls /run/user/1000/containers/auth.json
 ls: cannot access '/run/user/1000/containers/auth.json': No such file or directory
@@ -75,7 +75,7 @@ Security comes from directory permissions - only your user can see what's stored
 Credentials are stored in a base64-encoded string. 
 You can decode this string with the command `base64 -d`.
 
-[source,console]
+[source,shell]
 ---- 
 [nick@guest3 ~]$ ls -ld /run/user/1000
 drwx------. 7 nick nick 160 Aug 10 06:25 /run/user/1000

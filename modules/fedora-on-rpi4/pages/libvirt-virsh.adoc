@@ -46,7 +46,7 @@ Some resources already exist.
 
 use _virsh_ to display the https://libvirt.org/news.html[version] of libvirt.  
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 ~]# virsh --version
 6.6.0
@@ -56,7 +56,7 @@ use _virsh_ to display the https://libvirt.org/news.html[version] of libvirt.
 List all virtual machines. 
 There are no machines defined, so virsh displays an empty table.
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh list --all
  Id   Name   State
@@ -68,7 +68,7 @@ There are no machines defined, so virsh displays an empty table.
 
 There are no storage pools either. 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh pool-list --all
  Name   State   Autostart
@@ -79,7 +79,7 @@ There are no storage pools either.
 
 There is one network defined. 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh net-list --all
  Name      State    Autostart   Persistent
@@ -96,7 +96,7 @@ There is one network defined.
 
 Use virsh to display this XML. 
 
-[source,console]
+[source,shell]
 ----
 [root@rpi4 images]# virsh net-dumpxml default 
 <network>
@@ -123,7 +123,7 @@ Use virsh to display this XML.
 
 
 
-[source,console]
+[source,shell]
 ----
 ----
 

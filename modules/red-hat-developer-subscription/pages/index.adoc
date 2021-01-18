@@ -102,7 +102,7 @@ Example.com is an https://www.iana.org/domains/reserved[IANA-managed reserved do
 Most work is done on the command line. 
 Use SSH to connect from your workstation to your new RHEL machine. 
 
-[source,console]
+[source,shell]
 ----
 workstation:~ nick$ ssh 10.0.1.4
 Activate the web console with: systemctl enable --now cockpit.socket

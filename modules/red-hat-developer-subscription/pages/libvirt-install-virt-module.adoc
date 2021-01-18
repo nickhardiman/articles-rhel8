@@ -16,7 +16,7 @@ Install more using the virt module.
 The virsh command is part of the ``libvirt-client`` package. 
 This package is included in the virt module. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo dnf module list virt 
 Updating Subscription Management repositories.

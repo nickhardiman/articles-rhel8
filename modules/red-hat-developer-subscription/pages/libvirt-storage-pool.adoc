@@ -68,7 +68,7 @@ We use the simplest kind of storage pool - a directory.
 
 There is no storage pool yet. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 libvirt]# virsh pool-list  --all
  Name     State      Autostart
@@ -80,7 +80,7 @@ There is no storage pool yet.
 But a directory to hold images does exist.
 Files in here get the special SELinux file type _virt_var_lib_t_.
 
-[source,console]
+[source,shell]
 ----
 [root@host1 ~]# cd /var/lib/libvirt/images/
 [root@host1 images]# 
@@ -113,14 +113,14 @@ This XML defines a storage pool named _images_.
 
 Create.
 
-[source,console]
+[source,shell]
 ----
 [root@host1 libvirt]# vi pool-images.xml 
 ----
 
 Add. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 libvirt]# virsh pool-define pool-images.xml 
 Pool images defined from pool-images.xml
@@ -130,7 +130,7 @@ Pool images defined from pool-images.xml
 
 Virsh stores a copy of this XML in its configuration directory. 
 
-[source,console]
+[source,shell]
 ----
 [root@host1 libvirt]# cat /etc/libvirt/storage/images.xml
 <!--
@@ -162,7 +162,7 @@ Pool images has been undefined
 
 Start. 
 
-[source,console]
+[source,shell]
 ....
 [root@host1 libvirt]# virsh pool-start images
 Pool images started
@@ -187,7 +187,7 @@ Pool images marked as autostarted
 
 Check the pool is empty.
 
-[source,console]
+[source,shell]
 ....
 [root@host1 libvirt]# virsh vol-list images
  Name   Path

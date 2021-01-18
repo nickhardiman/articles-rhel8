@@ -22,7 +22,7 @@ You will see things like this.
 
 The lsblk command shows a good summary. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ lsblk
 NAME                                          MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
@@ -45,7 +45,7 @@ After staring at this table for a little while, some details start to emerge.
 These files in the /dev/ directory are the first block device and its partitions. 
 It's a good bet the new USB drive will show up as /dev/sdb.
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ ls /dev/sd*
 /dev/sda  /dev/sda1  /dev/sda2
@@ -58,7 +58,7 @@ It's a good bet the new USB drive will show up as /dev/sdb.
 There are quite a few other files in /dev/ mounted, in addition to sda's partitions.
 If you want to see absolutely everything mounted on the file system, try running ``findmnt``.
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ mount | grep /dev/
 tmpfs on /dev/shm type tmpfs (rw,nosuid,nodev,seclabel)
@@ -87,7 +87,7 @@ These are low-level devices that few users ever look at.
 The space you are using is all handled by 
 https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_logical_volumes/index[LVM (Logical Volume Manager)]
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo lvs
   LV   VG   Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
@@ -102,7 +102,7 @@ The default's got a whole load of columns I don't want, and doesn't show devices
 A custom view shows the LVM volumes and what device each one uses. 
 But the disk is encrypted, so unfortunately the three device names are confusing LUKS labels. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo lvs -o lv_name,vg_name,size,devices
   LV   VG   LSize    Devices                                                      
@@ -120,7 +120,7 @@ It's encrypted and password-protected.
 This device mapper command shows the name of the LUKS device. 
 Those numbers in the parentheses are the device numbers (major and minor pairs, if that means anything to you).
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo dmsetup ls
 rhel-home	(253:3)
@@ -132,7 +132,7 @@ rhel-root	(253:1)
 
 You can view a load of obscure low-level information about your encrypted partition. 
 
-[source,console]
+[source,shell]
 ----
 [nick@host ~]$ sudo cryptsetup luksDump /dev/sda2
 [sudo] password for nick: 

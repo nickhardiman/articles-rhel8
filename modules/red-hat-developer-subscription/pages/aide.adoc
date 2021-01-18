@@ -61,7 +61,7 @@ Create a new database.
 The location is specified in the config file, `+@@{DBDIR}/aide.db.new.gz+`  
 (the `+@@{DBDIR}+` part is an Aide variable).
 
-[source,console]
+[source,shell]
 ....
 [root@guest1 ~]# grep DBDIR /etc/aide.conf
 @@define DBDIR /var/lib/aide
@@ -74,7 +74,7 @@ This must be done regularly. The older a database is, the less it looks like the
 It doesn't take long before a report becomes unreadable.
 
 
-[source,console]
+[source,shell]
 ....
 [root@guest1 ~]# aide --init 
 Start timestamp: 2020-07-27 11:34:06 +0100 (AIDE 0.16)
@@ -105,7 +105,7 @@ End timestamp: 2020-07-27 11:34:28 +0100 (run time: 0m 22s)
 The Aide check won't find this new database. 
 Copy it to the location listed in the config file. 
 
-[source,console]
+[source,shell]
 ....
 [root@guest1 ~]# cp /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz
 [root@guest1 ~]# 
@@ -117,7 +117,7 @@ Copy it to the location listed in the config file.
 Aide runs through every item in its database and checks files. 
 This run, on a small system with about 500 packages installed, takes 20 seconds. 
 
-[source,console]
+[source,shell]
 ....
 [root@guest1 ~]# aide --check
 Start timestamp: 2020-07-27 11:49:11 +0100 (AIDE 0.16)
@@ -152,7 +152,7 @@ End timestamp: 2020-07-27 11:49:30 +0100 (run time: 0m 19s)
 The /etc/hosts file is listed in Aide's config file.
 The other two files shown here, hosts.allow and hosts.deny, are TCP Wrappers files (the https://access.redhat.com/solutions/3906701[tcpwrappers package is no longer available]).
 
-[source,console]
+[source,shell]
 ....
 [root@guest1 ~]# grep /etc/hosts /etc/aide.conf
 /etc/hosts$      CONTENT_EX
@@ -163,7 +163,7 @@ The other two files shown here, hosts.allow and hosts.deny, are TCP Wrappers fil
 
 Add a comment. 
 
-[source,console]
+[source,shell]
 ....
 [root@guest1 ~]# echo '#' >> /etc/hosts
 [root@guest1 ~]# 
@@ -184,7 +184,7 @@ This command variation cuts down on the runtime (in this system it takes 2 secon
 
 
 
-[source,console]
+[source,shell]
 ....
 [root@guest1 ~]# aide --check
 Start timestamp: 2020-07-27 12:28:56 +0100 (AIDE 0.16)
@@ -220,7 +220,7 @@ The attributes of the (uncompressed) database(s):
 
 This line shows a summary of changes, but it's impossible to decipher without an  explanation.
 
-[source,console]
+[source,shell]
 ....
 f   ...    .C... : /etc/hosts
 ....

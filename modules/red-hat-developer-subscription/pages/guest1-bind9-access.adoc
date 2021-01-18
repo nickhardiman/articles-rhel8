@@ -202,7 +202,7 @@ The new name server only responds to requests from guest1.
 It is listening to the localhost interface _lo_, not the two network interfaces - _lo_ and _enp1s0_. 
 127.0.0.1 is the loopback interface's IPv4 address and [::1] is the IPv6 address. 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ ss  -l '( sport = :domain or dport = :domain )'
 Netid  State    Recv-Q   Send-Q     Local Address:Port       Peer Address:Port  

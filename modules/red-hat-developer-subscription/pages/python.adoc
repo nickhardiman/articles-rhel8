@@ -44,7 +44,7 @@ Libexec files are meant to be used by the OS, not by people.
 Many system tools are written in Python, including anaconda, firewalld and subscription-manager.
 They all use _platform-python_.
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ /usr/libexec/platform-python --version
 Python 3.6.8
@@ -60,7 +60,7 @@ There are dozens of these packages, from ``python3-asn1crypto`` to ``python3-url
 https://fedoraproject.org/wiki/DNF[DNF] history shows the package list. 
 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]# sudo dnf history info 1 | grep python
     Install python3-asn1crypto-0.24.0-3.el8.noarch                                    @anaconda
@@ -91,7 +91,7 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/in
 
 This ``dnf`` command is not run as root, so permission warnings appear. This is a safe read-only command, and works fine despite these permission problems. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ dnf module list python*
 2020-05-26 11:59:31,423 [ERROR] dnf:2357:MainThread @logutil.py:194 - [Errno 13] Permission denied: '/var/log/rhsm/rhsm.log' - Further logging output will be written to stderr
@@ -141,7 +141,7 @@ It can be used to make the ``python`` command run either v2 or v3.
  alternatives has no configuration for other Python tools, so it can't be used to point pip to pip3. 
 
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ sudo alternatives --config python
 [sudo] password for nick: 
@@ -161,7 +161,7 @@ Enter to keep the current selection[+], or type selection number: 3
 
 The _alternatives_ tool works by creating a chain of symlinks. The python command takesa pretty indirect route to get to python3.8: /usr/bin/python -> /etc/alternatives/unversioned-python -> /usr/bin/python3 -> /etc/alternatives/python3 --> /usr/bin/python3.8.
 
-[source,console]
+[source,shell]
 ....
 [nick@guest1 ~]$ which python
 /usr/bin/python

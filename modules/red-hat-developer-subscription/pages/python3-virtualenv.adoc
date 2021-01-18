@@ -40,7 +40,7 @@ There is a virtualenv command supplied by the RPM package ``python3-virtualenv``
 
 Create a virtual environment using Python 3.8 and the venv module. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ python3 -m venv new/virtual/environment
 [nick@guest1 ~]$
@@ -48,7 +48,7 @@ Create a virtual environment using Python 3.8 and the venv module.
 
 This creates a new path with hundreds of files in it, including pip. 
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ new/virtual/environment/bin/pip --version
 pip 19.2.3 from /home/nick/new/virtual/environment/lib64/python3.8/site-packages/pip (python 3.8)
@@ -60,7 +60,7 @@ pip 19.2.3 from /home/nick/new/virtual/environment/lib64/python3.8/site-packages
 Using a python virtual environment changes your working environment. 
 Try running ``env`` and looking at the variables PATH, PS1 and  VIRTUAL_ENV.
 
-[source,console]
+[source,shell]
 ----
 [nick@guest1 ~]$ source new/virtual/environment/bin/activate 
 (environment) [nick@guest1 ~]$ 
@@ -78,7 +78,7 @@ This developer environment is now in use.
 
 Remove the virtual environment. 
 
-[source,console]
+[source,shell]
 ----
 (environment) [nick@guest1 ~]$ deactivate
 [nick@guest1 ~]$ 
