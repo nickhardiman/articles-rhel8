@@ -10,6 +10,8 @@ https://en.wikipedia.org/wiki/Network_File_System[NFS (Network File System)] all
 Set up an NFS server. 
 Use the latest version 4 - this has been around for many years. 
 
+NFS is file-level storage, not block-level like the disk. 
+
 == a share and an export 
 
 
@@ -49,6 +51,7 @@ Install  8 Packages
 Total download size: 1.2 M
 Installed size: 3.7 M
 Is this ok [y/N]: 
+----
 
 == configure  
 
