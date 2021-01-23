@@ -1,4 +1,4 @@
-= build an image
+= build an image with buildah
 Nick Hardiman 
 :source-highlighter: pygments
 :toc:

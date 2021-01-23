@@ -92,3 +92,5 @@
 *** xref:container-buildah.adoc[]
 *** xref:container-systemd.adoc[]
 *** xref:container-llvm-toolset.adoc[]
+*** add a private registry
+*** search registries with skopeo

@@ -1,4 +1,4 @@
-= pull an image 
+= pull an image with podman
 Nick Hardiman 
 :source-highlighter: pygments
 :toc:
