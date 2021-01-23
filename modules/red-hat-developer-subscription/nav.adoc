@@ -53,6 +53,7 @@
 *** xref:guest2-second-disk.adoc[]
 *** webserver
 *** _guest3 things_
+*** DHCP, TFTP, PXE boot
 *** _infrastructure things_
 *** xref:chrony.adoc[] 
 *** xref:chrony-service.adoc[] 
@@ -86,6 +87,8 @@
 *** xref:ansible-molecule.adoc[]
 *** _container things_
 *** xref:container-tools.adoc[]
+*** xref:container-pull.adoc[]
+*** xref:container-run.adoc[]
 *** xref:container-buildah.adoc[]
 *** xref:container-systemd.adoc[]
 *** xref:container-llvm-toolset.adoc[]

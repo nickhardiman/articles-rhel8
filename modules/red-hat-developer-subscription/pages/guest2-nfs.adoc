@@ -7,6 +7,23 @@ Nick Hardiman
 
 Mount a directory from guest1.
 
+=== install the NFS helper 
+
+[source,shell]
+----
+[root@rhel82-1 ~]# mount -t nfs4 guest1:/var/nfs/pv1  /mnt
+mount: /mnt: bad option; for several filesystems (e.g. nfs, cifs) you might need a /sbin/mount.<type> helper program.
+[root@rhel82-1 ~]#
+
+ls /usr/sbin/mount*
+----
+
+[source,shell]
+----
+dnf install nfs-utils
+----
+
+
 === create a file 
 
 Temporarily mount the NFS share and create a new empty file.

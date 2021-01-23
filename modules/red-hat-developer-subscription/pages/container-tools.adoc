@@ -1,4 +1,4 @@
-= container tools
+= install the container tools dnf module
 Nick Hardiman 
 :source-highlighter: pygments
 :toc:
@@ -75,99 +75,9 @@ Install with the command ``sudo dnf module install container-tools``.
 Want to delete the module? Change `install` to `remove`.
 
 
-== pull an image  
-
-Red Hat provides a 
-https://catalog.redhat.com/software/containers/explore[library of container images]. 
-All kinds of container images are stored there.
-The image *Red Hat Universal Base Image 8 (ubi8)* is a stripped-down version of RHEL 8 that's ready to customize and run.
-Pull this from the Internet to a local registry.
-
-Check our local image store. 
-It's empty. 
-
-[source,shell]
-----
-[nick@guest1 ~]$ podman images
-REPOSITORY   TAG   IMAGE ID   CREATED   SIZE
-[nick@guest1 ~]$ 
-----
-
-Get a local copy of the ubi8 image.
-
-[source,shell]
-----
-[nick@guest1 ~]$ podman pull registry.access.redhat.com/ubi8/ubi
-Trying to pull registry.access.redhat.com/ubi8/ubi...
-Getting image source signatures
-Copying blob 78afc5364ad2 done
-Copying blob 58e1deb9693d done
-Copying config 8e0b0194b7 done
-Writing manifest to image destination
-Storing signatures
-8e0b0194b7e1142c76aa26d71264d3561fab1b039fd3c49d9083dc9d3f42068f
-[nick@guest1 ~]$ 
-----
-
-Is the store still empty? No, there's the image, named after the place we pulled it from. 
-
-[source,shell]
-----
-[nick@guest1 ~]$ podman images 
-REPOSITORY                            TAG      IMAGE ID       CREATED       SIZE
-registry.access.redhat.com/ubi8/ubi   latest   8e0b0194b7e1   6 weeks ago   211 MB
-[nick@guest1 ~]$ 
-----
-
-This container image is not the same as a VM image. 
-A VM image is a single file, while a container image is a complicated mass of layer files and config. 
-Have a look in your storage directory (`ls $HOME/.local/share/containers/storage/`) to see just how complicated. 
+=== remove 
 
 
-== run a container 
-
-Read the image, create a container and get it to do something. 
-
-An ubi8 container doesn't run anything interesting on its own.
-It will start, do nothing, then immediately stop.
-Give it something to do by adding a command on the end of the _run_ command. 
-
-These commands create a container and run one command. 
-When the command exits, so does the container. 
-
-[source,shell]
-----
-[nick@guest1 ~]$ podman run registry.access.redhat.com/ubi8/ubi whoami
-root
-[nick@guest1 ~]$ 
-[nick@guest1 ~]$ podman run registry.access.redhat.com/ubi8/ubi cat /etc/os-release
-NAME="Red Hat Enterprise Linux"
-VERSION="8.2 (Ootpa)"
-...
-REDHAT_SUPPORT_PRODUCT="Red Hat Enterprise Linux"
-REDHAT_SUPPORT_PRODUCT_VERSION="8.2"
-[nick@guest1 ~]$ 
-----
-
-View the current and previous container runs. 
-
-[source,shell]
-----
-[nick@guest1 ~]$ podman ps -a
-CONTAINER ID  IMAGE                                       COMMAND               CREATED             STATUS                         PORTS  NAMES
-7a73eb22ed9c  registry.access.redhat.com/ubi8/ubi:latest  whoami                About a minute ago  Exited (0) About a minute ago         vigorous_curran
-2f5eda39392c  registry.access.redhat.com/ubi8/ubi:latest  cat /etc/os-relea...  About a minute ago  Exited (0) About a minute ago         great_liskov
-[nick@guest1 ~]$ 
-----
-
-
-== next steps 
-
-More walks in containerland.
-
-* Add layers to this container.
-* Build a new container from this container.
-* Build a new container from scratch using buildah.
-
+== check your work 
 
 
