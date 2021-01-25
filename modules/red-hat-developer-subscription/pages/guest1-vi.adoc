@@ -1,0 +1,39 @@
+= use the vi editor
+Nick Hardiman
+:source-highlighter: pygments
+:toc: 
+:revdate: 25-01-2021
+
+
+
+
+== vi and vim 
+
+Install vim. 
+
+[source,shell]
+----
+[nick@guest1 ~]$ sudo dnf install vim
+[sudo] password for nick: 
+Updating Subscription Management repositories.
+Last metadata expiration check: 2:00:42 ago on Mon 25 Jan 2021 08:07:53 GMT.
+Dependencies resolved.
+====================================================================================================================================
+ Package                     Architecture        Version                        Repository                                     Size
+====================================================================================================================================
+Installing:
+ vim-enhanced                x86_64              2:8.0.1763-15.el8              rhel-8-for-x86_64-appstream-rpms              1.4 M
+Installing dependencies:
+ gpm-libs                    x86_64              1.20.7-15.el8                  rhel-8-for-x86_64-appstream-rpms               39 k
+ vim-common                  x86_64              2:8.0.1763-15.el8              rhel-8-for-x86_64-appstream-rpms              6.3 M
+ vim-filesystem              noarch              2:8.0.1763-15.el8              rhel-8-for-x86_64-appstream-rpms               48 k
+
+Transaction Summary
+====================================================================================================================================
+Install  4 Packages
+
+Total download size: 7.8 M
+Installed size: 30 M
+Is this ok [y/N]: 
+----
+

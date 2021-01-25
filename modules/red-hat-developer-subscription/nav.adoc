@@ -35,6 +35,7 @@
 *** xref:libvirt-public-bridge.adoc[]
 *** xref:libvirt-private-bridge.adoc[]
 *** _guest1 things_
+*** xref:guest1-vi.adoc[]
 *** xref:guest1-kickstart-file.adoc[]
 *** xref:guest1-virt-install.adoc[]
 *** xref:guest1-os-setup.adoc[]
