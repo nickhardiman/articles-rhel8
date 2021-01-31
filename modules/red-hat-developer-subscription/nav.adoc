@@ -3,7 +3,7 @@
 *** xref:developer-subscription-why.adoc[]
 *** xref:home-lab.adoc[]
 *** xref:developer-subscription-sign-up.adoc[] 
-** 70 things (ish)
+** 80 things (ish)
 *** _firmware and OS things_
 *** xref:host1-rhel8-install.adoc[]
 *** xref:boot-stages.adoc[]
