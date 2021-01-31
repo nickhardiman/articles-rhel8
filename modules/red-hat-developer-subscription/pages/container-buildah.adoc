@@ -2,7 +2,7 @@
 Nick Hardiman 
 :source-highlighter: pygments
 :toc:
-:revdate: 31-07-2020
+:revdate: 31-01-2021
 
 
 Build a new container from scratch.
@@ -35,19 +35,19 @@ https://www.redhat.com/sysadmin/behind-scenes-podman[What happens behind the sce
 [nick@guest3 ~]$ sudo su -
 [sudo] password for nick: 
 Last login: Thu Aug  6 12:39:14 EDT 2020 on pts/0
-[root@guest3 ~]# 
+[root@guest1 ~]# 
 ----
 
 Check before. There are no images yet, and no containers built from those images. 
 
 [source,shell]
 ----
-[root@guest3 ~]# buildah images
+[root@guest1 ~]# buildah images
 REPOSITORY   TAG   IMAGE ID   CREATED   SIZE
-[root@guest3 ~]# 
-[root@guest3 ~]# buildah containers
+[root@guest1 ~]# 
+[root@guest1 ~]# buildah containers
 CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER NAME
-[root@guest3 ~]# 
+[root@guest1 ~]# 
 ----
 
 Start building a new root file system. 
@@ -58,13 +58,13 @@ If you want to start again, remove it with `buildah rm working-container`.
 
 [source,shell]
 ----
-[root@guest3 ~]# buildah from scratch
+[root@guest1 ~]# buildah from scratch
 working-container
-[root@guest3 ~]# 
-[root@guest3 ~]# buildah containers
+[root@guest1 ~]# 
+[root@guest1 ~]# buildah containers
 CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER NAME
 b7e26ec492d1     *                  scratch                          working-container
-[root@guest3 ~]#  
+[root@guest1 ~]#  
 ----
 
 File systems are stored in the directory /var/lib/containers/storage/overlay-containers/.
@@ -76,11 +76,11 @@ To unmount it, change `mount` to `umount`.
 
 [source,shell]
 ----
-[root@guest3 ~]# MOUNT_DIR=$(buildah mount working-container)
-[root@guest3 ~]# 
-[root@guest3 ~]# echo $MOUNT_DIR
+[root@guest1 ~]# MOUNT_DIR=$(buildah mount working-container)
+[root@guest1 ~]# 
+[root@guest1 ~]# echo $MOUNT_DIR
 /var/lib/containers/storage/overlay/bf033e812dd6b65a1e4a587b6a6b3ea54841e03fcced3fb8e4094e0946d3e631/merged
-[root@guest3 ~]# 
+[root@guest1 ~]# 
 ----
 
 == install RPM modules 
@@ -104,12 +104,12 @@ Clear some space by removing cached data.
 
 [source,shell]
 ----
-[root@guest3 ~]# dnf clean all  --installroot $MOUNT_DIR  --releasever=/
+[root@guest1 ~]# dnf clean all  --installroot $MOUNT_DIR  --releasever=/
 Updating Subscription Management repositories.
 Unable to read consumer identity
 This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
 26 files removed
-[root@guest3 ~]# 
+[root@guest1 ~]# 
 ----
 
 
@@ -122,7 +122,7 @@ start by editing the hosts file.
 
 [source,shell]
 ----
-[root@guest3 ~]# chroot $MOUNT_DIR
+[root@guest1 ~]# chroot $MOUNT_DIR
 bash-4.4# echo "151.101.130.217 cpanmin.us" >> /etc/hosts
 bash-4.4# echo "151.101.62.217 cpan.metacpan.org" >> /etc/hosts
 bash-4.4# 
@@ -165,7 +165,7 @@ That's it. We're done with the chroot.
 ----
 bash-4.4# exit
 exit
-[root@guest3 ~]# 
+[root@guest1 ~]# 
 ----
 
 == finish the image
@@ -178,10 +178,10 @@ After the image is created, you can see this label using the command `podman ins
 
 [source,shell]
 ----
-[root@guest3 ~]# buildah config --cmd /bin/bash working-container
-[root@guest3 ~]# 
-[root@guest3 ~]# buildah config --label name=myperlservice working-container
-[root@guest3 ~]# 
+[root@guest1 ~]# buildah config --cmd /bin/bash working-container
+[root@guest1 ~]# 
+[root@guest1 ~]# buildah config --label name=myperlservice working-container
+[root@guest1 ~]# 
 ----
 
 That's it. 
@@ -189,21 +189,21 @@ Unmount the file system and create the image.
 
 [source,shell]
 ----
-[root@guest3 ~]# buildah unmount working-container
+[root@guest1 ~]# buildah unmount working-container
 b7e26ec492d14eef0bd10c576a73168ef359be819c60a7ddd4ee2f6165f2260a
-[root@guest3 ~]# 
-[root@guest3 ~]# buildah commit working-container myperl
+[root@guest1 ~]# 
+[root@guest1 ~]# buildah commit working-container myperl
 Getting image source signatures
 Copying blob 46b9422120aa done  
 Copying config 1cca4b34f6 done  
 Writing manifest to image destination
 Storing signatures
 1cca4b34f6abb293ef53e36546df1036d435c3df5894989d098b37900fe7f587
-[root@guest3 ~]# 
-[root@guest3 ~]# buildah images
+[root@guest1 ~]# 
+[root@guest1 ~]# buildah images
 REPOSITORY         TAG      IMAGE ID       CREATED          SIZE
 localhost/myperl   latest   1cca4b34f6ab   41 seconds ago   547 MB
-[root@guest3 ~]# 
+[root@guest1 ~]# 
 ----
 
 The `skopeo` command works with images and registries. 
@@ -214,7 +214,7 @@ There's also a warning that is safe to ignore.
 
 [source,shell]
 ----
-[root@guest3 ~]# skopeo inspect containers-storage:localhost/myperl
+[root@guest1 ~]# skopeo inspect containers-storage:localhost/myperl
 WARN[0000] Not using native diff for overlay, this may cause degraded performance for building images: kernel has CONFIG_OVERLAY_FS_REDIRECT_DIR enabled 
 {
     "Name": "localhost/myperl",
@@ -233,7 +233,7 @@ WARN[0000] Not using native diff for overlay, this may cause degraded performanc
     ],
     "Env": null
 }
-[root@guest3 ~]# 
+[root@guest1 ~]# 
 ----
 
 
@@ -244,9 +244,9 @@ Check there are no containers, either running or stopped.
 
 [source,shell]
 ----
-[root@guest3 ~]# podman ps -a
+[root@guest1 ~]# podman ps -a
 CONTAINER ID  IMAGE  COMMAND  CREATED  STATUS  PORTS  NAMES
-[root@guest3 ~]# 
+[root@guest1 ~]# 
 ----
 
 Create a new container. 
@@ -275,13 +275,13 @@ Start a container and check.
 
 [source,shell]
 ----
-[root@guest3 ~]# podman run -p 3000:3000 --detach --name mojoservice localhost/myperl /usr/local/bin/morbo /hello.pl
+[root@guest1 ~]# podman run -p 3000:3000 --detach --name mojoservice localhost/myperl /usr/local/bin/morbo /hello.pl
 0ac2718c35df066bd8cf4da2d9992ed20d734e2b7c74cb955b42563237cd7a00
-[root@guest3 ~]# 
-[root@guest3 ~]# podman ps -a
+[root@guest1 ~]# 
+[root@guest1 ~]# podman ps -a
 CONTAINER ID  IMAGE                    COMMAND               CREATED        STATUS            PORTS                   NAMES
 0ac2718c35df  localhost/myperl:latest  /usr/local/bin/mo...  5 seconds ago  Up 4 seconds ago  0.0.0.0:3000->3000/tcp  mojoservice
-[root@guest3 ~]# 
+[root@guest1 ~]# 
 ----
 
 Don't be distracted by the word pod in podman. 
@@ -295,10 +295,10 @@ Luckily this is all created behind the scenes, and you don't have to understand 
 
 [source,shell]
 ----
-[root@guest3 ~]# ps -fwwC conmon
+[root@guest1 ~]# ps -fwwC conmon
 UID          PID    PPID  C STIME TTY          TIME CMD
 root        1744       1  0 09:31 ?        00:00:00 /usr/bin/conmon --api-version 1 -s -c 635ee754fd2ff25990ae1cd77ed4e89cccdb4eeb5b5aad75eab23463826e2de5 -u 635ee754fd2ff25990ae1cd77ed4e89cccdb4eeb5b5aad75eab23463826e2de5 -r /usr/bin/runc -b /var/lib/containers/storage/overlay-containers/635ee754fd2ff25990ae1cd77ed4e89cccdb4eeb5b5aad75eab23463826e2de5/userdata -p /var/run/containers/storage/overlay-containers/635ee754fd2ff25990ae1cd77ed4e89cccdb4eeb5b5aad75eab23463826e2de5/userdata/pidfile -l k8s-file:/var/lib/containers/storage/overlay-containers/635ee754fd2ff25990ae1cd77ed4e89cccdb4eeb5b5aad75eab23463826e2de5/userdata/ctr.log --exit-dir /var/run/libpod/exits --socket-dir-path /var/run/libpod/socket --log-level error --runtime-arg --log-format=json --runtime-arg --log --runtime-arg=/var/run/containers/storage/overlay-containers/635ee754fd2ff25990ae1cd77ed4e89cccdb4eeb5b5aad75eab23463826e2de5/userdata/oci-log --conmon-pidfile /var/run/containers/storage/overlay-containers/635ee754fd2ff25990ae1cd77ed4e89cccdb4eeb5b5aad75eab23463826e2de5/userdata/conmon.pid --exit-command /usr/bin/podman --exit-command-arg --root --exit-command-arg /var/lib/containers/storage --exit-command-arg --runroot --exit-command-arg /var/run/containers/storage --exit-command-arg --log-level --exit-command-arg error --exit-command-arg --cgroup-manager --exit-command-arg systemd --exit-command-arg --tmpdir --exit-command-arg /var/run/libpod --exit-command-arg --runtime --exit-command-arg runc --exit-command-arg --storage-driver --exit-command-arg overlay --exit-command-arg --storage-opt --exit-command-arg overlay.mountopt=nodev,metacopy=on --exit-command-arg --events-backend --exit-command-arg file --exit-command-arg container --exit-command-arg cleanup --exit-command-arg 635ee754fd2ff25990ae1cd77ed4e89cccdb4eeb5b5aad75eab23463826e2de5
-[root@guest3 ~]# 
+[root@guest1 ~]# 
 ----
 
 
@@ -309,17 +309,17 @@ It could do with an extra newline, but yes, all good.
 
 [source,shell]
 ----
-[root@guest3 ~]# curl http://localhost:3000
-I ♥ Mojolicious![root@guest3 ~]# 
+[root@guest1 ~]# curl http://localhost:3000
+I ♥ Mojolicious![root@guest1 ~]# 
 ----
 
 Stop the new container. 
 
 [source,shell]
 ----
-[root@guest3 ~]# podman stop mojoservice
+[root@guest1 ~]# podman stop mojoservice
 0ac2718c35df066bd8cf4da2d9992ed20d734e2b7c74cb955b42563237cd7a00
-[root@guest3 ~]# 
+[root@guest1 ~]# 
 ----
 
 If you want to get rid of the new container and image, 
