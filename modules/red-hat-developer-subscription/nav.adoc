@@ -47,6 +47,9 @@
 *** xref:guest1-bind9-nmcli.adoc[]
 *** mail
 *** haproxy
+*** CA certificate 
+*** CA trust
+*** server certificate
 *** _guest2 things_
 *** xref:guest2-libguestfs-tools.adoc[]
 *** xref:guest2-virt-install.adoc[]
@@ -92,6 +95,6 @@
 *** xref:container-run.adoc[]
 *** xref:container-buildah.adoc[]
 *** xref:container-systemd.adoc[]
-*** xref:container-llvm-toolset.adoc[]
+*** xref:container-auth-token.adoc[]
 *** add a private registry
 *** search registries with skopeo
