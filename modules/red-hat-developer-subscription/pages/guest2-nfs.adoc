@@ -7,7 +7,7 @@ Nick Hardiman
 
 Mount a directory from guest1.
 
-=== install the NFS helper 
+== install the NFS helper 
 
 [source,shell]
 ----
@@ -24,7 +24,7 @@ dnf install nfs-utils
 ----
 
 
-=== create a file 
+== create a file 
 
 Temporarily mount the NFS share and create a new empty file.
 
