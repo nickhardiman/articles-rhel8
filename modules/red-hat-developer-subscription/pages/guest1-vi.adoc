@@ -66,6 +66,8 @@ This file contains a few terminal control commands.
 A terminal comes with many commands for highlighting text, erasing it, moving the cursor and so on. 
 Listing the _/etc/vimrc_ file leads to some odd terminal behaviour if these commands (the ones starting with `^[[`) are executed, rather than printed. 
 
+(Is "dm" the tcap code for "delete mode"? man terminfo)
+
 [source,bash]
 ----
 if &term=="xterm"
