@@ -49,11 +49,14 @@
 *** xref:guest1-bind9-nmcli.adoc[]
 *** xref:guest1-apache-install.adoc[]
 *** xref:guest1-apache-modules.adoc[]
+*** xref:guest1-apache-ssl.adoc[]
 *** mail
 *** haproxy
-*** CA certificate 
-*** CA trust
-*** server certificate
+*** _PKI (Public Key Infrastructure) things_
+*** xref:id-certificate-ca-create.adoc[]
+*** link:id-certificate-ca-trust.adoc[]
+*** link:id-certificate-server.adoc[]
+*** link:id-certificate-www.adoc[]
 *** _guest2 things_
 *** xref:guest2-libguestfs-tools.adoc[]
 *** xref:guest2-virt-install.adoc[]
