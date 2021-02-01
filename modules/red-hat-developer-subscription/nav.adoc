@@ -21,7 +21,9 @@
 *** xref:host1-insights.adoc[]
 *** xref:host1-dnf-update.adoc[]
 *** xref:host1-dnf-module-view.adoc[] 
+*** xref:host1-bash-shell.adoc[]
 *** xref:host1-more-shells.adoc[]
+*** xref:workstation-terminal.adoc[]
 *** xref:host1-cockpit.adoc[]
 *** xref:host1-cockpit-machines.adoc[]
 *** _virtual network things_
