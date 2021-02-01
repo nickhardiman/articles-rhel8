@@ -47,6 +47,8 @@
 *** xref:guest1-bind9-access.adoc[]
 *** xref:guest1-bind9-zone.adoc[]
 *** xref:guest1-bind9-nmcli.adoc[]
+*** xref:guest1-apache-install.adoc[]
+*** xref:guest1-apache-modules.adoc[]
 *** mail
 *** haproxy
 *** CA certificate 
