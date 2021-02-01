@@ -1,0 +1,16 @@
+= inspect your terminal 
+Nick Hardiman 
+:source-highlighter: pygments
+:toc: 
+:revdate: 01-02-2021
+
+
+tput longname
+
+echo "Rows=$(tput lines) Cols=$(tput cols)"
+
+infocmp screen
+
+file  /usr/share/terminfo/s/screen
+
+echo $LS_COLORS
