@@ -95,6 +95,8 @@ LISTEN            0                 128                                   0.0.0.
 
 == use the API
 
+Make a normal request.
+
 [source,shell]
 ----
 [root@guest1 ~]# curl -u openshift:redhat  https://docker-registry.lab.example.com:5000/v2/_catalog
@@ -102,13 +104,36 @@ LISTEN            0                 128                                   0.0.0.
 [root@guest1 ~]# 
 ----
 
+Try without a user name and password. 
+The reply's HTTP headers show the error https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401[401 (unauthorized]). 
+
+[source,shell]
+----
+[root@guest1 cert]# curl --head  https://docker-registry.lab.example.com:5000/v2/_catalog
+HTTP/2 401 
+content-type: application/json; charset=utf-8
+docker-distribution-api-version: registry/2.0
+www-authenticate: Basic realm="Registry Realm"
+x-content-type-options: nosniff
+content-length: 145
+date: Tue, 02 Feb 2021 17:42:38 GMT
+
+[root@guest1 cert]# 
+----
+
+
+== view log messages 
+
 Swap back to the first terminal.
 More activity log messages have appeared. 
 
 [source,shell]
 ----
 time="2021-02-01T15:57:04.653338049Z" level=info msg="authorized request" go.version=go1.11.2 http.request.host="docker-registry.lab.example.com:5000" http.request.id=9c96281d-af30-4a70-a18d-38fda016b68a http.request.method=GET http.request.remoteaddr="192.168.1.217:36782" http.request.uri="/v2/_catalog" http.request.useragent="curl/7.61.1" 
-time="2021-02-01T15:57:04.653498616Z" level=info msg="response completed" go.version=go1.11.2 http.request.host="docker-registry.lab.example.com:5000" http.request.id=9c96281d-af30-4a70-a18d-38fda016b68a http.request.method=GET http.request.remoteaddr="192.168.1.217:36782" http.request.uri="/v2/_catalog" http.request.useragent="curl/7.61.1" http.response.contenttype="application/json; charset=utf-8" http.response.duration=3.601072ms http.response.status=200 http.response.written=20 
+time="2021-02-01T15:57:04.653498616Z" level=info msg="response completed" go.version=go1.11.2 http.request.host="docker-registry.lab.example.com:5000" http.request.id=9c96281d-af30-4a70-a18d-38fda016b68a http.request.method=GET http.request.remoteaddr="192.168.1.217:36782" http.request.uri="/v2/_catalog" http.request.useragent="curl/7.61.1" http.response.contenttype="application/json; charset=utf-8" http.response.duration=3.601072ms http.response.status=200 http.response.written=20 #
+...
+time="2021-02-02T17:47:03.364638009Z" level=warning msg="error authorizing context: basic authentication challenge for realm "Registry Realm": invalid authorization credential" go.version=go1.11.2 http.request.host="docker-registry.lab.example.com:5000" http.request.id=a2ed92a1-72fc-4b3c-bc29-ece429ce17dd http.request.method=HEAD http.request.remoteaddr="192.168.1.217:34372" http.request.uri="/v2/_catalog" http.request.useragent="curl/7.61.1" 
+192.168.1.217 - - [02/Feb/2021:17:47:03 +0000] "HEAD /v2/_catalog HTTP/2.0" 401 145 "" "curl/7.61.1"
 ----
 
 == stop the container 

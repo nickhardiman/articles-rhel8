@@ -105,4 +105,5 @@
 *** xref:container-auth-token.adoc[]
 *** xref:container-registry-prepare.adoc[]
 *** xref:container-registry-run.adoc[]
+*** xref:container-registry-push.adoc[]
 *** search registries with skopeo
