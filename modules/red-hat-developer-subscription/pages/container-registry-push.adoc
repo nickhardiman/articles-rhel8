@@ -102,4 +102,4 @@ Check the API.
 [nick@guest1 cert]$ curl -u openshift:redhat  https://docker-registry.lab.example.com:5000/v2/_catalog
 {"repositories":["ubi8/ubi"]}
 [nick@guest1 cert]$ 
----
+----
