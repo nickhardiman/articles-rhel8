@@ -267,10 +267,11 @@ Store the signed certificate file with the CSR and key files.
 The _.cer_ file contains the encoded certificate, along with all the decoded information. 
 It's the same information shown by the command `openssl x509 -in www.lab.example.com.cer -text`.
 
+
+== check files match 
+
 One way of checking these three files all match is to check the https://en.wikipedia.org/wiki/RSA_(cryptosystem)[modulus]. 
 The modulus is a huge prime number and is used in both the private key and public key. 
-
-The modulus is a huge number.
 
 [source,shell]
 ....
@@ -279,7 +280,7 @@ Modulus=B76B5740422C4CBD7A8AB4A99D35CB4F800E89F8E2E35001E50230D066766A48E6A433F2
 [nick@guest1 cert]$ 
 ....
 
-It can be reduced to something more manageable using a message digest. 
+This huge number can be reduced to something more readable using a message digest. 
 
 [source,shell]
 ....
@@ -288,6 +289,11 @@ It can be reduced to something more manageable using a message digest.
 [nick@guest1 cert]$ 
 ....
 
+The numbers from all three of these commands should be the same. 
+
+[source,shell]
+....
 openssl x509 -noout -modulus -in $SERVER.cer | openssl md5
 openssl rsa  -noout -modulus -in $SERVER.key | openssl md5
 openssl req  -noout -modulus -in $SERVER.csr | openssl md5
+....

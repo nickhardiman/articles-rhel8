@@ -11,6 +11,8 @@ Add systemd config for your new container.
 The container must already exist. 
 This procedure uses a container called `mojoservice`, owned by _root_.  
 
+The mojoservice container is stopped. 
+
 [source,shell]
 ----
 [nick@guest1 ~]$ sudo podman ps -a
@@ -34,19 +36,15 @@ Last login: Thu Aug  6 12:39:14 EDT 2020 on pts/0
 [root@guest1 ~]# 
 ----
 
-Decide what to call the new service unit file. 
 
-[source,shell]
-----
-[root@guest1 ~]# UNIT=mojo.service
-[root@guest1 ~]# 
-----
+== view the systemd unit configuration
 
 Display the systemd configuration for our new container. 
 It doesn't matter if the container is running or stopped.
 
-The name of the container is `mojoservice`, but the new config doesn't use that name. 
-Instead, it uses the full container ID, a huge string of 126 characters
+Podman generates a suggested unit file name and adds it to the comments. 
+It's a very long name: _container-635ee754fd2ff25990ae1cd77ed4e89cccdb4eeb5b5aad75eab23463826e2de5.service_.
+This name uses the full container ID, a huge SHA256 message digest 
 (the command `podman ps` only shows the first 12 characters). 
 
 
@@ -76,6 +74,18 @@ Type=forking
 WantedBy=multi-user.target default.target
 [root@guest1 ~]# 
 ----
+
+== pick a meaningful file name  
+
+Decide what to call the new service unit file. 
+
+[source,shell]
+----
+[root@guest1 ~]# UNIT=mojo.service
+[root@guest1 ~]# 
+----
+
+== create the unit file
 
 Put the config where systemd will read it. 
 Systemd doesn't monitor its config files for changes. 

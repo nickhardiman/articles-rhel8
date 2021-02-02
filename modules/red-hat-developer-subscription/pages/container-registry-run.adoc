@@ -164,3 +164,23 @@ Deleted: 678dfa38fcfa349ccbdb1b6d52ac113ace67d5746794b36dfbad9dd96a9d1c43
 [root@guest1 ~]# 
 ----
 
+== run on system startup 
+
+Use podman and systemd to enable the service. 
+Instructions are here. 
+
+* xref:container-systemd.adoc 
+
+The command summary is here. 
+
+[source,shell]
+----
+CONTAINER=docker-registry
+UNIT=$CONTAINER.service
+podman generate systemd $CONTAINER > /etc/systemd/system/$UNIT
+systemctl daemon-reload
+systemctl stop $UNIT
+systemctl start $UNIT
+systemctl status $UNIT
+systemctl enable $UNIT
+----
