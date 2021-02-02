@@ -37,7 +37,7 @@ e is 65537 (0x010001)
 [nick@guest1 cert]$ 
 ....
 
-View the file. 
+View the new private key file. 
 
 This file is not encrypted, unlike the myca.key file.  
 
@@ -65,6 +65,9 @@ gA+T7Vv27V0cK06En1TAljEr3g1U/0zBDEV4urTmSI2aVmWRf6Xp
 
 == create a CSR 
 
+The command has plenty of options. 
+This _-subj_ option is a close match to the -subj used to create the CA certificate. 
+
 [source,shell]
 ....
 openssl req -new   \
@@ -74,6 +77,8 @@ openssl req -new   \
   -key $SERVER.key \
   -subj "/C=UK/ST=mystate/O=myorg/OU=myou/CN=$SERVER"
 ....
+
+Run the command. 
 
 [source,shell]
 ....
@@ -86,7 +91,7 @@ openssl req -new   \
 [nick@guest1 cert]$ 
 ....
 
-view files 
+View the new CSR file.  
 
 [source,shell]
 ....
@@ -119,9 +124,14 @@ Certificate Request:
 
 == send the CSR to the CA 
 
+With a public CA, this step requires some effort to get the CSR to an external organizatin. 
+It may require mailing the CSR, or pasting into a web form.
+
+For us, it's an easy file copy. 
+
 [source,shell]
 ....
-[nick@guest1 cert]$ cp www.lab.example.com.csr ~/certauth/certreqs/
+[nick@guest1 cert]$ cp $SERVER.csr ~/certauth/certreqs/
 [nick@guest1 cert]$ 
 ....
 
@@ -129,17 +139,19 @@ Certificate Request:
 == sign the CSR 
 
 This part is done by the CA.
+Swap hats and change directories. 
 
 [source,shell]
 ....
 cd ~/certauth/
-SERVER=www.lab.example.com
+# SERVER is www.lab.example.com
 openssl ca \
   -config openssl.cnf \
   -passin file:cakey.pass \
   -infiles certreqs/$SERVER.csr
 ....
 
+This command is interactive. 
 
 [source,shell]
 ....
@@ -208,7 +220,9 @@ The signed certificate is displayed on the terminal and also written to the newc
 The file name is a serial number. 
 
 
-Two files 
+The _index.txt_ file is a simple text database.
+This holds the serial number of the new signed certificate.
+
 
 [source,shell]
 ....
@@ -216,10 +230,12 @@ Two files
 V	220201174555Z		01	unknown	/C=UK/ST=mystate/O=myorg/OU=myou/CN=ca.lab.example.com
 V	220201230123Z		02	unknown	/C=UK/ST=mystate/O=myorg/OU=myou/CN=www.lab.example.com
 [nick@guest1 certauth]$ 
+[nick@guest1 certauth]$ SERIAL=02
+[nick@guest1 certauth]$ 
 [nick@guest1 certauth]$ ls newcerts/
 01.pem  02.pem
 [nick@guest1 certauth]$ 
-[nick@guest1 certauth]$ head newcerts/02.pem 
+[nick@guest1 certauth]$ head newcerts/$SERIAL.pem 
 Certificate:
     Data:
         Version: 3 (0x2)
@@ -235,9 +251,11 @@ Certificate:
 
 == copy the file from the CA to the user
 
+Store the signed certificate file with the CSR and key files. 
+
 [source,shell]
 ....
-[nick@guest1 certauth]$ cp newcerts/02.pem ~/cert/$SERVER.cer
+[nick@guest1 certauth]$ cp newcerts/$SERIAL.pem ~/cert/$SERVER.cer
 [nick@guest1 certauth]$ 
 [nick@guest1 certauth]$ ls -1 ~/cert/$SERVER*
 /home/nick/cert/www.lab.example.com.cer
@@ -246,6 +264,30 @@ Certificate:
 [nick@guest1 certauth]$ 
 ....
 
-The file contains the encoded certificate, along with all the decoded information. 
+The _.cer_ file contains the encoded certificate, along with all the decoded information. 
 It's the same information shown by the command `openssl x509 -in www.lab.example.com.cer -text`.
 
+One way of checking these three files all match is to check the https://en.wikipedia.org/wiki/RSA_(cryptosystem)[modulus]. 
+The modulus is a huge prime number and is used in both the private key and public key. 
+
+The modulus is a huge number.
+
+[source,shell]
+....
+[nick@guest1 cert]$ openssl rsa -noout -modulus -in $SERVER.key 
+Modulus=B76B5740422C4CBD7A8AB4A99D35CB4F800E89F8E2E35001E50230D066766A48E6A433F2C3AC49A63E392BFE70D8F50CA32FB89029B23230D188E6C974B5CFD58C0F0A017803F05E75ABE00707513CC5199CDB60B573EE4097F636DD6BA1AC2B39C4CF86B270C9A05338B60BAF840E3B28D7AB2B3B49E02A801DE37CDDB23A1150F04C7938B09AC147AD64C295D38134B93B6D1C88AE51480D1245DE4DCC5BA00CA6AB656F7D03D7BE3D8171D20DCF05607553DA68D41E41F1729B5A913D5C8F838257673D21FA21C5ADF7DB2F920D34283929B9891120C6823B7F401F4862AB3B1E522F270263085EC5E589B957A6EBB0038BF14C3BA26080267B6BC1EB85F3
+[nick@guest1 cert]$ 
+....
+
+It can be reduced to something more manageable using a message digest. 
+
+[source,shell]
+....
+[nick@guest1 cert]$ openssl rsa -noout -modulus -in $SERVER.key  | openssl md5
+(stdin)= d0aa19f47c78e9596b5f3fb707d36c21
+[nick@guest1 cert]$ 
+....
+
+openssl x509 -noout -modulus -in $SERVER.cer | openssl md5
+openssl rsa  -noout -modulus -in $SERVER.key | openssl md5
+openssl req  -noout -modulus -in $SERVER.csr | openssl md5

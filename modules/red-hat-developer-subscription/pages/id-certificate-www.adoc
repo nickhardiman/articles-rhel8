@@ -1,11 +1,13 @@
-= create a server certificate
+= upgrade apache's secure server
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: highlight.js
 :toc:
 :revdate: 30-01-2021
 
-
-Make changes to Apache and Bind so the URL _https://www.lab.example.com:8443/_ works. 
+Apache is already running a secure server. This web site is available at _https://localhost:8443/_.
+The server uses a self-signed certificate. 
+Make changes to Apache and Bind so the web site uses the name _www.lab.example.com_ and our matching server certificate.
+Then open the firewall to make the site available to the home network. 
 
 == add a DNS entry 
 

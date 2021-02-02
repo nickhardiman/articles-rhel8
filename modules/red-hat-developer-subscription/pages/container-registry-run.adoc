@@ -30,6 +30,10 @@ podman run \
   docker.io/library/registry:2
 ----
 
+Use the root account. 
+
+Run the command. 
+
 Podman copies the remote image. 
 
 [source,shell]
@@ -93,7 +97,7 @@ LISTEN            0                 128                                   0.0.0.
 
 [source,shell]
 ----
-[root@guest1 ~]# curl -u openshift:redhat -k https://docker-registry.lab.example.com:5000/v2/_catalog
+[root@guest1 ~]# curl -u openshift:redhat  https://docker-registry.lab.example.com:5000/v2/_catalog
 {"repositories":[]}
 [root@guest1 ~]# 
 ----
