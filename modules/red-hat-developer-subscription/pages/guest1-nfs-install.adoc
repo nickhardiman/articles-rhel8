@@ -12,7 +12,11 @@ Use the latest version 4 - this has been around for many years.
 
 NFS is file-level storage, not block-level like the disk. 
 
+
 == a share and an export 
+
+When NFS shares a directory with other machines on the network, that directory is called an _export_. 
+It is also called a _share_, partly because that is a name Microsoft admins are used to, and partly because the name fits. 
 
 
 == install 
@@ -78,7 +82,7 @@ use-gss-proxy=1
 
 
 
-=== use version 4 only
+== use version 4 only
 
 Versions 3 and 4 are enabled. 
 Version 4.2 has been around for a few years, so it's safe to keep this one and disable the others. 
@@ -134,7 +138,7 @@ The service will complain "rpc.nfsd: no version specified" and refuse to start.
 ----
 
 
-=== systemd  
+== systemd  
 
 The NFS service does not run by default.  
 
@@ -199,9 +203,12 @@ NFS processes are described in https://access.redhat.com/documentation/en-us/red
 
 
 
-== share directories 
+== make some directories 
 
-=== make directories to share 
+Create three directories. 
+Configure NFS to share these. 
+Check they work. 
+
 
 [source,shell]
 ----
@@ -226,7 +233,7 @@ drwxr-xr-x. 2 root root 6 Oct 20 09:15 pv3
 ----
 
 
-=== tell NFS about these directories 
+== tell NFS about these directories 
 
 Add config for the new exports. 
 
@@ -281,7 +288,7 @@ Filesystem            1K-blocks    Used Available Use% Mounted on
 ----
 
 
-== mount and unmount locally
+== mount a share on /mnt
 
 Mount a share. 
 Do this on the same machine, not across the network. 
@@ -303,87 +310,8 @@ guest1:/var/nfs/pv1  40854528 2391040  38463488   6% /mnt
 ----
 
 
-== open the firewall 
 
-The file 
-/usr/lib/firewalld/services/nfs.xml
-contains the port needed for NFSv4, 2049/tcp.
-
-Open the port. 
-
-[source,shell]
-----
-[root@guest1 ~]# firewall-cmd --add-service=nfs 
-success
-[root@guest1 ~]# firewall-cmd --add-service=nfs --permanent
-success
-[root@guest1 ~]# 
-----
-
-Check. 
-
-[source,shell]
-----
-[root@guest1 ~]# firewall-cmd --list-all
-public (active)
-  target: default
-  icmp-block-inversion: no
-  interfaces: enp1s0 enp2s0
-  sources: 
-  services: cockpit dhcpv6-client dns http https nfs ssh
-  ports: 
-  protocols: 
-  masquerade: no
-  forward-ports: 
-  source-ports: 
-  icmp-blocks: 
-  rich rules: 
-[root@guest1 ~]# 
-----
-
-== mount and unmount over the network 
-
-Mount a share from host1.  
-
-[source,shell]
-----
-[root@host1 ~]# mount -t nfs guest1.lab.example.com:/var/nfs/pv1 /mnt
-[root@host1 ~]# 
-[root@host1 ~]# df -h /mnt
-Filesystem                           Size  Used Avail Use% Mounted on
-guest1.lab.example.com:/var/nfs/pv1   39G  3.2G   36G   9% /mnt
-[root@host1 ~]# 
-[root@host1 ~]# umount /mnt
-[root@host1 ~]# 
-----
-
-=== showmount and rpcinfo 
-
-These old utilities won't work from host1. 
-They aren't required for mounting NFS shares. 
-
-[source,shell]
-----
-[root@host1 ~]# showmount -e guest1.lab.example.com
-rpc mount dump: RPC: Unable to receive; errno = No route to host
-[root@host1 ~]# 
-[root@host1 ~]# rpcinfo -p guest1.lab.example.com
-guest1.lab.example.com: RPC: Remote system error - No route to host
-[root@host1 ~]# 
-----
-
-If you need showmount and rpcinfo to work over the network, these can be fixed with more firewall work on guest1. 
-
-[source,shell]
-----
-[root@guest1 ~]# firewall-cmd  --permanent --add-service rpc-bind
-success
-[root@guest1 ~]# firewall-cmd  --permanent --add-service mountd
-success
-[root@guest1 ~]# 
-----
-
-=== create a file 
+== create a file 
 
 Temporarily mount the NFS share and create a new empty file.
 
@@ -392,8 +320,6 @@ Temporarily mount the NFS share and create a new empty file.
 [root@guest1 nfs]# mount guest1:/var/nfs/pv1 /mnt
 [root@guest1 nfs]# 
 [root@guest1 nfs]# touch /mnt/hello
-[root@guest1 nfs]# 
-[root@guest1 nfs]# umount /mnt
 [root@guest1 nfs]# 
 ----
 
@@ -410,3 +336,13 @@ drwxr-xr-x. 5 root   root   39 Jan 18 15:34 ..
 [root@guest1 nfs]# 
 ----
 
+
+== unmount 
+
+Stop using the NFS share. 
+
+[source,shell]
+----
+[root@guest1 nfs]# umount /mnt
+[root@guest1 nfs]# 
+----
