@@ -260,6 +260,49 @@ Check.
 [root@guest1 pv1]#
 ----
 
+
+== the /mnt/ directory 
+
+The _/mnt/_ directory is often used as a mount point for NFS. 
+
+This check shows there is nothing special going on for the directory /mnt/. 
+It's part of the root directory /.
+The _/dev/mapper/rhel-root_ filesystem name shows root is managed by 
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_logical_volumes/index[LVM (Linux Volume Manager)]. 
+
+[source,shell]
+----
+[root@guest1 ~]# ls /mnt
+[root@guest1 ~]#
+[root@guest1 nfs]# df /mnt
+Filesystem            1K-blocks    Used Available Use% Mounted on
+/dev/mapper/rhel-root  40854028 2390688  38463340   6% /
+[root@guest1 nfs]# 
+----
+
+
+== mount and unmount locally
+
+Mount a share. 
+Do this on the same machine, not across the network. 
+
+[source,shell]
+----
+[root@guest1 nfs]# mount guest1:/var/nfs/pv1 /mnt
+[root@guest1 nfs]# 
+----
+
+Check.
+
+[source,shell]
+----
+[root@guest1 nfs]# df /mnt
+Filesystem          1K-blocks    Used Available Use% Mounted on
+guest1:/var/nfs/pv1  40854528 2391040  38463488   6% /mnt
+[root@guest1 nfs]#  
+----
+
+
 == open the firewall 
 
 The file 
@@ -298,51 +341,46 @@ public (active)
 [root@guest1 ~]# 
 ----
 
+== mount and unmount over the network 
 
-
-== check NFS
-
-Mount an export. 
-Do this on the same machine, not across the network. 
-
-The _/mnt/_ directory is often used as a mount point for NFS. 
+Mount a share from host1.  
 
 [source,shell]
 ----
-[root@guest1 ~]# ls /mnt
-[root@guest1 ~]#
-[root@guest1 nfs]# df /mnt
-Filesystem            1K-blocks    Used Available Use% Mounted on
-/dev/mapper/rhel-root  40854028 2390688  38463340   6% /
-[root@guest1 nfs]# 
+[root@host1 ~]# mount -t nfs guest1.lab.example.com:/var/nfs/pv1 /mnt
+[root@host1 ~]# 
+[root@host1 ~]# df -h /mnt
+Filesystem                           Size  Used Avail Use% Mounted on
+guest1.lab.example.com:/var/nfs/pv1   39G  3.2G   36G   9% /mnt
+[root@host1 ~]# 
+[root@host1 ~]# umount /mnt
+[root@host1 ~]# 
 ----
 
-=== mount and unmount 
+=== showmount and rpcinfo 
 
-Mount a share. 
+These old utilities won't work from host1. 
+They aren't required for mounting NFS shares. 
 
 [source,shell]
 ----
-[root@guest1 nfs]# mount guest1:/var/nfs/pv1 /mnt
-[root@guest1 nfs]# 
+[root@host1 ~]# showmount -e guest1.lab.example.com
+rpc mount dump: RPC: Unable to receive; errno = No route to host
+[root@host1 ~]# 
+[root@host1 ~]# rpcinfo -p guest1.lab.example.com
+guest1.lab.example.com: RPC: Remote system error - No route to host
+[root@host1 ~]# 
 ----
 
-Check.
-
-[source,shell]
-----
-[root@guest1 nfs]# df /mnt
-Filesystem          1K-blocks    Used Available Use% Mounted on
-guest1:/var/nfs/pv1  40854528 2391040  38463488   6% /mnt
-[root@guest1 nfs]#  
-----
-
-Unmount. 
+If you need showmount and rpcinfo to work over the network, these can be fixed with more firewall work on guest1. 
 
 [source,shell]
 ----
-[root@guest1 nfs]# umount /mnt
-[root@guest1 nfs]# 
+[root@guest1 ~]# firewall-cmd  --permanent --add-service rpc-bind
+success
+[root@guest1 ~]# firewall-cmd  --permanent --add-service mountd
+success
+[root@guest1 ~]# 
 ----
 
 === create a file 
