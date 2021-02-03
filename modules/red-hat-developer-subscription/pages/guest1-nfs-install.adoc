@@ -198,9 +198,36 @@ sunrpc                479232  14 nfsd,auth_rpcgss,lockd,nfs_acl
 [root@guest1 ~]# 
 ----
 
+The service is listening to all interfaces on port 2049.
+
+[source,shell]
+----
+[root@guest1 ~]$ ss -tln | grep 2049
+LISTEN   0         64                   0.0.0.0:2049             0.0.0.0:*      
+LISTEN   0         64                      [::]:2049                [::]:*      
+[root@guest1 ~]$ 
+----
+
 New processes are running, including the NFSv4 Client Tracking Daemon _nfsdcld_ and some NFS server processes _nfsd_.
 NFS processes are described in https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/managing_file_systems/mounting-nfs-shares_managing-file-systems[Red Hat's user guide]. 
 
+
+[source,shell]
+----
+[root@guest1 ~]$ ps -ef | grep nfs
+root         869       1  0 19:17 ?        00:00:00 /usr/sbin/nfsdcld
+root        2772       2  0 21:13 ?        00:00:00 [nfsiod]
+root        2945       2  0 21:29 ?        00:00:00 [nfsd]
+root        2946       2  0 21:29 ?        00:00:00 [nfsd]
+root        2947       2  0 21:29 ?        00:00:00 [nfsd]
+root        2948       2  0 21:29 ?        00:00:00 [nfsd]
+root        2949       2  0 21:29 ?        00:00:00 [nfsd]
+root        2950       2  0 21:29 ?        00:00:00 [nfsd]
+root        2951       2  0 21:29 ?        00:00:00 [nfsd]
+root        2952       2  0 21:29 ?        00:00:00 [nfsd]
+root        3247    1955  0 21:48 pts/0    00:00:00 grep --color=auto nfs
+[root@guest1 ~]$ 
+----
 
 
 == make some directories 
