@@ -39,12 +39,24 @@ public network -
 ....
 
 
+== fix the IP address 
+
+A DNS name server needs a fixed IP address. 
+
+The interface _enp1s0_ has an address randomly picked from a pool by the home network's DHCP service. 
+This is probably a modem or router supplied by the ISP.
+In these examples, the IPv4 address is _192.168.1.217_. 
+
+Make the change permanent, so you can rely on using this IP address. 
+
+No two companies set up their machines in the same way, so finding out how to manage the DHCP router can be a little painful.  
+
 
 == named only listens on lo 
 
 The new name server only responds to requests from guest1. 
 It is listening to the localhost interface _lo_, not the two network interfaces - _lo_ and _enp1s0_. 
-127.0.0.1 is the loopback interface's IPv4 address and [::1] is the IPv6 address. 
+_127.0.0.1_ is the loopback interface's IPv4 address and _[::1]_ is the IPv6 address. 
 
 [source,shell]
 ....
@@ -122,7 +134,7 @@ This is bad. The problem here is a https://en.wikipedia.org/wiki/Fat-finger_erro
 ----
 
 
-Reload the configuration. 
+Tell Bind 9 to re-read its configuration. 
 
 [source,shell]
 ----
@@ -132,7 +144,7 @@ Reload the configuration.
 
 Bind starts listening to all interfaces. 
 
-* the IPv4 address 192.168.1.217 was issued by the home network's DHCP service to enp1s0.
+* the IPv4 address _192.168.1.217_ was issued by the home network's DHCP service to enp1s0. 
 * the IPv4 address 192.168.152.100 was issued by dnsmasq's DHCP service to enp2s0.
 
 [source,shell]
@@ -215,7 +227,7 @@ Host www.google.com not found: 5(REFUSED)
 Bind has many https://bind9.readthedocs.io/en/latest/reference.html?highlight=listen-on#access-control[access control] options, and most of them start with _allow-_.
 The only one included in the default config file is _allow-query_. 
 
-Edit the configuration. 
+Edit the configuration with `vi /etc/named.conf`. 
 
 The default is to allow all queries, so comment out the statement. 
 

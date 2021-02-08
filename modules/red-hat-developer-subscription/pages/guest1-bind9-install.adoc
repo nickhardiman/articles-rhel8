@@ -6,15 +6,14 @@ Nick Hardiman <nhardima@redhat.com>
 
 
 Install https://www.isc.org/bind/[ISC Bind].
-Configure it to answer queries from the network. 
-
+Make sure it's always running. 
 
 public network - 
   Gateway serves DHCP, DNS 
 
 
 
-== connect using SSH
+== connect to guest1 using SSH
 
 [source,shell]
 ....
@@ -48,6 +47,10 @@ Connection to 192.168.152.218 closed.
 The bind package provides the named service, database and administrator tools like rndc, named-checkconf.
 The bind_utils package provides more administrator tools like dig, dnssec-keygen and named-checkzone.
 
+Use the root account. 
+
+Install Bind 9, along with tools we can use to test it. 
+
 [source,shell]
 ----
 [nick@guest1 ~]$ sudo -i
@@ -80,6 +83,10 @@ Is this ok [y/N]:
 
 == start the named service
 
+The DNS service doesn't automatically start. 
+Its state is inactive (dead), which sounds a little worrying.
+To find out what this means, run `man systemd` and read the CONCEPTS section. 
+
 [source,shell]
 ----
 [root@guest1 ~]# systemctl status named
@@ -88,6 +95,11 @@ Is this ok [y/N]:
    Active: inactive (dead)
 [root@guest1 ~]# 
 ----
+
+Start the service. 
+Bind 9 stays running until the computer is rebooted. 
+
+Enable the service, so it starts when the machine starts. 
 
 
 [source,shell]
@@ -99,7 +111,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/named.service → /u
 [root@guest1 ~]# 
 ----
 
-after 
+Check.  
 
 [source,shell]
 ----
@@ -130,7 +142,7 @@ Dec 02 16:55:02 guest1.lab.example.com named[6705]: resolver priming query compl
 
 This text is displayed by a pager, which truncates long lines to fit the screen. 
 Use arrow keys to scroll to the right and see the rest of the lines. 
-To see all of these long lines without the pager, add some options to this command: `systemctl --no-pager --full status named`.
+To see all of these long lines without the pager, run the same command with more options, like this: `systemctl --no-pager --full status named`.
 
 
 
