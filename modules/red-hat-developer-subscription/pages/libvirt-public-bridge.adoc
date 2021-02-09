@@ -82,7 +82,7 @@ Add a new bridge.
 [source,shell]
 ....
 [root@host1 ~]# nmcli con add ifname pubbr0 type bridge con-name pubbr0
-Connection 'br0' (82942e8c-d4cd-40e2-aebb-ccc948bc9c4b) successfully added.
+Connection 'pubbr0' (82942e8c-d4cd-40e2-aebb-ccc948bc9c4b) successfully added.
 [root@host1 ~]# 
 ....
 
@@ -116,7 +116,7 @@ One more connection is defined.
 ....
 [root@host1 ~]# nmcli con
 NAME                   UUID                                  TYPE      DEVICE     
-br0                    82942e8c-d4cd-40e2-aebb-ccc948bc9c4b  bridge    br0        
+pubbr0                 82942e8c-d4cd-40e2-aebb-ccc948bc9c4b  bridge    pubbr0        
 enp2s0f0               958ec5d3-b63b-4376-935d-74a0a9090a7f  ethernet  enp2s0f0   
 virbr0                 71702467-6535-4f4f-9f30-de28cb5215b2  bridge    virbr0     
 bridge-slave-enp2s0f0  8a7bae43-2c0d-4a9a-912a-55044966a328  ethernet  --         
@@ -344,8 +344,8 @@ If it's not right, remove the new config with _virsh net-undefine_.
 
 [source,shell]
 ....
-[root@host1 libvirt]# virsh net-undefine br0
-Network br0 has been undefined
+[root@host1 libvirt]# virsh net-undefine pubbr0
+Network pubbr0 has been undefined
 
 [root@host1 libvirt]# 
 ....
