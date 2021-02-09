@@ -227,7 +227,7 @@ Its address _192.168.1.195_ now belongs to _pubbr0_.
 [root@host1 libvirt]# 
 ....
 
-=== delete the pubbr0 bridge 
+=== delete the new bridge 
 
 If something is wrong, back out with these _nmcli_ commands. 
 

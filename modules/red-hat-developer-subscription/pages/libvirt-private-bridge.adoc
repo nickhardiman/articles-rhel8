@@ -5,7 +5,17 @@ Nick Hardiman <nhardima@redhat.com>
 :revdate: 23-11-2020
 
 
-Create a private bridge and  libvirt network named _privbr0_.
+Create a private bridge and libvirt network named _privbr0_.
+
+Libvirt does all the work here. 
+It does a bunch of jobs, including creating the bridge, setting the MAC address and setting up DHCP. 
+This work is required. 
+
+* Create an XML file containing the config.
+* Hand the XML to libvirt.
+* Tell libvirt to start the new bridge. 
+
+== the theory 
 
 The virtual machine guest1 will be attached to both bridges. 
 This makes it part of the physical home network and the virtual private network.
@@ -54,7 +64,7 @@ The current enp1s0 interface on the guest connects to the virbr0 interface on th
 ....
 
 
-== behind the scenes 
+=== behind the scenes 
 
 Libvirt adds config, services and devices behind the scenes to make each network function.
 Libvirt creates a dnsmasq configuration file, _/var/lib/libvirt/dnsmasq/(network).conf_. 
@@ -91,6 +101,8 @@ Only the default network exists.
 
 == create the libvirt network privbr0
 
+=== create an XML file
+
 Create an XML file defining the interface. 
 
 Run the command ``vim net-privbr0.xml``.
@@ -113,6 +125,8 @@ https://libvirt.org/formatnetwork.html#examplesPrivate[libvirt example].
   <ip family="ipv6" address="2001:db8:ca2:3::1" prefix="64"/>
 </network>
 ----
+
+=== hand it to libvirt 
 
 Create the new network. Run ``sudo virsh net-define net-privbr0.xml``
 
@@ -138,6 +152,7 @@ But it is not in use.
 [root@host1 libvirt]# 
 ....
 
+=== start the new network 
 
 Set the new network to start on boot, and start it now. 
 
@@ -184,6 +199,8 @@ There is no need to create a bridge manually using ``nmcli connection``, ``ip li
 
 
 === loosen permissions 
+
+Only required for non-root? 
 
 libvirt uses qemu to do the hard work, and qemu uses ACLs (Access Control Lists). 
 It won't let anyone use the new _privbr0_ interface. 
