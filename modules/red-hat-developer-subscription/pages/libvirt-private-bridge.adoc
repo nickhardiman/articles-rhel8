@@ -126,6 +126,34 @@ https://libvirt.org/formatnetwork.html#examplesPrivate[libvirt example].
 </network>
 ----
 
+
+=== check the file with xmllint 
+
+Check your work with xmllint. 
+This is a tool for detecting errors in XML files. 
+
+No news is good news. 
+
+[source,shell]
+----
+[root@host1 libvirt]# xmllint --noout  ./net-ocp3.xml 
+[root@host1 libvirt]# 
+----
+
+xmllint lists any problems it finds, and attempts to show where the problems are.   
+In this case, a copy'n'paste missed the last line (_</network>_). 
+Line 10 is a whole lot of nothing. 
+
+[source,shell]
+----
+[root@host1 libvirt]# xmllint --noout net-privbr0-broken.xml 
+net-privbr0-broken.xml:10: parser error : Premature end of data in tag network line 1
+
+^
+[root@host1 libvirt]# 
+----
+
+
 === hand it to libvirt 
 
 Create the new network. Run ``sudo virsh net-define net-privbr0.xml``
