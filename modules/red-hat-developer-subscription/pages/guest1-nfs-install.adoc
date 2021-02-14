@@ -299,9 +299,12 @@ Check.
 
 == mount an export 
 
+Mount one of the new exports and create a file. 
+The _/mnt/_ directory is often used as a mount point for NFS. 
+
+
 === the /mnt/ directory 
 
-The _/mnt/_ directory is often used as a mount point for NFS. 
 
 This check shows there is nothing special going on for the directory /mnt/. 
 It's part of the root directory /.
