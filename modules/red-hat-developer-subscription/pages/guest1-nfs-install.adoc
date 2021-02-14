@@ -82,7 +82,7 @@ use-gss-proxy=1
 
 
 
-== use version 4 only
+=== use version 4 only
 
 Versions 3 and 4 are enabled. 
 Version 4.2 has been around for a few years, so it's safe to keep this one and disable the others. 
@@ -138,7 +138,7 @@ The service will complain "rpc.nfsd: no version specified" and refuse to start.
 ----
 
 
-== systemd  
+=== configure systemd
 
 The NFS service does not run by default.  
 
@@ -230,7 +230,9 @@ root        3247    1955  0 21:48 pts/0    00:00:00 grep --color=auto nfs
 ----
 
 
-== make some directories 
+== create exports  
+
+=== make some directories 
 
 Create three directories. 
 Configure NFS to share these. 
@@ -260,7 +262,7 @@ drwxr-xr-x. 2 root root 6 Oct 20 09:15 pv3
 ----
 
 
-== tell NFS about these directories 
+=== tell NFS about these directories 
 
 Add config for the new exports. 
 
@@ -295,7 +297,9 @@ Check.
 ----
 
 
-== the /mnt/ directory 
+== mount an export 
+
+=== the /mnt/ directory 
 
 The _/mnt/_ directory is often used as a mount point for NFS. 
 
@@ -315,7 +319,7 @@ Filesystem            1K-blocks    Used Available Use% Mounted on
 ----
 
 
-== mount a share on /mnt
+=== mount a share on /mnt
 
 Mount a share. 
 Do this on the same machine, not across the network. 
@@ -338,7 +342,7 @@ guest1:/var/nfs/pv1  40854528 2391040  38463488   6% /mnt
 
 
 
-== create a file 
+=== create a file 
 
 Temporarily mount the NFS share and create a new empty file.
 
@@ -364,7 +368,7 @@ drwxr-xr-x. 5 root   root   39 Jan 18 15:34 ..
 ----
 
 
-== unmount 
+=== unmount 
 
 Stop using the NFS share. 
 
