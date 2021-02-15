@@ -6,11 +6,9 @@ Nick Hardiman
 
 
 Build a new container from scratch.
+Create a container image using _buildah_. 
 
-Create a container image containing a simple web service. 
-This service is written in Perl, using a web framework called https://mojolicious.org/[mojolicious]. 
-The dnf package utility installs RPM packages that provide the OS and application, and 
-perl installs the perl modules for the web service.
+== buildah 
 
 This procedure doesn't use a dockerfile. 
 Instead, the file system and base image are built by running a few commands manually. 
@@ -18,6 +16,17 @@ If you want to know more, try the commands in
 https://servicesblog.redhat.com/2019/10/09/say-hello-to-buildah-podman-and-skopeo/[Say “Hello” to Buildah, Podman, and Skopeo].
 
 Make sure you have already installed the container-tools module. 
+
+* xref:container-tools.adoc[]
+
+
+== the perl web service
+
+The content is a simple web service. 
+This service is written in Perl, using a web framework called https://mojolicious.org/[mojolicious]. 
+The _dnf_ package utility installs RPM packages that provide the OS and application, and 
+perl installs the perl modules for the web service.
+
 
 == start building a new image
 
@@ -50,9 +59,37 @@ CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER N
 [root@guest1 ~]# 
 ----
 
-Start building a new root file system. 
 
-This creates a new container. 
+Container files are stored in the directory /var/lib/containers/storage/overlay-containers/.
+
+[source,shell]
+----
+[root@guest1 ~]# find /var/lib/containers/storage/
+/var/lib/containers/storage/
+/var/lib/containers/storage/mounts
+/var/lib/containers/storage/tmp
+/var/lib/containers/storage/overlay
+/var/lib/containers/storage/overlay/l
+/var/lib/containers/storage/overlay/backingFsBlockDev
+/var/lib/containers/storage/storage.lock
+/var/lib/containers/storage/userns.lock
+/var/lib/containers/storage/overlay-images
+/var/lib/containers/storage/overlay-images/images.lock
+/var/lib/containers/storage/overlay-containers
+/var/lib/containers/storage/overlay-containers/containers.lock
+/var/lib/containers/storage/overlay-layers
+/var/lib/containers/storage/overlay-layers/layers.lock
+[root@guest1 ~]# 
+[root@guest1 ~]# du -sh /var/lib/containers/storage/
+8.0K	/var/lib/containers/storage/
+[root@guest1 ~]# 
+----
+
+
+Create a container and add things to it. 
+The _buildah from scratch_ command creates a new container called _working-container_.
+It doesn't make an image - first the container is customized by adding things to the file system, then a new image is made from the file system. 
+
 List this new container with `buildah containers`. 
 If you want to start again, remove it with `buildah rm working-container`.
 
@@ -61,16 +98,49 @@ If you want to start again, remove it with `buildah rm working-container`.
 [root@guest1 ~]# buildah from scratch
 working-container
 [root@guest1 ~]# 
+[root@guest1 ~]# buildah images
+REPOSITORY   TAG   IMAGE ID   CREATED   SIZE
+[root@guest1 ~]# 
 [root@guest1 ~]# buildah containers
 CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER NAME
 b7e26ec492d1     *                  scratch                          working-container
 [root@guest1 ~]#  
 ----
 
-File systems are stored in the directory /var/lib/containers/storage/overlay-containers/.
+The framework for this new container is stored in the overlay and overlay-containers directories. 
+New files will be added to the _merged_ directory. 
 
-Mount this new root file system and copy the path. 
-We need this later. 
+[source,shell]
+----
+[root@guest1 ~]# find /var/lib/containers/storage/overlay
+/var/lib/containers/storage/overlay
+/var/lib/containers/storage/overlay/l
+/var/lib/containers/storage/overlay/l/WWABSETQARBBDF2PKZJO6RBU62
+/var/lib/containers/storage/overlay/backingFsBlockDev
+/var/lib/containers/storage/overlay/3213a9663182e9adc7de9ebc1bc68090ff4f26ab5a9a7228dabe77d864f1c562
+/var/lib/containers/storage/overlay/3213a9663182e9adc7de9ebc1bc68090ff4f26ab5a9a7228dabe77d864f1c562/diff
+/var/lib/containers/storage/overlay/3213a9663182e9adc7de9ebc1bc68090ff4f26ab5a9a7228dabe77d864f1c562/link
+/var/lib/containers/storage/overlay/3213a9663182e9adc7de9ebc1bc68090ff4f26ab5a9a7228dabe77d864f1c562/work
+/var/lib/containers/storage/overlay/3213a9663182e9adc7de9ebc1bc68090ff4f26ab5a9a7228dabe77d864f1c562/merged
+/var/lib/containers/storage/overlay/3213a9663182e9adc7de9ebc1bc68090ff4f26ab5a9a7228dabe77d864f1c562/empty
+[root@guest1 ~]# 
+[root@guest1 ~]# find /var/lib/containers/storage/overlay-containers/
+/var/lib/containers/storage/overlay-containers/
+/var/lib/containers/storage/overlay-containers/containers.lock
+/var/lib/containers/storage/overlay-containers/containers.json
+/var/lib/containers/storage/overlay-containers/4ddfba6f2b2e6f4ba4290cca42af3bc87d53a15c0f0bbab75c109171fe07b79d
+/var/lib/containers/storage/overlay-containers/4ddfba6f2b2e6f4ba4290cca42af3bc87d53a15c0f0bbab75c109171fe07b79d/userdata
+/var/lib/containers/storage/overlay-containers/4ddfba6f2b2e6f4ba4290cca42af3bc87d53a15c0f0bbab75c109171fe07b79d/userdata/buildah.json
+[root@guest1 ~]# 
+[root@guest1 ~]# du -sh /var/lib/containers/storage/
+28K	/var/lib/containers/storage/
+[root@guest1 ~]# 
+----
+
+
+Tell buildah to mount this new root file system.
+The command replies with the full path to that _merged_ directory. 
+Keep a copy of the path - we need this for the _dnf install_ command. 
 
 To unmount it, change `mount` to `umount`.
 
@@ -85,8 +155,11 @@ To unmount it, change `mount` to `umount`.
 
 == install RPM modules 
 
-Use this dnf command to install the RPM packages. 
+The new container won't have access to the OS's tools. 
+Add a few inside the new file system - bash, coreutils, perl, dnf, iproute, and vi.
+Use this dnf command to install the RPM packages that provide these tools.
 The command only names 6 packages, but 280 packages are required when all the dependencies are worked out.  
+This takes up a serious amount of space. 
 
 [source,shell]
 ----
@@ -100,6 +173,33 @@ dnf install \
   bash coreutils perl dnf iproute vi
 ----
 
+Run the command. 
+
+[source,shell]
+----
+[root@guest1 ~]# dnf install   --installroot=$MOUNT_DIR   --releasever=/    --setopt=install_weak_deps=false   --setopt=tsflags=nocontexts   --setopt=module_platform_id=platform:el8   --assumeyes    bash coreutils perl dnf iproute vi
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+
+Last metadata expiration check: 0:00:33 ago on Mon 15 Feb 2021 11:07:20 GMT.
+Dependencies resolved.
+================================================================================
+ Package           Arch   Version        Repository                        Size
+================================================================================
+Installing:
+ bash              x86_64 4.4.19-12.el8  rhel-8-for-x86_64-baseos-rpms    1.5 M
+ coreutils         x86_64 8.30-8.el8     rhel-8-for-x86_64-baseos-rpms    1.2 M
+ dnf               noarch 4.2.23-4.el8   rhel-8-for-x86_64-baseos-rpms    513 k
+...
+Complete!
+[root@guest1 ~]# 
+[root@guest1 ~]# du -sh /var/lib/containers/storage/
+1.2G	/var/lib/containers/storage/
+[root@guest1 ~]# 
+----
+
 Clear some space by removing cached data.
 
 [source,shell]
@@ -107,8 +207,13 @@ Clear some space by removing cached data.
 [root@guest1 ~]# dnf clean all  --installroot $MOUNT_DIR  --releasever=/
 Updating Subscription Management repositories.
 Unable to read consumer identity
+
 This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
-26 files removed
+
+17 files removed
+[root@guest1 ~]# 
+[root@guest1 ~]# du -sh /var/lib/containers/storage/
+1002M	/var/lib/containers/storage/
 [root@guest1 ~]# 
 ----
 
@@ -143,16 +248,31 @@ Building Mojolicious-8.57 ... OK
 Successfully installed Mojolicious-8.57
 1 distribution installed
 bash-4.4# 
+[root@guest1 ~]# du -sh /var/lib/containers/storage/
+1.1G	/var/lib/containers/storage/
+[root@guest1 ~]# 
 ----
 
 Configure a web service. 
 
 The command to start this new web service is `/usr/local/bin/morbo /hello.pl`. 
 The _morbo_ command starts a web server - this file was installed along with mojolicious. 
-The _hello.pl_ file is created here. 
+This command makes the _hello.pl_ perl script. 
 
 [source,shell]
 ----
+echo "use Mojolicious::Lite;
+get '/' => {text => 'I ♥ Mojolicious!'};
+app->start;" > hello.pl
+----
+
+Create the perl script.
+
+[source,shell]
+----
+bash-4.4# pwd
+/
+bash-4.4# 
 bash-4.4# echo "use Mojolicious::Lite;
 > get '/' => {text => 'I ♥ Mojolicious!'};
 > app->start;" > hello.pl
@@ -184,14 +304,30 @@ After the image is created, you can see this label using the command `podman ins
 [root@guest1 ~]# 
 ----
 
-That's it. 
-Unmount the file system and create the image. 
+That's it for the container work.  
+Unmount the file system. 
+The container is still running. 
 
 [source,shell]
 ----
 [root@guest1 ~]# buildah unmount working-container
 b7e26ec492d14eef0bd10c576a73168ef359be819c60a7ddd4ee2f6165f2260a
 [root@guest1 ~]# 
+[root@guest1 ~]# buildah unmount working-container
+[root@guest1 ~]# 
+[root@guest1 ~]# buildah images
+REPOSITORY   TAG   IMAGE ID   CREATED   SIZE
+[root@guest1 ~]# 
+[root@guest1 ~]# buildah containers
+CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER NAME
+4ddfba6f2b2e     *                  scratch                          working-container
+[root@guest1 ~]# 
+----
+
+Create the image. 
+
+[source,shell]
+----
 [root@guest1 ~]# buildah commit working-container myperl
 Getting image source signatures
 Copying blob 46b9422120aa done  
@@ -204,35 +340,9 @@ Storing signatures
 REPOSITORY         TAG      IMAGE ID       CREATED          SIZE
 localhost/myperl   latest   1cca4b34f6ab   41 seconds ago   547 MB
 [root@guest1 ~]# 
-----
-
-The `skopeo` command works with images and registries. 
-
-Use skopeo to display the configuration of our new container. 
-The output is JSON. 
-There's also a warning that is safe to ignore. 
-
-[source,shell]
-----
-[root@guest1 ~]# skopeo inspect containers-storage:localhost/myperl
-WARN[0000] Not using native diff for overlay, this may cause degraded performance for building images: kernel has CONFIG_OVERLAY_FS_REDIRECT_DIR enabled 
-{
-    "Name": "localhost/myperl",
-    "Digest": "sha256:ad1cdb93acc4cb1ff1be777e3a2f32d7fcdb2b463186835d9e8b8c8872da07cf",
-    "RepoTags": [],
-    "Created": "2020-08-08T13:25:48.158373762Z",
-    "DockerVersion": "",
-    "Labels": {
-        "io.buildah.version": "1.14.9",
-        "name": "myperlservice"
-    },
-    "Architecture": "amd64",
-    "Os": "linux",
-    "Layers": [
-        "sha256:46b9422120aa6fa311f055098b780cba442ecf7f7c26c2c5735d6cd28a8dcd42"
-    ],
-    "Env": null
-}
+[root@guest1 ~]# buildah containers
+CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER NAME
+4ddfba6f2b2e     *                  scratch                          working-container
 [root@guest1 ~]# 
 ----
 
@@ -324,11 +434,6 @@ Stop the new container.
 
 If you want to get rid of the new container and image, 
 clean up with `podman rm mojoservice` and `podman rmi localhost/myperl`.
-
-== next steps 
-
-Schedule this container to run every time the system boots up. 
-This requires systemd configuration. 
 
 
 
