@@ -1,4 +1,4 @@
-= python
+= install python
 Nick Hardiman 
 :source-highlighter: pygments
 :toc:

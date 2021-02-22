@@ -1,0 +1,28 @@
+= write "hello world" in assembler
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+:revdate: 22-02-2020
+
+
+Devices get data into a computer, the CPU shifts the data around and changes it, and devices get the data back out of the computer. 
+There's a world of complication behind that, which most people never see. 
+The automation is so good there's no reason to tinker behind the scenes. 
+
+
+It's hard to get to grips with what's going at the interface between hardware and software. 
+Analogies are good for getting started, but don't really explain what's going on. 
+
+The software kernel is like plumbing - without pipes, no water comes out of the taps. 
+Except there is no tube, no water and no tap. 
+
+The hardware is divided into CPU and memory. 
+The CPU has registers. 
+
+Learn what's going on by learning to program with assembly language. 
+
+== hello world 
+
+[source,armasm]
+----
+----
