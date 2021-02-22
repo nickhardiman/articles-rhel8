@@ -53,7 +53,7 @@
 *** xref:guest1-apache-install.adoc[]
 *** xref:guest1-apache-modules.adoc[]
 *** xref:guest1-apache-ssl.adoc[]
-*** mail
+*** xref:guest1-postfix-install.adoc[]
 *** haproxy
 *** _PKI (Public Key Infrastructure) things_
 *** xref:id-certificate-ca-create.adoc[]
@@ -65,8 +65,10 @@
 *** xref:guest2-virt-install.adoc[]
 *** xref:guest2-dnsmasq-dhcp.adoc[]
 *** xref:guest2-second-disk.adoc[]
+*** xref:guest2-postfix-null-client.adoc[]
 *** webserver
 *** _guest3 things_
+*** xref:guest3-pxe-boot.adoc[]
 *** DHCP, TFTP, PXE boot
 *** _infrastructure things_
 *** xref:chrony.adoc[] 
