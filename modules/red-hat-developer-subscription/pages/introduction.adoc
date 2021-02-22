@@ -1,0 +1,102 @@
+= introduction  
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+:revdate: 20-02-2021
+
+
+What fun can be had with a free developer subscription?
+
+Here are 100 things to try, plus some info on the pre-requisites.
+
+* Install on a physical machine
+* Create a network of virtual machines on a physical machine.
+* Add containers to VMs. 
+* Set up developer environments. 
+
+All these articles have examples to run, so you can learn by doing. Hands on a keyboard. Break it and fix it. 
+
+
+
+== the home network 
+
+I'm assuming you start with a home network with at least two boxes.
+
+* the ISP's router, your gateway to the Internet, and 
+* your workstation
+
+The workstation is whatever you work on - it might be a laptop running OS X or a gaming desktop running Windows.
+
+
+.home network with new RHEL 8 machine  
+....
+        +----------------------+
+        |                      | 
+.-------+-------.      .-------+-------.
+|               |      |               |
+|  router       |      |  workstation  | 
+|               |      |               |  
+.---------------.      .---------------.
+....
+
+
+The workstation's OS doesn't matter. 
+As long as it can run an SSH client, it's good enough. 
+
+The network setup isn't important either - the connection from router to workstation might be an ethernet cable or WIFI. 
+Maybe you have a network switch.
+As long as you can figure out how to plug a new machine into this network, that's all fine. 
+
+
+== a new RHEL 8 machine for your the home lab 
+
+I'm also assuming you have the resources to add a new machine to your home network. 
+Maybe you have an old machine lying around, or maybe you have to go shopping.  
+Either way, the home lab page can help. 
+
+.home network with new RHEL 8 machine  
+....
+        +----------------------+----------------------+
+        |                      |                      |
+.-------+-------.      .-------+-------.      .-------+-------.
+|               |      |               |      |               |
+|  router       |      |  workstation  |      | RHEL 8 machine|  
+|               |      |               |      |   host1       |  
+|               |      |               |      |               |  
+.---------------.      .---------------.      .---------------.
+....
+
+
+
+There are probably also a whole load of smart devices on this home network, from phone to TV. 
+Let's ignore those.
+We only care about two machines. 
+
+* workstation 
+* RHEL 8 machine. In these examples, the name is _host1_ 
+
+== host1.lab.example.com
+
+It's a simple naming strategy - this machine will host some things, and it's the first machine in the home lab, so squash these facts together to get _host1_. This is a home lab machine. 
+It's there to experiment on and develop with. 
+Home labs should be kept private, with no access from the Internet. 
+This machine gets the full FQDN of host1.lab.example.com. 
+Example.com is an https://www.iana.org/domains/reserved[IANA-managed reserved domain] - it can't be used on the Internet.
+
+== SSH 
+
+Most work is done on the command line. 
+Use SSH to connect from your workstation to your new RHEL machine. 
+
+[source,shell]
+----
+workstation:~ nick$ ssh 10.0.1.4
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Thu May 14 17:29:53 2020 from 10.0.1.3
+[nick@host1 ~]$ 
+----
+

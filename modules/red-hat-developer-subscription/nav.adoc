@@ -1,9 +1,10 @@
 * xref:red-hat-developer-subscription:index.adoc[]
 ** setting up  
+*** xref:introduction.adoc[]
 *** xref:developer-subscription-why.adoc[]
 *** xref:home-lab.adoc[]
 *** xref:developer-subscription-sign-up.adoc[] 
-** 90 things (ish)
+** 100 things
 *** _firmware and OS things_
 *** xref:host1-rhel8-install.adoc[]
 *** xref:boot-stages.adoc[]
