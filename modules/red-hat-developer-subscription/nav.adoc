@@ -22,6 +22,7 @@
 *** xref:host1-dnf-update.adoc[]
 *** xref:host1-dnf-module-view.adoc[] 
 *** xref:host1-bash-shell.adoc[]
+*** xref:dev-bash-hello-world.adoc[]
 *** xref:host1-more-shells.adoc[]
 *** xref:workstation-terminal.adoc[]
 *** xref:host1-cockpit.adoc[]
@@ -94,6 +95,7 @@
 *** xref:dev-assembler.adoc[]
 *** xref:dev-python3-module.adoc[]
 *** xref:dev-python3-virtualenv.adoc[]
+*** xref:dev-mojolicious-hello-world.adoc[]
 *** _automation things_
 *** xref:ansible-engine.adoc[]
 *** xref:ansible-guest-host.adoc[]
