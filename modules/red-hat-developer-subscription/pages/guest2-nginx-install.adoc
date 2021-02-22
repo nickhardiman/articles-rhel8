@@ -1,0 +1,8 @@
+= install the nginx web service 
+Nick Hardiman 
+:source-highlighter: pygments
+:toc:
+:revdate: 20-02-2021
+
+
+

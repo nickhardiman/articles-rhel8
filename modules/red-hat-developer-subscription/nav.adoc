@@ -66,7 +66,7 @@
 *** xref:guest2-dnsmasq-dhcp.adoc[]
 *** xref:guest2-second-disk.adoc[]
 *** xref:guest2-postfix-null-client.adoc[]
-*** webserver
+*** xref:guest2-nginx-install.adoc[]
 *** _guest3 things_
 *** xref:guest3-pxe-boot.adoc[]
 *** DHCP, TFTP, PXE boot
