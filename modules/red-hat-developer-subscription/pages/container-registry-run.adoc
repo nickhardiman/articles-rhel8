@@ -138,7 +138,8 @@ time="2021-02-02T17:47:03.364638009Z" level=warning msg="error authorizing conte
 
 == stop the container 
 
-Interrupt the running container with [ctrl][c]. 
+Interrupt the running container with  
+kbd:[Ctrl + C ] 
 
 [source,shell]
 ----

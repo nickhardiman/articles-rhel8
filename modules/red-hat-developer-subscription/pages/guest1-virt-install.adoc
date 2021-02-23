@@ -253,7 +253,8 @@ Password:
 [root@guest1 ~]# 
 ....
 
-Disconnect from the console with the control and right square bracket keys (ctrl)(]).
+Disconnect from the console with the control and right square bracket keys 
+kbd:[Ctrl + ++]++ ] 
 
 [source,shell]
 ....

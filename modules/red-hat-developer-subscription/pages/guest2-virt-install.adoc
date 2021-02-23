@@ -171,7 +171,9 @@ refresh]:
 That's enough to prove the virtual machine runs. 
 
 Disconnect from the console. 
-The disconnection command is ``ctrl`` + ``]``
+The disconnection command is 
+kbd:[Ctrl + ++]++ ] 
+
 
 [source,shell]
 ----

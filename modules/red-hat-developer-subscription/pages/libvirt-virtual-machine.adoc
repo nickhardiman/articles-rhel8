@@ -3,10 +3,10 @@ Nick Hardiman
 :source-highlighter: pygments
 :toc: 
 :revdate: 11-01-2021
-:page-pagination:
-:rightsquarebracket: ]
 
 Create a VM, then destroy it. 
+This new virtual machine exists inside the physical host machine. 
+It can talk to the Internet via the host's ethernet interface. 
 
 Use the golden image method of installation. 
 Instead of installing packages and configuring the system using a kickstart file, copy the KVM file. 
@@ -64,7 +64,10 @@ virt-install \
 
 This command creates a _guest domain_. In https://libvirt.org/goals.html[libvirt terminology], this command creates a domain on the node, which translates as a new guest machine running on the host machine.  
 
-If you're wondering about the odd-looking MAC address ``52:54:00:00:00:01``, it's not one you'd find in public - it's a https://en.wikipedia.org/wiki/MAC_address#Universal_vs._local[locally administered address]. 
+If you're wondering about the odd-looking MAC address ``52:54:00:00:00:01``, it's not one you'd find in public. 
+The first part is a https://en.wikipedia.org/wiki/MAC_address#Universal_vs._local[locally administered address], so we can set the rest of the MAC address to anything we like. 
+This address is set to serial number one, and padded with a lot of zeroes.
+ 
 
 [source,shell]
 ----
@@ -103,19 +106,10 @@ localhost login:
 
 We can't log in, because no root password is set. 
 
-Disconnect from the console. 
-
-1. 
-kbd:[Ctrl + {rightsquarebracket}] 
-
-2. 
-kbd:[Ctrl + ++]++] 
-
-3. 
+Disconnect from the console with this key combination. 
 kbd:[Ctrl + ++]++ ] 
 
-4. 
-``ctrl`` + ``]``
+
 
 [source,shell]
 ----
