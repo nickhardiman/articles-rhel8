@@ -1,7 +1,6 @@
 = device firmware
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 18-08-2020
 
 

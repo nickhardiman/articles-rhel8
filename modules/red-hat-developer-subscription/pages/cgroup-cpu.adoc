@@ -1,7 +1,6 @@
 = control CPU with a cgroup
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 01-07-2020
 
 

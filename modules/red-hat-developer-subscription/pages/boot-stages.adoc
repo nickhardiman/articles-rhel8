@@ -1,7 +1,6 @@
 = boot stages
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 31-07-2020
 
 What happens when booting a VM, from start to login prompt.

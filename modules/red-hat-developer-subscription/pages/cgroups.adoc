@@ -1,7 +1,6 @@
 = cgroups 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 01-07-2020
 
 https://en.wikipedia.org/wiki/Cgroups

@@ -1,7 +1,6 @@
 = run a container registry
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 30-01-2021
 
 After all the preparations to run the docker registry, we can download an image and fire up a container. 

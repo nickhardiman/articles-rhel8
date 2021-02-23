@@ -1,7 +1,6 @@
 = add TLS to Apache 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 01-02-2021
 
 

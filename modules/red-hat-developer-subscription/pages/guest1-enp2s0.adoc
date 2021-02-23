@@ -1,7 +1,6 @@
 = enable the second interface 
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: pygments
-:toc:
 :revdate: 15-01-2021
 
 

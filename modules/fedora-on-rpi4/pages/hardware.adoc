@@ -1,7 +1,6 @@
 = hardware  
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 24-10-2020
 
 A computer system is built up of layers. There's the hardware layer at the bottom, then a layer of software that makes this hardware work, then another layer of software that makes a computer useful. The software in the middle, being halfway between hardware and software, is called firmware. 

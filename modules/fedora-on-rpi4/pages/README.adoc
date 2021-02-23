@@ -1,7 +1,6 @@
 = 100 things Fedora idea 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 16-10-2020
 
 [NOTE]

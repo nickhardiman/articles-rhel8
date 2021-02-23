@@ -1,7 +1,6 @@
 = install the OS over the network
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 22-02-2021
 
 

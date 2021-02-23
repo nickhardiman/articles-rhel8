@@ -1,7 +1,6 @@
 = install the postfix mail service 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 20-02-2021
 
 http://www.postfix.org/STANDARD_CONFIGURATION_README.html

@@ -1,7 +1,6 @@
 = git
 Nick Hardiman
 :source-highlighter: pygments
-:toc:
 :revdate: 02-06-2020
 
 Create a common repository for code collaboration.

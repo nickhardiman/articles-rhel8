@@ -1,7 +1,6 @@
 = set up the guest1 OS 
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: pygments
-:toc:
 :revdate: 28-11-2020
 
 

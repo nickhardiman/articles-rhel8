@@ -1,7 +1,6 @@
 = storage
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 26-10-2020
 
 

@@ -1,7 +1,6 @@
 = account 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 19-10-2020
 
 

@@ -1,7 +1,6 @@
 = build an image with buildah
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 31-01-2021
 
 

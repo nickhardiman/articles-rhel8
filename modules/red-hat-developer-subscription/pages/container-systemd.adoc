@@ -1,7 +1,6 @@
 = manage a container with systemd
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 30-01-2021
 
 Control your container with systemd.

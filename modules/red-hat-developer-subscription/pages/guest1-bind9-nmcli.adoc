@@ -1,7 +1,6 @@
 = tell NetworkManager to use Bind 
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: pygments
-:toc:
 :revdate: 11-01-2021
 
 NetworkManager uses the home network's name service, not the new name service on _guest1_.

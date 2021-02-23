@@ -1,7 +1,6 @@
 = upgrade apache's secure server
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: highlight.js
-:toc:
 :revdate: 30-01-2021
 
 Apache is already running a secure server. This web site is available at _https://localhost:8443/_.

@@ -1,7 +1,6 @@
  = install the postfix mail client 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 20-02-2021
 
 https://access.redhat.com/solutions/74893

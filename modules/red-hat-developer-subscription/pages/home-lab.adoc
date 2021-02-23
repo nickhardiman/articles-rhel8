@@ -1,7 +1,6 @@
 = build a home lab
 Nick Hardiman
 :source-highlighter: pygments
-:toc:
 :revdate: 31-12-2020
 
 

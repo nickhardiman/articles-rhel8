@@ -1,7 +1,6 @@
 = use RHSM to set system purpose 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 31-07-2020
 
 Use syspurpose to help subscription-manager automatically find the right subscription.

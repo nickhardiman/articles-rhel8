@@ -1,7 +1,6 @@
 = Nick Hardiman's articles  
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 05-01-2021
 
 

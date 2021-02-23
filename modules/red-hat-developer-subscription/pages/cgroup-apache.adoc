@@ -1,7 +1,6 @@
 = benchmark Apache with the default cgroup 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 01-07-2020
 
 

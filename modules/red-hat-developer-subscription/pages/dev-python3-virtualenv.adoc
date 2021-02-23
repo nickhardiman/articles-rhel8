@@ -1,7 +1,6 @@
 = python3 and virtualenv 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 29-05-2020
 
 

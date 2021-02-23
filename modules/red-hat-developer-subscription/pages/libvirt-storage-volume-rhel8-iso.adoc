@@ -1,7 +1,6 @@
 = add a RHEL 8 ISO to the images pool
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: pygments
-:toc:
 :revdate: 11-01-2021
 
 We can use a *fresh install* process to build a new virtual machine and install the OS. 

@@ -1,7 +1,6 @@
 = serve "hello world" with mojolicious
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 22-02-2021
 
 

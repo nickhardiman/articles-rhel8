@@ -1,7 +1,6 @@
 = view dnf modules
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 29-07-2020
 
 Manage modules with dnf.

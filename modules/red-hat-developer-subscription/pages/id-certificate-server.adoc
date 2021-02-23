@@ -1,7 +1,6 @@
 = create a server certificate
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: highlight.js
-:toc:
 :revdate: 30-01-2021
 
 Generate a certificate signed by the new CA. 

@@ -1,7 +1,6 @@
 = provide DNS with Bind 9 
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: pygments
-:toc:
 :revdate: 11-01-2021
 
 

@@ -1,7 +1,6 @@
 = view a registry auth token
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 31-01-2021
 
 Some registries are open and others require authorization. 

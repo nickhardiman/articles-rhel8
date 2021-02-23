@@ -1,7 +1,6 @@
 = ansible molecule
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 
 Configure, create, converge and destroy. 
 

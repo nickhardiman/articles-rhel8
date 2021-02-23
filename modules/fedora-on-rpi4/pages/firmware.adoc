@@ -1,7 +1,6 @@
 = firmware  
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 24-10-2020
 
 

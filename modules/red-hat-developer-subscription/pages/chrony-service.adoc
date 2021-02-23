@@ -1,7 +1,6 @@
 = chrony service
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 27-07-2020
 
 
