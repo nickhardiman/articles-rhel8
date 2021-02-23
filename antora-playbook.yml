@@ -13,4 +13,5 @@ ui:
 asciidoc:
   attributes:
     experimental: true 
+    page-pagination: true 
 
