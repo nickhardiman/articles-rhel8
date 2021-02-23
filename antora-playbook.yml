@@ -1,5 +1,5 @@
 site:
-  title: Nick Hardiman, caveman with a keyboard
+  title: Nick Hardiman, typing Neanderthal
   url: https://nickhardiman.netlify.app
   start_page: articles:ROOT:index.adoc
 content:
@@ -10,3 +10,7 @@ ui:
   bundle:
     url: https://github.com/nickhardiman/antora-ui/raw/master/build/ui-bundle.zip
     snapshot: true
+asciidoc:
+  attributes:
+    experimental: true 
+
