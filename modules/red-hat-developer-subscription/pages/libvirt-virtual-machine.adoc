@@ -3,7 +3,7 @@ Nick Hardiman
 :source-highlighter: pygments
 :toc: 
 :revdate: 11-01-2021
-
+:page-pagination:
 
 Create a VM, then destroy it. 
 
@@ -102,7 +102,9 @@ localhost login:
 
 We can't log in, because no root password is set. 
 
-Disconnect from the console. ``ctrl`` + ``]``
+Disconnect from the console. 
+kbd:[Ctrl]
+``ctrl`` + ``]``
 
 [source,shell]
 ----
