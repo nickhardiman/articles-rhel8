@@ -28,36 +28,40 @@ CONFIG_PRINTK_SAFE_LOG_BUF_SHIFT=13
        
 === loglevel values 
 
-[start=0]
-. Kernel emergency. The system is unusable.
-. Kernel alert. Action must be taken immediately.
-. Condition of the kernel is considered critical.
-. General kernel error condition.
-. General kernel warning condition.
-. Kernel notice of a normal but significant condition.
-. Kernel informational message.
-. Kernel debug-level messages
-
-log levels from "man 2 syslog"
+The reference manual page for syslog (run `man 2 syslog`) describes the eight log levels. 
+Section 2 of the manual describes system calls, so this page is packed with low-level programming information. 
 
 [source,shell]
 ----
-Kernel constant   Level value   Meaning
-KERN_EMERG             0        System is unusable
-KERN_ALERT             1        Action must be taken immediately
-KERN_CRIT              2        Critical conditions
-KERN_ERR               3        Error conditions
-KERN_WARNING           4        Warning conditions
-KERN_NOTICE            5        Normal but significant condition
-KERN_INFO              6        Informational
-KERN_DEBUG             7        Debug-level messages
+[nick@host1 ~]$ man 2 syslog
+...
+   The log level
+       Every printk() message has its own log level.  If the log level is 
+       not explicitly specified as part of  the  message,  it defaults to default_message_loglevel.  The conventional meaning of the log level 
+       is as follows:
+
+       Kernel constant   Level value   Meaning
+       KERN_EMERG             0        System is unusable
+       KERN_ALERT             1        Action must be taken immediately
+       KERN_CRIT              2        Critical conditions
+       KERN_ERR               3        Error conditions
+       KERN_WARNING           4        Warning conditions
+       KERN_NOTICE            5        Normal but significant condition
+       KERN_INFO              6        Informational
+       KERN_DEBUG             7        Debug-level messages
 ----
 
 
 
 == display messages 
 
+There are a surprising number of ways to view kernel messages. 
+Some are nicely formatted and others show formatting codes. 
+
 === /proc/kmsg 
+
+The first number in angle brackets is the log level. 
+The next number in square brackets is a timestamp, measured in seconds since the kernel started.
 
 [source,shell]
 ----
@@ -192,6 +196,8 @@ fields
 from
 man 2 syslog 
 
+[source,shell]
+----
 console_loglevel
        Only  messages  with a log level lower than this value will be printed to the console.  The default value for this
        field is DEFAULT_CONSOLE_LOGLEVEL (7), but it is set to 4 if the kernel command line contains the word "quiet", 10
@@ -210,8 +216,9 @@ minimum_console_loglevel
 
 default_console_loglevel
        This is the default value for console_loglevel.
-       
-command line does contain quiet. 
+----
+
+command line does contain `quiet`. 
 
 [source,shell]
 ----
@@ -291,11 +298,11 @@ rsyslogd 1546 root    7w   REG  253,0   103851 268823973 /var/log/kern.log
 
 === help 
 
-* man 2 syslog         system call provided by the kernel 
-* man 3 syslog         library call provided by a library 
-* man 3p syslog        library call, posix version
-* man 5 rsyslog.conf   File format
-* man 8 rsyslogd       System administration command
+* `man 2 syslog`         system call provided by the kernel 
+* `man 3 syslog`         library call provided by a library 
+* `man 3p syslog`        library call, posix version
+* `man 5 rsyslog.conf`   File format
+* `man 8 rsyslogd`       System administration command
 
 
 === kernel messages on the console
@@ -334,16 +341,15 @@ When Grub menu appears, hit a kit to interrupt.
 Log everything. 
 
 Edit the kernel command line.
-replace 
-quiet
-with one of these. 
-debug
-systemd.log_level=debug loglevel=8
+Replace `quiet` with one of these. 
+
+* debug
+* systemd.log_level=debug loglevel=8
 
 Log errors only. 
 
 Edit the kernel command line.
-Replace quiet with something like 
+Replace `quiet` with something like 
 
 * debug
 * systemd.log_level=debug 
@@ -356,14 +362,14 @@ change for all sessions
 
 decrease from 4 (quiet) 
 
-vi /etc/default/grub
-change 
+Edit /etc/default/grub and find this line.
+
 [source,shell]
 ----
 GRUB_CMDLINE_LINUX=" ... quiet"
 ----
 
-to
+Change it to this. 
 
 [source,shell]
 ----
