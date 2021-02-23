@@ -4,6 +4,7 @@ Nick Hardiman
 :toc: 
 :revdate: 11-01-2021
 :page-pagination:
+:rightsquarebracket: ]
 
 Create a VM, then destroy it. 
 
@@ -103,7 +104,17 @@ localhost login:
 We can't log in, because no root password is set. 
 
 Disconnect from the console. 
-kbd:[Ctrl]
+
+1. 
+kbd:[Ctrl + {rightsquarebracket}] 
+
+2. 
+kbd:[Ctrl + ++]++] 
+
+3. 
+kbd:[Ctrl + ++]++ ] 
+
+4. 
 ``ctrl`` + ``]``
 
 [source,shell]
