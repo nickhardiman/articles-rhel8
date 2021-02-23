@@ -21,3 +21,7 @@ Some diagrams created with http://asciiflow.com/[asciiflow] and converted to SVG
 What fun can be had with a free developer subscription?
 
 Here are 100 things to try, plus some info on the pre-requisites.
+
+Something wrong? 
+https://github.com/nickhardiman/articles/issues[Open an issue on GitHub].
+
