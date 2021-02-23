@@ -240,8 +240,8 @@ Open the firewall.
 
 [source,shell]
 ----
-[root@guest1 ~]# ls /var/www/html/
-[root@guest1 ~]# 
+firewall-cmd --add-port 8080/tcp
+firewall-cmd --add-port 8080/tcp --permanent
 ----
 
 
