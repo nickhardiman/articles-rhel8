@@ -23,10 +23,10 @@ Many types of machine may be installed using many kickstart files.
 A library of these kickstart files takes up less space than a library of golden image files. 
 
 An alternative process is to use an existing machine's storage file as a _golden image_, and make a copy. 
-The satellite VM is built using a golden image process.
+Another alternative is to install over the network. 
 
 
-=== create a kickstart file
+== create a kickstart file
 
 Create a new https://en.wikipedia.org/wiki/Kickstart_(Linux)[kickstart] file.
 This file will contain all the configuration instructions for the kickstart program to follow. 
@@ -55,11 +55,7 @@ An online https://access.redhat.com/labs/kickstartconfig/[kickstart generator] c
 
 [source,shell]
 ....
-# kickstart file for guest1
-
-ignoredisk --only-use=vda
-# Partition clearing information
-clearpart --none --initlabel
+# kickstart file for guest1.lab.example.com
 
 # install
 # don't use graphical install
@@ -76,6 +72,7 @@ keyboard uk
 
 # network
 network  --bootproto=dhcp --device=enp1s0 --ipv6=auto --activate
+network  --bootproto=dhcp --device=enp2s0 --ipv6=auto --activate
 network  --hostname=guest1.lab.example.com
 
 # licences and repos
@@ -88,6 +85,9 @@ rootpw --iscrypted $6$SQXqGsYna84.3SL5$gJw6v23ZZ7WEITfBoZmyNDsIKeoqhS2Mwfk.KpCRl
 user --groups=wheel --name=nick --password=$6$G3GIlnUH.JqcrAQl$I.q7gGoT37tcNnrGiHkeUTBtr8AAuoM/yy3P3FuEpJaSun6clgR8GlvKIbqOTgqNe.fIBV6xZOPiWvsduhXeC/ --iscrypted --gecos="nick"
 
 # disk 
+ignoredisk --only-use=vda
+# Partition clearing information
+clearpart --all --initlabel
 part /boot/efi --fstype="efi"   --ondisk=vda --size=600 --fsoptions="umask=0077,shortname=winnt"
 part pv.217    --fstype="lvmpv" --ondisk=vda --size=40175
 part /boot     --fstype="xfs"   --ondisk=vda --size=1024
@@ -133,11 +133,11 @@ pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
 ....
 
 
-=== check the kickstart file 
+== check the kickstart file 
 
 The kickstart validation utility _ksvalidator_ provides a static analysis of the new file.
 It's not installed by default. 
-The validator helps to catch mistakes like typos. 
+The validator helps to catch mistakes like typos, like this. 
 
 [source,shell]
 ....
