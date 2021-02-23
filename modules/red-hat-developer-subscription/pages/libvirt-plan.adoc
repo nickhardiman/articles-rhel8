@@ -1,7 +1,6 @@
 = plan the virtual network 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 21-06-2020
 
 ! Change 

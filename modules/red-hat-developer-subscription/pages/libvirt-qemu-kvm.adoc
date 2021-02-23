@@ -1,7 +1,6 @@
 = check KVM, QEMU and libvirt 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 05-01-2021
 
 

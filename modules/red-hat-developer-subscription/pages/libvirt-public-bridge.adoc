@@ -1,7 +1,6 @@
 = create a libvirt public bridge
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: pygments
-:toc: 
 :revdate: 23-11-2020
 
 The _host1_ computer has one physical network interface. 

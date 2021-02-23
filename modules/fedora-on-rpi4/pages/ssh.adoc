@@ -1,7 +1,6 @@
 = SSH
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 10-06-2020
 
 

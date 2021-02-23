@@ -1,7 +1,6 @@
 = create a libvirt private bridge
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: pygments
-:toc: 
 :revdate: 23-11-2020
 
 

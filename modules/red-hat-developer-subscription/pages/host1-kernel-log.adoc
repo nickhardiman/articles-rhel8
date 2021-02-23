@@ -1,7 +1,6 @@
 = read the kernel log 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 05-01-2021
 
 customer portal documentation: 

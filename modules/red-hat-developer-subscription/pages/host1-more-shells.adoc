@@ -1,7 +1,6 @@
 = run ten more shells 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 15-01-2021
 
 

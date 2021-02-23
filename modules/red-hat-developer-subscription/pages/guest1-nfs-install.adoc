@@ -1,7 +1,6 @@
 = share directories with NFS
 Nick Hardiman
 :source-highlighter: pygments
-:toc: 
 :revdate: 05-12-2020
 
 

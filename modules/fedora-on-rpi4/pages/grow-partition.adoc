@@ -1,7 +1,6 @@
 = grow root partition
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 20-11-2020
 
 Expand the root partition so it takes up the whole SD card. 

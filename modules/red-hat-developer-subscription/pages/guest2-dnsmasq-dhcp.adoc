@@ -1,7 +1,6 @@
 = set the IP address using dnsmasq 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 11-01-2021
 
 

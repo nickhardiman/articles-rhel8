@@ -1,7 +1,6 @@
 = libvirt virtual machine 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 21-11-2020
 
 

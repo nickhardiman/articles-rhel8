@@ -1,7 +1,6 @@
 = VDO (Virtual Data Optimizer)
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 29-05-2020
 
 Play with VDO using a USB drive. 

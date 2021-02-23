@@ -1,7 +1,6 @@
 = use an NFS share
 Nick Hardiman
 :source-highlighter: pygments
-:toc: 
 :revdate: 18-01-2021
 
 Use guest2 to mount one of guest1's NFS exports.

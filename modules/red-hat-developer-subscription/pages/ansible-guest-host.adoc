@@ -1,7 +1,6 @@
 = set up an ansible user 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 01-06-2020
 
 

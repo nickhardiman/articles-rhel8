@@ -1,7 +1,6 @@
 = ansible lint 
 Nick Hardiman
 :source-highlighter: pygments
-:toc: 
 :revdate: 04-06-2020
 
 Use ansible-lint 

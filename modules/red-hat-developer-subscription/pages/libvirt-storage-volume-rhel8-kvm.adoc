@@ -2,7 +2,6 @@
 = add a KVM volume to the pool 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 
 Start with a basic image, make a few changes.
 

@@ -1,7 +1,6 @@
 = journald 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 08-08-2020
 
 

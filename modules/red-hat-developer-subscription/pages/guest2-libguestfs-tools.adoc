@@ -1,7 +1,6 @@
 = copy a golden image using libguestfs-tools 
 Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: pygments
-:toc: 
 :revdate: 23-11-2020
 
 Use rhel-8.3-x86_64-kvm.qcow2 as a golden image.

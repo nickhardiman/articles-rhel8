@@ -1,7 +1,6 @@
 = libvirt on RPi4
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 18-11-2020
 
 

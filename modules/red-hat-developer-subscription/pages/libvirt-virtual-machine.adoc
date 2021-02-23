@@ -1,7 +1,6 @@
 = create a virtual machine, then delete it
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 11-01-2021
 
 Create a VM, then destroy it. 

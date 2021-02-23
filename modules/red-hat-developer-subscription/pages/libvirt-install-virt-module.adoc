@@ -1,7 +1,6 @@
 = install the virt module 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 05-01-2021
 
 The https://libvirt.org/[libvirt] project provides a virtualization management system. 

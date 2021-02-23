@@ -1,7 +1,6 @@
 = set IP address and DNS in privbr0 
 Nick Hardiman 
 :source-highlighter: pygments
-:toc: 
 :revdate: 11-01-2021
 
 Set the _guest1_ VM's domain name and IP address.

@@ -1,7 +1,6 @@
 = use the vi editor
 Nick Hardiman
 :source-highlighter: pygments
-:toc: 
 :revdate: 25-01-2021
 
 
