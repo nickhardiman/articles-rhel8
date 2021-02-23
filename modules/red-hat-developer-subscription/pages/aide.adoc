@@ -1,7 +1,6 @@
 = AIDE (Advanced Intrusion Detection Environment)
 Nick Hardiman 
 :source-highlighter: pygments
-:toc:
 :revdate: 25-07-2020
 
 Check file integrity with Aide. 
