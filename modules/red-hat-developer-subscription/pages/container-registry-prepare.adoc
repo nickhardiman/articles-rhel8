@@ -1,6 +1,6 @@
 = prepare for a container registry
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 30-01-2021
 
 We're going to run a docker registry named _docker-registry.lab.example.com_ on guest1. 

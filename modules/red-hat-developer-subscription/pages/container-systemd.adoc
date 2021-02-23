@@ -1,6 +1,6 @@
 = manage a container with systemd
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 30-01-2021
 
 Control your container with systemd.

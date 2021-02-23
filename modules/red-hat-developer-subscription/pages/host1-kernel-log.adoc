@@ -1,6 +1,6 @@
 = read the kernel log 
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 05-01-2021
 
 customer portal documentation: 

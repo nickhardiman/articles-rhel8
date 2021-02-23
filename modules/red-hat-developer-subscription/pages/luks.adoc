@@ -1,6 +1,6 @@
 = LUKS (Linux Unified Key Setup)
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 
 Did you know you can set many passwords for unlocking your RHEL 8 workstation? 
 

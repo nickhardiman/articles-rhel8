@@ -1,6 +1,6 @@
 = extend cockpit for VMs
 Nick Hardiman
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 14-01-2021
 
 Extend cockpit to work with virtual machines. 

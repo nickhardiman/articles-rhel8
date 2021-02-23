@@ -1,6 +1,6 @@
 = configure Apache modules
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 01-07-2020
 
 Many modules are loaded by configuration files in /etc/httpd/conf.modules.d/.

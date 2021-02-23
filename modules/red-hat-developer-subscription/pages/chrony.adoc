@@ -1,6 +1,6 @@
 = chrony 
 Nick Hardiman
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 27-07-2020
 
 Make sure the clock is ticking.

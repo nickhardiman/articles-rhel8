@@ -1,6 +1,6 @@
 = Fedora on a Raspberry Pi 4
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 01-01-2021
 
 

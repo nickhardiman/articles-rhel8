@@ -1,7 +1,7 @@
 
 = add a KVM volume to the pool 
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 
 Start with a basic image, make a few changes.
 

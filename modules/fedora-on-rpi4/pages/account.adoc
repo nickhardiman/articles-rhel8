@@ -1,6 +1,6 @@
 = account 
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 19-10-2020
 
 

@@ -1,6 +1,6 @@
 = enable the second interface 
 Nick Hardiman <nhardima@redhat.com>
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 15-01-2021
 
 

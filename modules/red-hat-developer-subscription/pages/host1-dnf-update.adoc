@@ -1,6 +1,6 @@
 = update packages with DNF
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 12-01-2021
 
 Connect with SSH and update packages with DNF.

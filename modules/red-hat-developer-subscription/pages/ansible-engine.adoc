@@ -1,6 +1,6 @@
 = Red Hat Ansible Engine
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 01-06-2020
 
 Install Red Hat Ansible Engine using your Red Hat Developer Subscription.

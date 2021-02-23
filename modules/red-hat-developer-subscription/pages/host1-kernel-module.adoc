@@ -1,6 +1,6 @@
 = make a kernel module  
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 05-01-2021
 
 Create a simple kernel module that does nothing more than log messages to the kernel's ring buffer. 

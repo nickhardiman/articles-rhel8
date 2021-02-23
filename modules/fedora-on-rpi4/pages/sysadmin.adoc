@@ -1,6 +1,6 @@
 = sysadmin   
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 24-10-2020
 
 Carry out the first system administration tasks.

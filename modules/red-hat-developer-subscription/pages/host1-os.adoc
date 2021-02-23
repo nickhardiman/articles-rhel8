@@ -1,6 +1,6 @@
 = examine the OS
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 13-01-2021
 
 There are so many things included in RHEL 8, you could say it isn't just an OS - it's an OS plus many applications to make the user's life easier. 

@@ -1,6 +1,6 @@
 = pull an image with podman
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 01-01-2021
 
 

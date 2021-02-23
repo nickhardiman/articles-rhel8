@@ -1,6 +1,6 @@
 = install python
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 29-05-2020
 
 

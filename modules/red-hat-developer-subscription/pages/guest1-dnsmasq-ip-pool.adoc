@@ -1,6 +1,6 @@
 = view the dnsmasq IP pool
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 11-01-2021
 
 

@@ -1,6 +1,6 @@
 = libvirt test network notes
 Nick Hardiman <nick@redhat.com>
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 03-08-2020
 
 TO BE DELETED

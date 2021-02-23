@@ -1,6 +1,6 @@
 = create the guest1 VM 
 Nick Hardiman <nhardima@redhat.com>
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 28-11-2020
 
 Use a *fresh install* process (AKA clean install, or install from scratch). 

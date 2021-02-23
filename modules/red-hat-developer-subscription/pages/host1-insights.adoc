@@ -1,6 +1,6 @@
 = register with Red Hat Insights 
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 07-01-2021
 :link_with_underscores: https://github.com/RedHatInsights/insights-client/blob/master/src/insights_client/__init__.py
 

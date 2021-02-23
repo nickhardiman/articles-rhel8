@@ -1,6 +1,6 @@
 = LVM (Logical Volume Manager)
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 07-09-2020
 
 

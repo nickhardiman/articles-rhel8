@@ -1,6 +1,6 @@
 = install RHEL 8 (Red Hat Enterprise Linux version 8)
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 31-12-2020
 
 Install RHEL 8 on your workstation for free. 

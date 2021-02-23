@@ -1,6 +1,6 @@
 = kexec-kdump 
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 05-12-2020
 
 

@@ -1,7 +1,7 @@
 
 = find out about a Red Hat Developer Subscription
 Nick Hardiman
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 
 Red Hat 
 https://www.redhat.com/en/blog/red-hat-leading-enterprise-linux-server-market[leads the enterprise server market].

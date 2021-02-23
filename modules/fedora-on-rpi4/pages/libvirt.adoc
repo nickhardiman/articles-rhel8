@@ -1,6 +1,6 @@
 = libvirt on RPi4
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 18-11-2020
 
 

@@ -1,6 +1,6 @@
 = check out the kernel
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 08-01-2021
 
 Your new RHEL 8 system is running a downstream version of the Linux kernel. 

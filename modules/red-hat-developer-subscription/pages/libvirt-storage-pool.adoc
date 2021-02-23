@@ -1,7 +1,7 @@
 
 = libvirt storage pool
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 
 The https://libvirt.org/[libvirt] project provides a virtualization management system. 
 It's used by RHV (Red Hat Virtualization), Openstack, and even the latest Openshift.

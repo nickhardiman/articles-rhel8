@@ -1,6 +1,6 @@
 = use cockpit 
 Nick Hardiman
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 14-01-2021
 
 

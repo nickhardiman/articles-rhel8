@@ -1,6 +1,6 @@
 = boot systemd
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 31-07-2020
 
 

@@ -1,6 +1,6 @@
 = copy an image with skopeo
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 31-01-2021
 
 

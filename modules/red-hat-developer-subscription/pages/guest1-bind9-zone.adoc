@@ -1,6 +1,6 @@
 = add a zone and forward requests 
 Nick Hardiman <nhardima@redhat.com>
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 11-01-2021
 
 

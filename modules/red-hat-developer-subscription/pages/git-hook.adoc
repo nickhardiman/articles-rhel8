@@ -1,6 +1,6 @@
 = git hook 
 Nick Hardiman <nick@redhat.com>
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 03-06-2020
 
 Add a git server-side post-receive hook.

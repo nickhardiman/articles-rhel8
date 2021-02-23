@@ -1,6 +1,6 @@
 = Nick Hardiman's articles  
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 05-01-2021
 
 

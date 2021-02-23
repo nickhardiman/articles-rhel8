@@ -1,6 +1,6 @@
 = ansible lint 
 Nick Hardiman
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 04-06-2020
 
 Use ansible-lint 

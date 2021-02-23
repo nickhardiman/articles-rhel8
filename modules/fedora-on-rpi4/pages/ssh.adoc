@@ -1,6 +1,6 @@
 = SSH
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 10-06-2020
 
 

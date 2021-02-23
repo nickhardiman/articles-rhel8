@@ -1,6 +1,6 @@
 = use the vi editor
 Nick Hardiman
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 25-01-2021
 
 

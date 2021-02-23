@@ -1,6 +1,6 @@
 = firmware  
 Nick Hardiman 
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :revdate: 24-10-2020
 
 
