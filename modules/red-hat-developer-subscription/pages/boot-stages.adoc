@@ -27,16 +27,13 @@ https://en.wikipedia.org/wiki/Switched-mode_power_supply[SMPS (Switched-Mode Pow
 
 == software stages 
 
-Many stages before a user application runs. 
+Plenty of software runs before any user application runs. 
 
-The default libvirt machine setup defaults to the older BIOS system. 
-EFI is an option.
-
-* firmware initializes hardware
-* BIOS and UEFI
-* GRUB
-* kernel
-* systemd
+. xref:boot-devices.adoc[] firmware initializes hardware
+. xref:boot-bios.adoc[] UEFI (The default libvirt machine setup defaults to the older BIOS system)
+. xref:boot-grub.adoc[] GRUB
+. xref:boot-kernel.adoc[] kernel
+. xref:boot-systemd.adoc[] systemd
 
 
 === firmware initializes hardware 
@@ -46,7 +43,7 @@ Many of these are driven by firmware.
 Firmware is low-level software that controls hardware. 
 
 
-=== BIOS and UEFI 
+=== BIOS or UEFI 
 
 The dev test network uses both BIOS and UEFI. 
 The physical host machine probably uses UEFI, unless its several years old. 
@@ -73,29 +70,6 @@ https://www.gnu.org/software/grub/manual/grub/html_node/Images.html[boot.img] fi
 * The second program is a much bigger *core image*. This provides the framework to search for the _/boot/grub2_ directory and load the rest of GRUB from there. The core.img file is built from kernel module code by a utility called grub2-mkimage. 
 * The _/boot/grub2_ directory contains a lot of code and configuration files. The core.img program runs the _/boot/grub2/i386-pc/normal.mod_ module, and that sets up everything required to complete the booting process. These modules display the boot menu, handle interaction, load kernel files into memory, and start the kernel stage. 
 
-The core image is stored in its own small disk partition, called the https://en.wikipedia.org/wiki/BIOS_boot_partition[BIOS boot partition].
-In this output, it's the Number 1 partition, marked with the flag _bios_grub_.
-
-
-[source,shell]
-----
-[nick@guest3 ~]$ sudo parted -l
-[sudo] password for nick: 
-Model: Virtio Block Device (virtblk)
-Disk /dev/vda: 12.9GB
-Sector size (logical/physical): 512B/512B
-Partition Table: gpt
-Disk Flags: 
-
-Number  Start   End     Size    File system  Name     Flags
- 1      1049kB  2097kB  1049kB               primary  bios_grub
- 2      2097kB  107MB   105MB   fat16        primary  boot, esp
- 3      107MB   12.9GB  12.8GB  xfs          primary
-
-
-[nick@guest3 ~]$ 
-----
-
 
 
 === kernel 
@@ -108,66 +82,13 @@ Each kernel version has a few files.
 * https://en.wikipedia.org/wiki/System.map[System.map], a look-up table that maps symbols to memory locations.
 * config, the configuration file used to build the kernel. 
 
-The kernel release name is rather long. 
-
-[source,shell]
-----
-[nick@guest1 ~]$ uname -r
-4.18.0-193.6.3.el8_2.x86_64
-[nick@guest1 ~]$ 
-[nick@guest1 ~]$ KERNEL_RELEASE=$(uname -r)
-[nick@guest1 ~]$ ls /boot/*$KERNEL_RELEASE*
-/boot/config-4.18.0-193.6.3.el8_2.x86_64              
-/boot/System.map-4.18.0-193.6.3.el8_2.x86_64
-/boot/initramfs-4.18.0-193.6.3.el8_2.x86_64.img       
-/boot/vmlinuz-4.18.0-193.6.3.el8_2.x86_64
-/boot/initramfs-4.18.0-193.6.3.el8_2.x86_64kdump.img
-[nick@guest1 ~]$ 
-[nick@guest1 ~]$ head /boot/config-$KERNEL_RELEASE
-#
-# Automatically generated file; DO NOT EDIT.
-# Linux/x86_64 4.18.0-193.6.3.el8_2.x86_64 Kernel Configuration
-#
-
-#
-# Compiler: gcc (GCC) 8.3.1 20191121 (Red Hat 8.3.1-5)
-#
-CONFIG_64BIT=y
-CONFIG_X86_64=y
-[nick@guest1 ~]$ 
-----
-
 
 
 
 === systemd  
 
-
 After setting up the system, the kernel runs one program named _/sbin/init_. 
 This used to be a script that start the SysV init system. 
 Now it's a symlink to a compiled systemd program.
-
-[source,shell]
-----
-[nick@guest3 ~]$ ls -l /sbin/init
-lrwxrwxrwx. 1 root root 22 Apr 15 10:51 /sbin/init -> ../lib/systemd/systemd
-[nick@guest3 ~]$ 
-[nick@guest3 ~]$ file /lib/systemd/systemd
-/lib/systemd/systemd: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=74096f3b6e127110a1cc23fb4800d0dd2753354b, stripped
-[nick@guest3 ~]$ 
-----
-
-Since systemd runs first, it gets the first process ID. 
-
-[source,shell]
-----
-[nick@guest1 ~]$ ps -fC systemd
-UID          PID    PPID  C STIME TTY          TIME CMD
-root           1       0  0 19:34 ?        00:00:01 /usr/lib/systemd/systemd --switched-root --system --deserialize 17
-nick        1396       1  0 19:34 ?        00:00:00 /usr/lib/systemd/systemd --user
-[nick@guest1 ~]$ 
-----
-
-
 
 

@@ -25,11 +25,12 @@ https://developers.redhat.com/articles/getting-red-hat-developer-subscription-wh
 
 == check out the desktop
 
-If you've used Fedora as a workstation but only used RHEL on the command line, 
-you may not have a clue what RHEL's desktop looks like. 
-Think Fedora from a couple years ago (Fedora 28, to be exact).
-Fedora gets the latest and greatest updates.
-RHEL provides a stable platform.
+If you've only used RHEL servers, you've probably only seen the command line.
+You may not have a clue what RHEL's desktop looks like. 
+Think Fedora from a couple years ago - RHEL 8 is based on Fedora 28.
+
+The Fedora and RHEL distributions are years apart because they have different reasons for being. 
+Fedora gets the latest and greatest updates, while RHEL provides a stable platform.
 
 
 
@@ -46,7 +47,7 @@ If you're on the Gnome desktop, you can only see these messages by looking at th
 
 [source,shell]
 ----
-somehost:~ nick$ ssh 10.0.1.4
+workstation:~ nick$ ssh 10.0.1.4
 Activate the web console with: systemctl enable --now cockpit.socket
 
 This system is not registered to Red Hat Insights. See https://cloud.redhat.com/

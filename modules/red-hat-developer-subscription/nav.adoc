@@ -8,8 +8,11 @@
 *** _firmware and OS things_
 *** xref:host1-rhel8-install.adoc[]
 *** xref:boot-stages.adoc[]
+*** xref:boot-devices.adoc[]
 *** xref:boot-bios.adoc[]
 *** xref:boot-grub.adoc[]
+*** xref:boot-kernel.adoc[]
+*** xref:boot-systemd.adoc[]
 *** xref:host1-os.adoc[]
 *** xref:host1-shell.adoc[]
 *** xref:host1-kernel.adoc[]
