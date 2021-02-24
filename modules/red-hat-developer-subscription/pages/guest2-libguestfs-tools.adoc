@@ -35,13 +35,16 @@ The _guest1_ VM is a fresh install, using a kickstart file to automate the proce
 
 == examine the golden image 
 
-virt-inspector rhel-8.3-x86_64-kvm.qcow2
-produces a vast amount of data. 
+View the partitions inside the _rhel-8.3-x86_64-kvm.qcow2_ file. 
+The command `virt-inspector rhel-8.3-x86_64-kvm.qcow2` displays a lot of information about this file. 
+In fact, it produces a vast amount of data  - far more than required.
 
-List partitions. 
+Use the _virt-filesystems_ command to display a list of partitions. 
 
 [source,shell]
 ----
+[root@host1 ~]# cd /var/lib/libvirt/images/
+[root@host1 images]# 
 [root@host1 images]# virt-filesystems --parts --add rhel-8.3-x86_64-kvm.qcow2  
 /dev/sda1
 /dev/sda2
@@ -50,7 +53,10 @@ List partitions.
 ----
 
 Take a closer look at those partitions by listing file systems. 
-The root file system is _/dev/sda3_, which is is nearly 10GiB in size (10629414912 bytes). 
+The root file system is _/dev/sda3_, which is nearly 10GiB in size (10629414912 bytes). 
+
+The file is about at tenth the size of this partition. 
+A https://en.wikipedia.org/wiki/Qcow[QCOW] file can be compressed to save space. 
 
 [source,shell]
 ----
@@ -59,17 +65,20 @@ Name       Type        VFS   Label  Size         Parent
 /dev/sda2  filesystem  vfat  -      104857600    -
 /dev/sda3  filesystem  xfs   root   10629414912  -
 [root@host1 images]# 
+[root@host1 images]# ls -lh rhel-8.3-x86_64-kvm.qcow2
+-rw-r--r--. 1 qemu qemu 1.3G Nov 23 16:23 rhel-8.3-x86_64-kvm.qcow2
+[root@host1 images]# 
 ----
 
 
 
 == create an empty volume  
 
-Don't use the original image file for creating a machine. 
+Copy the QCOW image file.  
+Don't use this original file for creating a machine. 
 It can remain as the backup file. 
-Make a copy and edit that instead.
 
-Create an empty qcow2 image file. 
+First create an empty qcow2 image file. 
 The command _virsh vol-create-as_ needs a pool name, the new file name and how big the volume should be. 
 If you can't remember your pool name, run _virsh pool-list_ to check.
 
@@ -83,18 +92,32 @@ Vol guest2 created
 [root@host1 images]# 
 ----
 
-This huge 300G volume is contained in a very small 1.3G file. 
-This is a sparse volume. 
+This huge 300G volume is compressed down into a tiny file. 
+This is called a sparse volume. 
 The whole 300 GiB is not allocated now - space is added later, when it is required.
 
 [source,shell]
 ----
-[root@host1 images]# ls -lh
-total 1.3G
--rw-r--r--. 1 root root 1.3G Nov 23 16:23 rhel-8.3-x86_64-kvm.qcow2
--rw-------. 1 root root 197K Nov 23 17:01 guest2.qcow2
+[root@host1 images]# ls -lh $MY_COPY
+-rw-------. 1 root root 197K Feb 24 19:40 guest2.qcow2
 [root@host1 images]# 
 ----
+
+It doesn't take long for libvirt to notice the new file and add config to its volume inventory. 
+
+List libvirt's config with this _virsh vol-info_ command, or list all the volumes with `virsh vol-list images`.
+
+[source,shell]
+----
+[root@host1 images]# virsh vol-info guest2.qcow2 images
+Name:           guest2.qcow2
+Type:           file
+Capacity:       300.00 GiB
+Allocation:     200.00 KiB
+
+[root@host1 images]# 
+----
+
 
 === delete 
 
@@ -109,8 +132,6 @@ Vol guest2 deleted
 
 [root@host1 images]# 
 ----
-
-
 
 
 
@@ -184,7 +205,8 @@ virt-customize \
   --selinux-relabel
 ----
 
-The command takes a few seconds. ``virt-customize``` prints an activity log, along with seconds elapsed.
+The _virt-customize_ command takes a few seconds. 
+It prints an activity log, along with seconds elapsed.
 
 [source,shell]
 ----
@@ -200,5 +222,5 @@ The command takes a few seconds. ``virt-customize``` prints an activity log, alo
 [nick@host ~]$ 
 ----
 
-
+This new QCOW image file is ready for use. 
 
