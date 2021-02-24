@@ -68,6 +68,7 @@
 *** xref:guest2-libguestfs-tools.adoc[]
 *** xref:guest2-virt-install.adoc[]
 *** xref:guest2-dnsmasq-dhcp.adoc[]
+*** xref:guest2-os-setup.adoc[]
 *** xref:guest2-second-disk.adoc[]
 *** xref:guest2-postfix-null-client.adoc[]
 *** xref:guest2-nginx-install.adoc[]

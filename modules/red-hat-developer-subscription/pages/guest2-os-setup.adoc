@@ -1,0 +1,89 @@
+= set up the guest2 OS 
+Nick Hardiman <nhardima@redhat.com>
+:source-highlighter: highlight.js
+:revdate: 24-02-2021
+
+
+Carry out some first-run sysadmin on the new machine. 
+
+
+== connect using SSH 
+
+Copy your public key for easier and safer login. 
+
+[source,shell]
+....
+ssh-copy-id root@guest1
+....
+
+SSH from your workstation to the machine. 
+
+
+
+== change from eth0 to enp1s0 ?
+
+edit /etc/default/grub and remove `net.ifnames=0`
+
+
+== add swap 
+
+Add swap.
+
+[source,shell]
+....
+# Add 4G swap
+# 1024 K in M * 1024 M in G * 4 G = 4194304
+SWAPFILE=/var/cache/swap
+dd if=/dev/zero of=/var/cache/swap bs=1024 count=4194304
+chmod 0600 $SWAPFILE
+# Setup the swap file with the command:
+mkswap $SWAPFILE
+# To enable the swap file immediately but not automatically at boot time:
+swapon $SWAPFILE
+# To enable it at boot time, edit /etc/fstab to include the following entry:
+echo "$SWAPFILE swap swap defaults 0 0" >> /etc/fstab
+....
+
+== add another account 
+
+[source,shell]
+....
+NAME=nick
+useradd $NAME
+usermod -a -G wheel $NAME
+echo 'Password;1' | passwd --stdin $NAME
+....
+
+Logout.
+Login with the new account. 
+
+
+
+== harden security  
+
+Anyone on the home network can get at this machine, so security is an issue. 
+
+Disable root login. 
+
+* Use the root account. 
+* Edit /etc/ssh/sshd_config.
+* Change PermitRootLogin to no.
+* Restart the service with _systemctl reload sshd.service_
+
+
+== update packages 
+
+The kickstart process registered this machine with Red Hat and entitled it to receive updates. 
+
+[source,shell]
+....
+[root@guest1 ~]# dnf -y update
+...
+[root@guest1 ~]# systemctl reboot
+Connection to guest1 closed by remote host.
+Connection to guest1 closed.
+workstation:~ nick$ 
+....
+
+Wait a minute and log in again. 
+
