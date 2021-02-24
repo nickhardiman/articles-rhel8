@@ -3,12 +3,20 @@ Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: highlight.js
 :revdate: 23-11-2020
 
-Use rhel-8.3-x86_64-kvm.qcow2 as a golden image.
+Create a new virtual machine _guest2_.
+Before creating this VM, collect content and tools on _host1_.
+
+* xref:libvirt-storage-volume-rhel8-kvm.adoc[]
+
+
+Use _rhel-8.3-x86_64-kvm.qcow2_ as a golden image.
 A new virtual machine is built by copying the golden image and customizing the copy.
+
+Install the virt-resize and virt-customize utilities from the libguestfs-tools package.
 
 [source,shell]
 ----
-sudo dnf install libguestfs-tools  # for virt-resize and virt-customize
+sudo dnf install libguestfs-tools
 ----
 
 
