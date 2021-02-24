@@ -105,7 +105,7 @@ The whole 300 GiB is not allocated now - space is added later, when it is requir
 
 It doesn't take long for libvirt to notice the new file and add config to its volume inventory. 
 
-List libvirt's config with this _virsh vol-info_ command, or list all the volumes with `virsh vol-list images`.
+List libvirt's config with this _virsh vol-info_ command. 
 
 [source,shell]
 ----
@@ -117,6 +117,9 @@ Allocation:     200.00 KiB
 
 [root@host1 images]# 
 ----
+
+List all the volumes with `virsh vol-list images`.
+If the new file isn't there, try running `virsh pool-refresh images`.
 
 
 === delete 

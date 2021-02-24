@@ -163,13 +163,14 @@ kbd:[Ctrl + ++]++ ]
 ----
 
 
-== stop the VM
 
-Usually we stop a VM with the command ``virsh shutdown guest1``. 
-This is a graceful shutdown, like running ``systemctl poweroff``.
+== delete the VM
 
-But here we want to pull the plug, using ``virsh destroy guest1``.
+if something goes wrong, clear your work and start again with the  _virsh undefine_ command.
+
+First, stop the VM running with the _virsh destroy_ command. 
 Despite the dramatic _destroy_ name, this does not delete anything. 
+It's like pulling the plug on a physical computer. 
 
 [source,shell]
 ----
@@ -177,15 +178,6 @@ Despite the dramatic _destroy_ name, this does not delete anything.
 Domain guest2 destroyed
 
 [root@host1 ~]# 
-----
-
-
-== delete the VM
-
-if something goes wrong, clear your work and start again with the  _virsh undefine_ command.
-
-[source,shell]
-----
 [root@host1 ~]# virsh undefine --nvram --remove-all-storage guest2 
 Domain guest2 has been undefined
 Volume 'vda'(/var/lib/libvirt/images/guest2.qcow2) removed.
