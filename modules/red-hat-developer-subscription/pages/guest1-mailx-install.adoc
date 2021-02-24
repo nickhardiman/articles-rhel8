@@ -11,6 +11,13 @@ The more mails there are, the trickier it is to manage.
 The proper name for an e-mail reader in SMTP land is MUA (Mail User Agent).
 Two MUAs that work on the command line are mailx and mutt. 
 
+The mailx utility is pretty basic, but it's better than working directly with user files in /var/spool/mail.
+Mutt is a complicated curses-based utility, with colors and status bars.
+It's a little like using the vim editor. 
+
+This example keeps things simple with mailx.
+
+
 == install mailx
 
 [source,shell]

@@ -57,6 +57,7 @@
 *** xref:guest1-apache-ssl.adoc[]
 *** xref:guest1-postfix-install.adoc[]
 *** xref:guest1-mailx-install.adoc[]
+*** xref:guest1-postfix-configure.adoc[]
 *** haproxy
 *** _PKI (Public Key Infrastructure) things_
 *** xref:id-certificate-ca-create.adoc[]
