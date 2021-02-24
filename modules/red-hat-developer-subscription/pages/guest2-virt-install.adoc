@@ -5,7 +5,7 @@ Nick Hardiman
 
 
 
-Use libvirt to create a virtual machine for Satellite. 
+Use libvirt to create the _guest2_ virtual machine. 
 
 Use a  *golden image* process. 
 Use a disk file that already has the OS installed - this is the golden image. 
@@ -91,19 +91,26 @@ The command is pretty quick.
 
 [source,shell]
 ----
-[root@rpi4 images]# virt-install \
->   --name="does-it-work" \
->   --vcpus=1 \
->   --ram=1024 \
->   --disk path=/var/lib/libvirt/images/does-it-work.raw \
->   --boot uefi \
->   --os-variant fedora33 \
->   --graphics none \
->   --noautoconsole
-
+[root@host1 ~]# HOST=guest2 
+[root@host1 ~]# CPUS=1
+[root@host1 ~]# MEMORY=2048
+[root@host1 ~]# POOL=images
+[root@host1 ~]# VOLUME=$HOST.qcow2
+[root@host1 ~]# OS_VARIANT=rhel8.3
+[root@host1 ~]# IF1_MAC=52:54:00:00:00:03
+[root@host1 ~]# IF1_BRIDGE=privbr0
+[root@host1 ~]# virt-install   \
+>     --name       $HOST   \
+>     --vcpus      $CPUS \
+>     --memory     $MEMORY \
+>     --disk       vol=$POOL/$VOLUME  \
+>     --os-variant $OS_VARIANT \
+>     --network    bridge:${IF1_BRIDGE},mac=$IF1_MAC   \
+>     --import   \
+>     --noautoconsole
 Starting install...
 Domain creation completed.
-[root@rpi4 images]# 
+[root@host1 ~]# 
 ----
 
 libvirt adds XML configuration 
@@ -112,59 +119,34 @@ Now there is a VM.
 
 [source,shell]
 ----
-[root@rpi4 images]# virsh list --all
- Id   Name           State
-------------------------------
- 1    does-it-work   running
+[root@host1 ~]# virsh list --all
+ Id   Name     State
+------------------------
+ 1    guest1   running
+ 6    guest2   running
 
-[root@rpi4 images]# 
+[root@host1 ~]# 
 ----
-
-
-A storage pool has been automatically created. 
-Libvirt creates a new XML configuration file /etc/libvirt/storage/images.xml. 
-
-[source,shell]
-....
-[root@rpi4 images]# virsh pool-list
- Name     State    Autostart
-------------------------------
- images   active   yes
-
-[root@rpi4 images]# 
-....
-
 
 
 
 == use the console 
 
 Connect to the console with the ``virsh console`` command.
-It takes a minute for boot-up to finish, so you may see many boot-up messages appearing on the console. 
-Finally anaconda starts to handle the install process, and stops at the first interactive prompt. 
-
+Hit the Enter key kbd:[⏎]  to get the _guest2 login_ prompt to appear. 
 
 [source,shell]
 ----
-[root@rpi4 images]# virsh console does-it-work
-Connected to domain does-it-work
-Escape character is ^] (Ctrl + ])
-[  OK  ] Finished Rebuild Hardware Database.
-         Starting Rule-based Manage…for Device Events and Files...
-[  OK  ] Started Rule-based Manager for Device Events and Files.
-[  OK  ] Finished Monitoring of LVM… dmeventd or progress polling.
-...
-================================================================================
-1) [x] Language settings                 2) [x] Time settings
-       (English (United States))                (US/Eastern timezone)
-3) [x] Network configuration             4) [x] Root password
-       (Wired (enp1s0) connected)               (Disabled. Set password to
-                                                enable root account.)
-5) [ ] User creation
-       (No user will be created)
+[root@host1 ~]# virsh console guest2
+Connected to domain guest2
+Escape character is ^]
 
-Please make a selection from the above ['c' to continue, 'q' to quit, 'r' to
-refresh]: 
+Red Hat Enterprise Linux 8.3 (Ootpa)
+Kernel 4.18.0-240.1.1.el8_3.x86_64 on an x86_64
+
+Activate the web console with: systemctl enable --now cockpit.socket
+
+guest2 login: 
 ----
 
 That's enough to prove the virtual machine runs. 
@@ -177,7 +159,7 @@ kbd:[Ctrl + ++]++ ]
 [source,shell]
 ----
 ^]
-[root@rpi4 images]# 
+[root@host1 ~]# 
 ----
 
 
@@ -191,34 +173,36 @@ Despite the dramatic _destroy_ name, this does not delete anything.
 
 [source,shell]
 ----
-[root@rpi4 images]# virsh destroy does-it-work
-Domain does-it-work destroyed
+[root@host1 ~]# virsh destroy guest2
+Domain guest2 destroyed
 
-[root@rpi4 images]# 
+[root@host1 ~]# 
 ----
 
 
 == delete the VM
 
-Delete the new VM with the command  ``virsh undefine``.
+if something goes wrong, clear your work and start again with the  _virsh undefine_ command.
 
 [source,shell]
 ----
-[root@rpi4 images]# virsh undefine --nvram does-it-work 
-Domain does-it-work has been undefined
+[root@host1 ~]# virsh undefine --nvram --remove-all-storage guest2 
+Domain guest2 has been undefined
+Volume 'vda'(/var/lib/libvirt/images/guest2.qcow2) removed.
 
-[root@rpi4 images]# 
+[root@host1 ~]# 
 ----
 
 Check it's gone. 
 
 [source,shell]
 ....
-[root@rpi4 images]# virsh list --all
- Id   Name   State
---------------------
+[root@host1 ~]# virsh list --all
+ Id   Name     State
+------------------------
+ 1    guest1   running
 
-[root@rpi4 images]# 
+[root@host1 ~]# 
 ....
 
 
