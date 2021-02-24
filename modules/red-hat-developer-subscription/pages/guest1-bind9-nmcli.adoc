@@ -3,14 +3,52 @@ Nick Hardiman <nhardima@redhat.com>
 :source-highlighter: highlight.js
 :revdate: 11-01-2021
 
-NetworkManager uses the home network's name service, not the new name service on _guest1_.
+NetworkManager uses the home network's name service.
+Now there is a new name service running on _guest1_, use that instead. 
 Run https://developer.gnome.org/NetworkManager/stable/nmcli.html[nmcli] commands to tell NetworkManager to use the local DNS service.
 
+DHCP services pass on information about what DNS services to use. 
+Now the local DNS service is running, this information can be ignored.
+Run nmcli commands to ignore what DHCP says.
 
-== the current setup 
+There are two interfaces connected to two different networks - _enp1s0_ and _enp2s0_. 
+Change both of these. 
+
+== investigate the current setup 
 
 NetworkManager uses two nameservers - one on the home network and one provided by dnsmasq. 
-It was told to do this by DHCP, when it brought up the two interfaces enp1s0 and enp2s0.
+It was told to do this by DHCP, when it brought up the two interfaces _enp1s0_ and _enp2s0_.
+
+Running `nmcli` lists details about each interface, including a summary of how DNS is configured. 
+
+[source,shell]
+---- 
+[nick@guest1 named]# nmcli 
+...
+DNS configuration:
+        servers: 192.168.1.254
+        domains: home
+        interface: enp1s0
+
+        servers: 192.168.152.1
+        interface: enp2s0
+
+        servers: fe80::5054:ff:fe23:ff9
+        interface: enp2s0
+
+Use "nmcli device show" to get complete information about known devices and
+"nmcli connection show" to get an overview on active connection profiles.
+
+Consult nmcli(1) and nmcli-examples(7) manual pages for complete usage details.
+[nick@guest1 ~]$ 
+----
+
+=== resolv.conf 
+
+NetworkManager puts some DNS config in the file https://en.wikipedia.org/wiki/Resolv.conf[resolv.conf].
+This DNS configuration file, along with _hosts_ and _nsswitch.conf_, has been used for decades. 
+Configuration used to be done by editing this file. 
+Now it's an easy way to see what some config settings are. 
 
 [source,shell]
 ----
@@ -19,14 +57,6 @@ It was told to do this by DHCP, when it brought up the two interfaces enp1s0 and
 search home lab.example.com
 nameserver 192.168.1.254
 nameserver 192.168.126.1
-[root@guest1 named]# 
-[root@guest1 named]# nmcli 
-...
-DNS configuration:
-        servers: 192.168.1.254
-        domains: home
-        interface: enp1s0
-...
 [root@guest1 named]# 
 ----
 
@@ -67,6 +97,8 @@ DHCP6.OPTION[1]:                        dhcp6_domain_search = home
 == change settings for enp1s0
 
 Change the IPv4 settings. 
+Use the local DNS service. 
+Don't use DNS settings that the home network DHCP service handed over.
 
 [source,shell]
 ----
@@ -99,6 +131,7 @@ nameserver 127.0.0.1
 
 == change settings for enp2s0
 
+Don't use DNS settings that the dnsmasq DHCP service handed over.
 
 [source,shell]
 ----
@@ -109,6 +142,7 @@ nmcli con up enp1s0
 == check your work 
 
 Check Bind is now the default choice. 
+If this name resolves, the new configuration works. 
 
 [source,shell]
 ----
