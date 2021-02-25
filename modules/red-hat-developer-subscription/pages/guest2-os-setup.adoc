@@ -70,6 +70,76 @@ Disable root login.
 * Change PermitRootLogin to no.
 * Restart the service with _systemctl reload sshd.service_
 
+== network routing 
+
+!!! not useful
+Not sure what the point of this is. 
+
+[source,shell]
+....
+[root@guest2 ~]# ip route list
+192.168.152.0/24 dev eth0 proto kernel scope link src 192.168.152.100 metric 100 
+[root@guest2 ~]# 
+[root@guest2 ~]# ip route add default via 192.168.152.11 
+[root@guest2 ~]# 
+[root@guest2 ~]# ip route list
+default via 192.168.152.11 dev eth0 
+192.168.152.0/24 dev eth0 proto kernel scope link src 192.168.152.100 metric 100 
+[root@guest2 ~]# 
+....
+
+IP forwarding on guest1 
+
+[source,shell]
+....
+[root@guest1 ~]# cat /proc/sys/net/ipv4/ip_forward
+0
+[root@guest1 ~]# 
+[root@guest1 ~]# sysctl net.ipv4.ip_forward=1
+net.ipv4.ip_forward = 1
+[root@guest1 ~]# 
+....
+
+Check 
+
+[source,shell]
+....
+[root@guest2 ~]# ping -c1 192.168.1.217 # enp1s0 on guest1
+PING 192.168.1.217 (192.168.1.217) 56(84) bytes of data.
+64 bytes from 192.168.1.217: icmp_seq=1 ttl=64 time=0.372 ms
+
+--- 192.168.1.217 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.372/0.372/0.372/0.000 ms
+[root@guest2 ~]# 
+[root@guest2 ~]# ping -c1 192.168.122.1 # pubbr0 bridge on host1
+PING 192.168.122.1 (192.168.122.1) 56(84) bytes of data.
+
+--- 192.168.122.1 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+[root@guest2 ~]# 
+....
+
+delete 
+
+[source,shell]
+....
+ip route delete default via 192.168.152.11
+....
+
+== subscribe 
+
+Use RHSM (Red Hat Subscription Manager) to entitle this machine to Red Hat's services.
+
+* xref:host1-rhsm-entitlement.adoc[]
+
+[source,shell]
+....
+subscription-manager status
+subscription-manager register  --username <username>  --password <password>
+subscription-manager attach  --pool=1234567890abcdef1234567890abcdef
+....
 
 == update packages 
 
