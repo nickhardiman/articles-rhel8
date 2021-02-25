@@ -92,12 +92,23 @@ Disable root login.
 
 == proxy 
 
+Use squid on guest1 
+
 [source,shell]
 ....
-export http_proxy=192.168.152.11
+[root@guest2 ~]# vi /etc/profile.d/proxy.sh
 export http_proxy=192.168.152.11:3128
+export https_proxy=192.168.152.11:3128
 ....
 
+
+== DNS  
+
+[source,shell]
+....
+nmcli con mod System\ eth0 ipv4.dns 192.168.152.11
+nmcli con mod System\ eth0 ipv4.ignore-auto-dns yes
+....
 
 
 == network routing 
@@ -157,6 +168,7 @@ delete
 ....
 ip route delete default via 192.168.152.11
 ....
+
 
 
 
