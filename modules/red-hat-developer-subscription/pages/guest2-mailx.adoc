@@ -4,7 +4,17 @@ Nick Hardiman <nhardima@redhat.com>
 :toc: 
 :revdate: 25-02-2021
 
+== install 
 
+[source,shell]
+....
+dnf install mailx
+....
+
+== send test mails 
+
+
+The mailx command to send a message from guest2 to guest1. 
 
 [source,shell]
 ....
@@ -15,8 +25,6 @@ echo "my message body" \
   -S smtp="guest1.private.example.com:25" \
   nick@guest1.lab.example.com
 ....
-
-== send test mails 
 
 Open a terminal on guest1. 
 
@@ -47,4 +55,6 @@ Send a mail to these addresses.
 [root@guest2 ~]# 
 ....
 
+The address _nick@lab.example.com_ is not recognized by guest1. 
+It refuses to accept the mail. 
 
