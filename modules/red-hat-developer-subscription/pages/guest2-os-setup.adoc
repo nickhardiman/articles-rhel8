@@ -6,6 +6,25 @@ Nick Hardiman <nhardima@redhat.com>
 
 Carry out some first-run sysadmin on the new machine. 
 
+----
+            + pubbr0                                   + privbr0
+            |                                          |  
+            |                                          |     +--------------------------+
+            |                                          |     |                          |
+            |                                          |     |  guest2.lab.example.com  |
+            |                                          |     |                          |
+            |     +-----------------------------+      |     |                          |
+            |     |                             |      +-----+ eth0                     |
+  Internet  |     |  guest1.lab.example.com     |      |     +--------------------------+
+  <---------+-----+ enp1s0              enp2s0  +------+
+            |     |                             |      |     +--------------------------+
+            |     |                             |      +-----+ enp1s0                   |
+            |     +-----------------------------+      |     |  guest3.lab.example.com  |
+            |                                          |     |                          |
+            +                                          +     |                          |
+                                                             |                          |
+                                                             +--------------------------+
+----
 
 == connect using SSH 
 
@@ -70,6 +89,17 @@ Disable root login.
 * Change PermitRootLogin to no.
 * Restart the service with _systemctl reload sshd.service_
 
+
+== proxy 
+
+[source,shell]
+....
+export http_proxy=192.168.152.11
+export http_proxy=192.168.152.11:3128
+....
+
+
+
 == network routing 
 
 !!! not useful
@@ -128,6 +158,8 @@ delete
 ip route delete default via 192.168.152.11
 ....
 
+
+
 == subscribe 
 
 Use RHSM (Red Hat Subscription Manager) to entitle this machine to Red Hat's services.
@@ -140,6 +172,8 @@ subscription-manager status
 subscription-manager register  --username <username>  --password <password>
 subscription-manager attach  --pool=1234567890abcdef1234567890abcdef
 ....
+
+
 
 == update packages 
 
