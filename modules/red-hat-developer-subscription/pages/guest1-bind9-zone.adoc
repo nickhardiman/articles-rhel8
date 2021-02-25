@@ -7,9 +7,7 @@ Nick Hardiman <nhardima@redhat.com>
 Add configuration and content to Bind. 
 This sets up Bind to do this work. 
 
-* Answer questions about the _lab.example.com_ domain. Bind is authoritative for this domain, so it hands over records for hosts like guest1.lab.example.com. 
-* Forward requests for _private.example.com_ records to dnsmasq.
-* Forward all other questions to the home network's DNS server. 
+Answer questions about the _lab.example.com_ domain. Bind is authoritative for this domain, so it hands over records for hosts like guest1.lab.example.com. 
 
 This is a simple config that does not cover anything fancy like DNSSEC or split DNS. 
 
@@ -135,7 +133,7 @@ No need to change the SELinux file type.
 The new files inherit _named_zone_t_ from the directory.
 
 
-=== edit config 
+=== edit /etc/named.conf 
 
 Tell Bind where the new zone records are. 
 Add these options to the bottom of /etc/named.conf.

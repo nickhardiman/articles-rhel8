@@ -4,47 +4,13 @@ Nick Hardiman <nhardima@redhat.com>
 :revdate: 11-01-2021
 
 
-Install https://www.isc.org/bind/[ISC Bind].
-Make sure it's always running. 
+Use https://www.isc.org/bind/[ISC Bind] to answer DNS queries. 
 
-public network - 
-  Gateway serves DHCP, DNS 
-
+Install two packages, _bind_ and _bind-utils_. The bind package provides the named service, database and administrator tools like _rndc_ and _named-checkconf_.
+The bind_utils package provides more administrator tools like _dig_, _dnssec-keygen_ and _named-checkzone_.
 
 
-== connect to guest1 using SSH
-
-[source,shell]
-....
-[nick@host1 ~]$ ssh guest1
-The authenticity of host 'guest1 (192.168.1.123)' can't be established.
-ECDSA key fingerprint is SHA256:JcjI8AIHkUvat0qdM1OqDPzY0jughZC5ZOuU/uvApmk.
-Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-Warning: Permanently added 'guest1,192.168.1.123' (ECDSA) to the list of known hosts.
-nick@guest1's password: 
-Activate the web console with: systemctl enable --now cockpit.socket
-
-This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
-To register this system, run: insights-client --register
-
-Last login: Fri May 29 12:15:41 2020
-[nick@guest1 ~]$ 
-....
-
-When finished, disconnect with _exit_. 
-
-[source,shell]
-----
-[nick@guest1 ~]$ exit
-logout
-Connection to 192.168.152.218 closed.
-[nick@host1 ~]$ 
-----
-
-== install bind 
-
-The bind package provides the named service, database and administrator tools like rndc, named-checkconf.
-The bind_utils package provides more administrator tools like dig, dnssec-keygen and named-checkzone.
+== install bind and bind-utils 
 
 Use the root account. 
 
