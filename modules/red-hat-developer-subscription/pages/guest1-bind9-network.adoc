@@ -1,5 +1,5 @@
 = allow network access to Bind 9 
-Nick Hardiman <nhardima@redhat.com>
+Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 11-01-2021
 

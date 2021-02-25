@@ -1,5 +1,5 @@
 = set up the guest1 OS 
-Nick Hardiman <nhardima@redhat.com>
+Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 28-11-2020
 

@@ -1,5 +1,5 @@
 = test guest2 mail with mailx  
-Nick Hardiman <nhardima@redhat.com>
+Nick Hardiman
 :source-highlighter: highlight.js
 :toc: 
 :revdate: 25-02-2021
