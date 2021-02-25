@@ -1,0 +1,110 @@
+= haproxy  
+Nick Hardiman <nhardima@redhat.com>
+:source-highlighter: highlight.js
+:toc: 
+:revdate: 25-02-2021
+
+
+
+== install 
+
+[source,shell]
+....
+yum install -y haproxy
+....
+
+
+== configure 
+
+The config file /etc/haproxy/haproxy.cfg is about 90 lines and load balances a cluster of applications running on the local machine _guest1_. 
+There are no matching applications on the local machine, so haproxy isn't really doing anything useful.
+
+[source,shell]
+....
+[root@guest1 ~]# cat  /etc/haproxy/haproxy.cfg 
+#---------------------------------------------------------------------
+# Example configuration for a possible web application.  See the
+# full configuration options online.
+#
+#   https://www.haproxy.org/download/1.8/doc/configuration.txt
+...
+    server  app2 127.0.0.1:5002 check
+    server  app3 127.0.0.1:5003 check
+    server  app4 127.0.0.1:5004 check
+[root@guest1 ~]# 
+....
+
+Add 
+
+[source,shell]
+....
+....
+
+
+[source,shell]
+....
+....
+
+
+== systemd 
+
+[source,shell]
+....
+[root@guest1 ~]# systemctl status haproxy
+● haproxy.service - HAProxy Load Balancer
+   Loaded: loaded (/usr/lib/systemd/system/haproxy.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+[root@guest1 ~]# 
+....
+
+[source,shell]
+....
+[root@guest1 ~]# systemctl enable haproxy
+Created symlink /etc/systemd/system/multi-user.target.wants/haproxy.service → /usr/lib/systemd/system/haproxy.service.
+[root@guest1 ~]# 
+....
+
+[source,shell]
+....
+[root@guest1 ~]# systemctl start haproxy
+[root@guest1 ~]# 
+....
+
+[source,shell]
+....
+[root@guest1 ~]# systemctl status haproxy
+● haproxy.service - HAProxy Load Balancer
+   Loaded: loaded (/usr/lib/systemd/system/haproxy.service; enabled; vendor preset: disabled)
+   Active: active (running) since Wed 2021-01-13 16:39:02 GMT; 3s ago
+  Process: 1911 ExecStartPre=/usr/sbin/haproxy -f $CONFIG -c -q $OPTIONS (code=exited, status=0/SUCCESS)
+ Main PID: 1912 (haproxy)
+    Tasks: 2 (limit: 23295)
+   Memory: 2.8M
+   CGroup: /system.slice/haproxy.service
+           ├─1912 /usr/sbin/haproxy -Ws -f /etc/haproxy/haproxy.cfg -p /run/haproxy.pid
+           └─1914 /usr/sbin/haproxy -Ws -f /etc/haproxy/haproxy.cfg -p /run/haproxy.pid
+
+Jan 13 16:39:02 guest1.lab.example.com systemd[1]: Starting HAProxy Load Balancer...
+Jan 13 16:39:02 guest1.lab.example.com systemd[1]: Started HAProxy Load Balancer.
+[root@guest1 ~]# 
+....
+
+
+
+== firewalld
+
+[source,shell]
+....
+firewall-cmd --add-service http 
+firewall-cmd --add-service http --permanent
+firewall-cmd --add-service https 
+firewall-cmd --add-service https --permanent
+....
+
+stats page 
+
+[source,shell]
+....
+firewall-cmd --add-service https --permanent
+firewall-cmd --add-port 9000/tcp
+....
