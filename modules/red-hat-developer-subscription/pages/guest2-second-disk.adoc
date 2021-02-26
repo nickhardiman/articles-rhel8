@@ -12,7 +12,7 @@ Add a second disk to the virtual machine _guest2_.
 
 in host 
 
-[source,XML]
+[source,shell]
 ----
 cd /home/nick/libvirt/guest_images/
 qemu-img create -f qcow2 -o preallocation=full second-disk.qcow2  5G
@@ -20,7 +20,7 @@ qemu-img create -f qcow2 -o preallocation=full second-disk.qcow2  5G
 
 in guest 
 find current disk name 
-[source,XML]
+[source,shell]
 ----
 df 
 ----
@@ -63,7 +63,7 @@ in guest2
 
 Format the new disk.
 
-[source,XML]
+[source,shell]
 ----
 sudo su -
 fdisk -l
@@ -73,7 +73,7 @@ mkfs.xfs /dev/vdb1
 
 Copy /var/www/ content.
 
-[source,XML]
+[source,shell]
 ----
 mount -t xfs /dev/vdb1 /mnt
 cp -rp /var/www/* /mnt/
@@ -83,9 +83,8 @@ umount /mnt
 Mount the new disk.
 
 temporary mount
-[source,XML]
+[source,shell]
 ----
 mount -t xfs /dev/vdb1 /var/www
 restorecon -rv /var/www/
-[source,XML]
 ----

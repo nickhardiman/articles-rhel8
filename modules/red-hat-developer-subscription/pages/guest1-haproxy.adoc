@@ -76,76 +76,6 @@ yum install -y haproxy
 ....
 
 
-== configure 
-
-The config file /etc/haproxy/haproxy.cfg is about 90 lines and load balances a cluster of applications running on the local machine _guest1_. 
-There are no matching applications on the local machine, so haproxy isn't really doing anything useful.
-
-[source,shell]
-....
-[root@guest1 ~]# cat  /etc/haproxy/haproxy.cfg 
-#---------------------------------------------------------------------
-# Example configuration for a possible web application.  See the
-# full configuration options online.
-#
-#   https://www.haproxy.org/download/1.8/doc/configuration.txt
-...
-    server  app2 127.0.0.1:5002 check
-    server  app3 127.0.0.1:5003 check
-    server  app4 127.0.0.1:5004 check
-[root@guest1 ~]# 
-....
-
-=== add a stats page 
-
-Add a stats page. 
-
-
-[source,shell]
-....
-listen stats
-    bind :9000
-    mode http
-    stats enable
-    stats uri /
-    monitor-uri /healthz
-....
-
-
-
-=== open the firewall
-
-[source,shell]
-....
-[root@guest1 ~]# firewall-cmd --add-port 9000/tcp
-success
-[root@guest1 ~]# firewall-cmd --add-port 9000/tcp --permanent
-success
-[root@guest1 ~]# 
-....
-
-Find the home network address of _guest1_.
-In this example it's _192.168.1.217_. 
-
-[source,shell]
-....
-ip addr show dev enp1s0
-....
-
-
-=== view the stats page  
-
-Open a web browser on the workstation.
-
-Enter a URL in the form of http://192.168.1.217:9000/.
-
-View the dashboard. 
-The default app does not exist, so checks are failing.
-Many lines are colored red. 
-
-image::haproxy-stats.png[stats,width=587,height=900,title="HAProxy stats"]
-
-
 
 == systemd 
 
@@ -192,7 +122,10 @@ Jan 13 16:39:02 guest1.lab.example.com systemd[1]: Started HAProxy Load Balancer
 
 
 
-== firewalld
+== open the firewall
+
+Tell firewalld to allow web server traffic.
+
 
 [source,shell]
 ....
@@ -202,10 +135,103 @@ firewall-cmd --add-service https
 firewall-cmd --add-service https --permanent
 ....
 
-stats page 
+Let the network view the new stats page on port 9000.
+The stats page is created next. 
 
 [source,shell]
 ....
 firewall-cmd --add-service https --permanent
 firewall-cmd --add-port 9000/tcp
 ....
+
+
+== add a stats page 
+
+image::haproxy-stats.png[stats,width=587,height=900,title="HAProxy stats"]
+
+The config file /etc/haproxy/haproxy.cfg is about 90 lines and load balances a cluster of applications running on the local machine _guest1_. 
+There are no matching applications on the local machine, so haproxy isn't really doing anything useful.
+
+[source,shell]
+....
+[root@guest1 ~]# cat  /etc/haproxy/haproxy.cfg 
+#---------------------------------------------------------------------
+# Example configuration for a possible web application.  See the
+# full configuration options online.
+#
+#   https://www.haproxy.org/download/1.8/doc/configuration.txt
+...
+    server  app2 127.0.0.1:5002 check
+    server  app3 127.0.0.1:5003 check
+    server  app4 127.0.0.1:5004 check
+[root@guest1 ~]# 
+....
+
+
+=== configure 
+
+Create a stats web page. 
+Edit the config file. 
+
+[source,shell]
+....
+[root@guest1 ~]# vi /etc/haproxy/haproxy.cfg 
+....
+
+Add these lines to the bottom of the config file.  
+
+[source,shell]
+....
+listen stats
+    bind :9000
+    stats enable
+    stats uri /
+....
+
+Restart HAProxy.
+
+[source,shell]
+....
+[root@guest1 ~]# systemctl restart haproxy
+[root@guest1 ~]# 
+....
+
+=== view the stats page  
+
+Find the home network address of _guest1_.
+In this example it's _192.168.1.217_. 
+
+[source,shell]
+....
+ip addr show dev enp1s0
+....
+
+Open a web browser on the workstation.
+
+Enter a URL in the form of http://192.168.1.217:9000/.
+
+View the dashboard. 
+The default app does not exist, so checks are failing.
+Many lines are colored red. 
+
+
+
+== load balance guest2 and guest3 
+
+Allow HTTP traffic. 
+Add these lines to the bottom of the config file. 
+
+[source,shell]
+....
+frontend http-requests
+    bind *:80
+    default_backend http-requests
+    option http
+
+backend http-requests
+    balance round-robin
+    server guest2 192.168.152.100:80 check
+    server guest3 192.168.152.101:80 check
+....
+
+
