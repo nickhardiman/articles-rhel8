@@ -10,16 +10,16 @@ Carry out some first-run sysadmin on the new machine.
             + pubbr0                                   + privbr0
             |                                          |  
             |                                          |     +--------------------------+
-            |                                          |     |                          |
             |                                          |     |  guest2.lab.example.com  |
             |                                          |     |                          |
+            |                                          |     |                          |
             |     +-----------------------------+      |     |                          |
-            |     |                             |      +-----+ eth0                     |
-  Internet  |     |  guest1.lab.example.com     |      |     +--------------------------+
-  <---------+-----+ enp1s0              enp2s0  +------+
+            |     |  guest1.lab.example.com     |      +-----+ enp1s0                   |
+  Internet  |     |                             |      |     +--------------------------+
+  <---------+-----+ enp1s0               enp2s0 +------+
             |     |                             |      |     +--------------------------+
-            |     |                             |      +-----+ enp1s0                   |
-            |     +-----------------------------+      |     |  guest3.lab.example.com  |
+            |     |                             |      |     |  guest3.lab.example.com  |
+            |     +-----------------------------+      +-----+ enp1s0                   |
             |                                          |     |                          |
             +                                          +     |                          |
                                                              |                          |
@@ -28,7 +28,7 @@ Carry out some first-run sysadmin on the new machine.
 
 == connect using SSH 
 
-Copy your public key for easier and safer login. 
+Copy your public key for easier login. 
 
 [source,shell]
 ....
@@ -39,9 +39,6 @@ SSH from your workstation to the machine.
 
 
 
-== change from eth0 to enp1s0 ?
-
-edit /etc/default/grub and remove `net.ifnames=0`
 
 
 == add swap 
