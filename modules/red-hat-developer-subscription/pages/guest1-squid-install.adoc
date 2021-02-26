@@ -14,6 +14,21 @@ It's annoying for the user, but a common setup.
 
 Use squid to proxy HTTP and HTTPS requests to the Internet. 
 
+== a forward proxy 
+
+Squid is a forward proxy - it sends requests from a few clients to the vast number of servers on the Internet. 
+----
++------------------------------------------+
+|  home network                            |
+| +--------------+       +---------------+ |              +--------------+
+| |              |       | forward proxy | |              |              |
+| | client       +-------+ front    back +---(Internet)---+ server       |
+| |              |       |               | |              |              |
+| +--------------+       +---------------+ |              +--------------+
+|                                          |
++------------------------------------------+
+----
+
 == install 
 
 [source,shell]
