@@ -1,16 +1,17 @@
-= copy a golden image using libguestfs-tools 
+= create guest4.qcow2 using libguestfs-tools 
 Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 23-11-2020
 
-Create a new virtual machine _guest2_.
+Create a new storage volume, _guest4.qcow2_.
+Make a copy of _rhel-8.3-x86_64-kvm.qcow2_ and customize it. 
+A new virtual machine will built from this copy.
+
 Before creating this VM, collect content and tools on _host1_.
 
 * xref:libvirt-storage-volume-rhel8-kvm.adoc[]
 
 
-Use _rhel-8.3-x86_64-kvm.qcow2_ as a golden image.
-A new virtual machine is built by copying the golden image and customizing the copy.
 
 Install the virt-resize and virt-customize utilities from the libguestfs-tools package.
 
@@ -84,10 +85,10 @@ If you can't remember your pool name, run _virsh pool-list_ to check.
 
 [source,shell]
 ----
-[root@host1 images]# MY_COPY=guest2.qcow2
+[root@host1 images]# MY_COPY=guest4.qcow2
 [root@host1 images]# SIZE=300G
 [root@host1 images]# virsh vol-create-as --format qcow2 images $MY_COPY $SIZE
-Vol guest2 created
+Vol guest4 created
 
 [root@host1 images]# 
 ----
@@ -99,7 +100,7 @@ The whole 300 GiB is not allocated now - space is added later, when it is requir
 [source,shell]
 ----
 [root@host1 images]# ls -lh $MY_COPY
--rw-------. 1 root root 197K Feb 24 19:40 guest2.qcow2
+-rw-------. 1 root root 197K Feb 24 19:40 guest4.qcow2
 [root@host1 images]# 
 ----
 
@@ -109,8 +110,8 @@ List libvirt's config with this _virsh vol-info_ command.
 
 [source,shell]
 ----
-[root@host1 images]# virsh vol-info guest2.qcow2 images
-Name:           guest2.qcow2
+[root@host1 images]# virsh vol-info guest4.qcow2 images
+Name:           guest4.qcow2
 Type:           file
 Capacity:       300.00 GiB
 Allocation:     200.00 KiB
@@ -131,7 +132,7 @@ The _vol-delete_ command removes both the file and libvirt's config.
 [source,shell]
 ----
 [root@host1 images]# virsh vol-delete $MY_COPY --pool images
-Vol guest2 deleted
+Vol guest4 deleted
 
 [root@host1 images]# 
 ----
@@ -148,7 +149,7 @@ Libvirt does come with a volume copying command, _virsh vol-clone_. It can make 
 
 [source,shell]
 ----
-[root@host1 images]# MY_COPY=guest2.qcow2
+[root@host1 images]# MY_COPY=guest4.qcow2
 [root@host1 images]# GOLDEN_IMAGE=rhel-8.3-x86_64-kvm.qcow2 
 [root@host1 images]# 
 [root@host1 images]# virt-resize --expand /dev/sda3 $GOLDEN_IMAGE $MY_COPY 
@@ -166,7 +167,7 @@ filesystem xfs on /dev/sda3 will be expanded using the ‘xfs_growfs’
 method.
 
 **********
-[   5.7] Setting up initial partition table on guest2.qcow2
+[   5.7] Setting up initial partition table on guest4.qcow2
 [  16.6] Copying /dev/sda1
 [  16.7] Copying /dev/sda2
 [  16.8] Copying /dev/sda3
@@ -185,7 +186,7 @@ The file is much bigger now, but still a fraction of its defined size.
 [root@host1 images]# ls -lh
 total 3.6G
 -rw-r--r--. 1 qemu qemu 1.3G Nov 23 16:23 rhel-8.3-x86_64-kvm.qcow2
--rw-------. 1 root root 2.3G Nov 23 17:16 guest2.qcow2
+-rw-------. 1 root root 2.3G Nov 23 17:16 guest4.qcow2
 [root@host1 images]# 
 ----
 
@@ -201,9 +202,9 @@ Check out that insecure password.
 [source,shell]
 ----
 virt-customize \
-  --add            guest2.qcow2  \
+  --add            guest4.qcow2  \
   --root-password  password:'x%5ckA-1'  \
-  --hostname       guest2.private.example.com  \
+  --hostname       guest4.private.example.com  \
   --timezone       'Europe/London'  \
   --selinux-relabel
 ----
@@ -213,11 +214,11 @@ It prints an activity log, along with seconds elapsed.
 
 [source,shell]
 ----
-[nick@host ~]$ virt-customize --add guest-images/guest2.qcow2 --root-password password:'x%5ckA-1' --hostname guest2.private.example.com
+[nick@host ~]$ virt-customize --add guest-images/guest4.qcow2 --root-password password:'x%5ckA-1' --hostname guest4.private.example.com
 [   0.0] Examining the guest ...
 [   4.6] Setting a random seed
 [   4.6] Setting the machine ID in /etc/machine-id
-[   4.6] Setting the hostname: guest2.private.example.com
+[   4.6] Setting the hostname: guest4.private.example.com
 [   4.6] Setting the timezone: Europe/London
 [   4.7] Setting passwords
 [   5.9] SELinux relabelling

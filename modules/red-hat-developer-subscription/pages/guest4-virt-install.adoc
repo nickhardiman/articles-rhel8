@@ -1,19 +1,19 @@
-= create the guest2 VM 
+= create _guest4_ using a KVM image
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 14-01-2021
 
 
 
-Use libvirt to create the _guest2_ virtual machine. 
+Use libvirt to create the _guest4_ virtual machine. 
 
 Use a  *golden image* process. 
 Use a disk file that already has the OS installed - this is the golden image. 
 Make a copy of this image.
 
-The ready-made _guest2_ disk image is a copy of the golden image (the RHEL 8 KVM file).
+The ready-made _guest4_ disk image is a copy of the golden image (the RHEL 8 KVM file).
 This is a minimal install containing a couple hundred packages. 
-This new copy is used to build the new _guest2_ virtual machine. 
+This new copy is used to build the new _guest4_ virtual machine. 
 
 
 
@@ -21,7 +21,7 @@ This new copy is used to build the new _guest2_ virtual machine.
 
 == create the libvirt domain 
 
-Create a VM using the ready-made _guest2_ disk image. 
+Create a VM using the ready-made _guest4_ disk image. 
 
 
 === using XML config 
@@ -42,7 +42,7 @@ These are the values.
 
 [source,bash]
 ----
-HOST=guest2 
+HOST=guest4 
 CPUS=1
 MEMORY=2048
 POOL=images
@@ -91,7 +91,7 @@ The command is pretty quick.
 
 [source,shell]
 ----
-[root@host1 ~]# HOST=guest2 
+[root@host1 ~]# HOST=guest4 
 [root@host1 ~]# CPUS=1
 [root@host1 ~]# MEMORY=2048
 [root@host1 ~]# POOL=images
@@ -123,7 +123,7 @@ Now there is a VM.
  Id   Name     State
 ------------------------
  1    guest1   running
- 6    guest2   running
+ 6    guest4   running
 
 [root@host1 ~]# 
 ----
@@ -133,12 +133,12 @@ Now there is a VM.
 == use the console 
 
 Connect to the console with the ``virsh console`` command.
-Hit the Enter key kbd:[⏎]  to get the _guest2 login_ prompt to appear. 
+Hit the Enter key kbd:[⏎]  to get the _guest4 login_ prompt to appear. 
 
 [source,shell]
 ----
-[root@host1 ~]# virsh console guest2
-Connected to domain guest2
+[root@host1 ~]# virsh console guest4
+Connected to domain guest4
 Escape character is ^]
 
 Red Hat Enterprise Linux 8.3 (Ootpa)
@@ -146,7 +146,7 @@ Kernel 4.18.0-240.1.1.el8_3.x86_64 on an x86_64
 
 Activate the web console with: systemctl enable --now cockpit.socket
 
-guest2 login: 
+guest4 login: 
 ----
 
 That's enough to prove the virtual machine runs. 
@@ -174,13 +174,13 @@ It's like pulling the plug on a physical computer.
 
 [source,shell]
 ----
-[root@host1 ~]# virsh destroy guest2
-Domain guest2 destroyed
+[root@host1 ~]# virsh destroy guest4
+Domain guest4 destroyed
 
 [root@host1 ~]# 
-[root@host1 ~]# virsh undefine --nvram --remove-all-storage guest2 
-Domain guest2 has been undefined
-Volume 'vda'(/var/lib/libvirt/images/guest2.qcow2) removed.
+[root@host1 ~]# virsh undefine --nvram --remove-all-storage guest4 
+Domain guest4 has been undefined
+Volume 'vda'(/var/lib/libvirt/images/guest4.qcow2) removed.
 
 [root@host1 ~]# 
 ----

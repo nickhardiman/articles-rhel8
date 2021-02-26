@@ -65,7 +65,7 @@ cdrom
 # Run the Setup Agent on first boot
 firstboot --enable
 
-# localization
+# l10n (localization)
 lang en_GB.UTF-8
 timezone Europe/London --isUtc
 keyboard uk
@@ -84,7 +84,7 @@ eula --agreed
 rootpw --iscrypted $6$SQXqGsYna84.3SL5$gJw6v23ZZ7WEITfBoZmyNDsIKeoqhS2Mwfk.KpCRloK7EfxlhL3MAlTCO33fr7QRfoG.GvBH1seWtQqz5v82q1
 user --groups=wheel --name=nick --password=$6$G3GIlnUH.JqcrAQl$I.q7gGoT37tcNnrGiHkeUTBtr8AAuoM/yy3P3FuEpJaSun6clgR8GlvKIbqOTgqNe.fIBV6xZOPiWvsduhXeC/ --iscrypted --gecos="nick"
 
-# disk 
+# storage 
 ignoredisk --only-use=vda
 # Partition clearing information
 clearpart --all --initlabel
@@ -108,7 +108,11 @@ reboot
 # special install sections
 
 %packages
+# This is a group of packages. 
+# To view the full list of groups, run
+#   dnf group list --hidden
 @^minimal-environment
+# This is a single package.
 kexec-tools
 
 %end
@@ -124,10 +128,13 @@ pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
 pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
 %end
 
-# subscription
+# last jobs
 %post --log=/root/ks-post.log
+# subscription
 /usr/sbin/subscription-manager register --username=nick --password='some password!' 
 /usr/sbin/subscription-manager attach --pool=123456789abcdef123456789abcdef12
+# package update
+/usr/bin/dnf -y update 
 %end
 
 ....

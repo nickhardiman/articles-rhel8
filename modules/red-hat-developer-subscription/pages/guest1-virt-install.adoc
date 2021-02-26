@@ -9,7 +9,10 @@ Use a kickstart file to automate the process.
 
 This example creates a machine called _guest1_ and installs RHEL 8. 
 
-.guest1 network 
+The guest1 machine has two interfaces, not one. 
+One interface leads to the home network and onto the Internet, and the other leads to the private network. 
+
+.guest1 has two interfaces 
 ....
   |  
   | Internet
@@ -29,10 +32,9 @@ This example creates a machine called _guest1_ and installs RHEL 8.
 | enp2s0                                |
 +-+-------------------------------------+
   |
-  | private network 
+  | privbr0, the private network 
   | 192.168.152.0/24
-  | privbr0
-
+  | 
 ....
 
 A command called _virt-install_ does the work. Two things are required before the _virt-install_ command is run. 

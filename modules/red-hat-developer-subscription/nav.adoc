@@ -46,7 +46,6 @@
 *** xref:guest1-os-setup.adoc[]
 *** xref:guest1-enp2s0.adoc[]
 *** xref:guest2-kickstart-file.adoc[]
-*** xref:guest2-virt-install.adoc[]
 *** xref:guest2-dnsmasq-dhcp.adoc[]
 *** xref:guest2-os-setup.adoc[]
 *** xref:guest3-pxe-boot.adoc[]
@@ -127,4 +126,5 @@
 ** more things
 *** xref:libvirt-notes.adoc[]
 *** xref:guest2-second-disk.adoc[]
-*** xref:guest2-libguestfs-tools.adoc[]
+*** xref:guest4-libguestfs-tools.adoc[]
+*** xref:guest4-virt-install.adoc[]
