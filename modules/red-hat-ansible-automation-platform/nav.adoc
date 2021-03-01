@@ -1,0 +1,6 @@
+* xref:ansible-automation-platform:index.adoc[]
+** xref:ansible-engine.adoc[]
+** xref:ansible-guest-host.adoc[]
+** xref:ansible-lint.adoc[]
+** xref:ansible-molecule.adoc[]
+

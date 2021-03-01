@@ -1,0 +1,243 @@
+= set up an ansible user 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-06-2020
+
+
+Tell ansible to set up an account for SSH
+
+Create a remote account called ansible_user that ansible can use for SSH connections. 
+This account will be authenticated using a key pair, and will have passwordless sudo access.
+This account is for the managed nodes only. 
+Don't set it up on the control node.
+
+
+.ansible node accounts  
+....
+.------------------------------------------------------.  
+|                                                      |
+|  host                                                |
+|                                                      |
+|   +-------------------+       +-------------------+  |
+|   |                   |       |                   |  |
+|   |   control node    |       |   managed node    |  |
+|   |                   | SSH   |                   |  |
+|   |              nick +------>|ansible_user       |  |
+|   |                   |       |                   |  |
+|   +-------------------+       +-------------------+  |
+.------------------------------------------------------.  
+....
+
+We even set this account up on the host itself, so the _guest1_ control node can treat _host_ like a managed node. 
+The concept of a guest virtual machine making changes on the host physical machine seems a little weird. 
+But that's the way many provisioning systems work.  
+
+.ansible SSH from guest to host 
+....
+.---------------------------------.  
+|                                 |
+|  host                           |
+|                                 |
+|   +----------+                  |
+|   |          |                  |
+|   |  guest1  |                  |
+|   |          |                  |
+|   |  nick ---+---> ansible_user |
+|   |          |                  |
+|   +----------+                  |
+.---------------------------------.  
+....
+
+
+Ansible playbooks will provision other guest VMs. 
+Ansible is running in a guest VM, to keep messy development work off the host machine. 
+Giving ansible power over the hypervisor means allowing a VM to make changes to its host. 
+
+Sound like a security flaw? 
+Sure does! This procedure adds a new user _ansible_user_ to the host and gives it full passwordless sudoers rights. 
+In a shared environment, this DIY setup would be a headache. 
+In production, it would be a disaster.
+But it's fine for this self-contained development environment. 
+
+== SSH from guest to host 
+
+Check access. 
+Use the address of the Internet gateway. 
+
+[source,shell]
+....
+[nick@guest1 ~]$ ip route list
+default via 192.168.122.1 dev eth0 proto dhcp metric 100 
+192.168.122.0/24 dev eth0 proto kernel scope link src 192.168.122.100 metric 100 
+[nick@guest1 ~]$ 
+[nick@guest1 ~]$ ssh 192.168.122.1
+nick@192.168.122.1's password: 
+Web console: https://host.lab.example.com:9090/ or https://10.0.1.40:9090/
+
+Last login: Mon Jun  1 17:37:25 2020 from 192.168.122.100
+[nick@host ~]$ 
+[nick@host ~]$ exit
+logout
+Connection to 192.168.122.1 closed.
+[nick@guest1 ~]$
+....
+
+== automate 
+
+Create an ansible role using ``ansible-galaxy``.
+
+
+
+Add content to half a dozen files. 
+The ``ansible-galaxy`` command adds many more that we either don't need yet or we will never need. 
+For instance, README.md is essential for sharing, but we are not sharing yet. 
+
+
+
+ansible
+├── ansible.cfg
+├── ansible-target.yml
+├── inventory
+│   └── inventory.yml
+└── roles
+    └── ansible-target
+        ├── defaults
+        │   └── main.yml
+        ├── tasks
+        │   └── main.yml
+        └── templates
+            └── sudoers
+
+
+
+.ansible/ansible.cfg
+[source,ini]
+....
+[defaults]
+inventory=inventory
+....
+
+.ansible/ansible-target.yaml
+[source,yaml]
+....
+---
+- name: ansible-target test 
+  hosts: vm-host 
+  gather_facts: no
+  become: yes
+
+  roles:
+  - ansible-target
+....
+
+.ansible/inventory/inventory.yml 
+[source,yaml]
+....
+all:
+  children:
+    ungrouped:
+      hosts: 
+        vm-host: 
+          ansible_host: 192.168.122.1
+....
+
+
+=== ansible-target role 
+
+[source,shell]
+....
+[nick@guest1 ~]$ mkdir -p ansible/roles
+[nick@guest1 ~]$ mkdir inventory
+[nick@guest1 ~]$ cd ansible/roles/
+[nick@guest1 roles]$ ansible-galaxy init ansible-target
+- Role ansible-target was created successfully
+[nick@guest1 roles]$ 
+....
+
+.ansible/roles/ansible-target/defaults/main.yml
+[source,yaml]
+....
+---
+# defaults file for ansible-target
+#
+managed_node_user: ansible_user
+managed_node_group: ansible_user
+managed_node_public_key: |
+  ssh-rsa AAA...ipk= managed_node pubkey for ansible
+  
+control_node_private_key_file: /home/nick/.ssh/ansible-private-key
+control_node_private_key: |
+  -----BEGIN OPENSSH PRIVATE KEY-----
+  b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABlwAAAAdzc2gtcn
+  NhAAAAAwEAAQAAAYEAvlm1qXMLqWiv+5xp6PQ/jOoRmEMH49Hf3Yx+PE00gzP24sD9ZE/Y
+...
+  4Ujer9Ef0y2BtnBBXfBWCS7E89ABWWO71JQQsFEUK8X4eERlovbUKGBhx+jVFqmlygOkbL
+  3g7dlsvXNKssxzAAAAG25pY2tAZ3Vlc3QxLmxhYi5leGFtcGxlLmNvbQECAwQFBgc=
+  -----END OPENSSH PRIVATE KEY-----
+....
+
+.ansible/roles/ansible-target/tasks/main.yml
+[source,yaml]
+....
+---
+# tasks file for ansible-target
+
+# local private key 
+#
+- name: add control node private key
+  copy:
+    content: "{{ control_node_private_key }}"
+    dest: "{{ control_node_private_key_file }}"
+    mode: '0600'
+  delegate_to: localhost
+  connection: local
+  become: no
+    
+# remote everything else
+#
+- name: add group
+  group:
+    name: "{{ managed_node_group }}"
+    state: present
+
+- name: add user 
+  user:
+    name: "{{ managed_node_user }}"
+    group: "{{ managed_node_group }}"
+    state: present 
+  
+- name: add authorized key
+  authorized_key: 
+    user: "{{ managed_node_user }}"
+    key: "{{ managed_node_public_key }}"
+
+- name: add passwordless sudo
+  template:
+    src: sudoers
+    dest: "/etc/sudoers.d/{{ managed_node_user }}"
+    validate: /usr/sbin/visudo -cf %s
+
+- name: information
+  debug:
+    msg: 
+    - "User {{ managed_node_user }} is ready on the managed nodes."
+    - "SSH without a password using one of these options."
+    - "* add '--user {{ managed_node_user }} --private-key {{ control_node_private_key_file }}' to the command line"
+    - "* add these lines 'remote_user = {{ managed_node_user }}' and 'ansible_ssh_private_key_file: {{ control_node_private_key_file }}' to ansible.cfg"
+....
+
+.ansible/roles/ansible-target/templates/sudoers
+[source,yaml]
+....
+{{ managed_node_user }}      ALL=(ALL)       NOPASSWD: ALL
+....
+
+
+== next steps 
+
+ansible-lint
+
+
+
+
+
