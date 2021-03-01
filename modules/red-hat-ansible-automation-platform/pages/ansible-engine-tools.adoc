@@ -1,0 +1,142 @@
+= use ansible tools
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-03-2021
+
+
+The ansible package installs a bunch of utilities in /usr/bin/. 
+These are listed and the first few have examples. 
+
+
+== utilities 
+
+Each utility has its own page in the system administration manual. 
+Run `man ansible` to view the first one. 
+
+This is the Python script that helps users. 
+
+* https://docs.ansible.com/ansible/latest/cli/ansible.html[ansible] - run a task 
+
+These are aliases for the Ansible utility.
+In other words, they are symlinks to the Python script. 
+The script behaves differently depending on how it is called. 
+
+* ansible-config - view configuration 
+* https://docs.ansible.com/ansible/latest/cli/ansible-console.html[ansible-console] - run a task interactively, for debugging 
+* ansible-doc - 
+* ansible-galaxy
+* ansible-inventory
+* ansible-playbook
+* ansible-pull
+* ansible-vault
+
+This Python script is for Ansible to use, not people. It has no man page.
+
+* ansible-connection 
+
+For more information, see the user guide page  https://docs.ansible.com/ansible/latest/user_guide/command_line_tools.html[Working with command line tools].
+
+
+== use ansible 
+
+Try a few safe commands.
+
+Use the ping module. 
+
+[source,shell]
+----
+[nick@host1 ~]$ ansible -m ping localhost
+localhost | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+[nick@host1 ~]$ 
+----
+
+== use ansible-config 
+
+Ansible sets roughly 200 variables. 
+
+[source,shell]
+----
+[nick@host1 ~]$ ansible-config dump
+ACTION_WARNINGS(default) = True
+AGNOSTIC_BECOME_PROMPT(default) = True
+ALLOW_WORLD_READABLE_TMPFILES(default) = False
+...
+VARIABLE_PRECEDENCE(default) = ['all_inventory', 'groups_inventory', 'all_plugins_inventory', 'all_plugins>
+VERBOSE_TO_STDERR(default) = False
+YAML_FILENAME_EXTENSIONS(default) = ['.yml', '.yaml', '.json']
+[nick@host1 ~]$ 
+----
+
+These are all default settings. 
+Nothing is defined in the config file /etc/ansible/ansible.cfg.
+It's an INI file containing nothing but headers, comments and blank lines. 
+
+[source,shell]
+----
+[nick@host1 ~]$ grep -v -E '^#|^$' /etc/ansible/ansible.cfg
+[defaults]
+[inventory]
+[privilege_escalation]
+[paramiko_connection]
+[ssh_connection]
+[persistent_connection]
+[accelerate]
+[selinux]
+[colors]
+[diff]
+[nick@host1 ~]$ 
+----
+
+
+
+== use ansible-console 
+
+The _ansible-console_ utility provides a kind of shell environment.
+Some find it useful for interactive debugging. 
+
+[source,shell]
+----
+[nick@host1 ~]$ ansible-console localhost
+Welcome to the ansible console.
+Type help or ? to list commands.
+
+nick@localhost (1)[f:5]$ ping
+localhost | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+nick@localhost (1)[f:5]$ exit
+
+[nick@host1 ~]$ 
+----
+
+
+
+== use ansible-doc 
+
+The ansible-doc utility is like `man` for Ansible. 
+Read about a module, list included modules and show code snippet examples. 
+
+[source,shell]
+----
+[nick@host1 ~]$ ansible-doc -l
+a10_server                                                    Manage A10 Ne...
+a10_server_axapi3                                             Manage A10 Ne...
+a10_service_group                                             Manage A10 Ne...
+...
+zpool_facts                                                   Gather facts ...
+zypper                                                        Manage packag...
+zypper_repository                                             Add and remov...
+[nick@host1 ~]$ 
+[nick@host1 ~]$ ansible-doc ping
+
+> PING    (/usr/lib/python3.6/site-packages/ansible/modules/system/ping.py)
+
+        A trivial test module, this module always returns `pong' on successful
+        contact. It does not make sense in playbooks, but it is useful from
+...
+----
+

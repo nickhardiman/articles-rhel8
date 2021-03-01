@@ -1,0 +1,205 @@
+= install Ansible Engine
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-03-2021
+
+Install Red Hat Ansible Engine using your Red Hat Developer Subscription.
+
+
+
+
+== Red Hat Ansible Engine
+
+Like all Red Hat products, Red Hat Ansible Engine is the result of taking an upstream open source project and delivering an enterprise product. 
+The ridiculously busy https://github.com/ansible/ansible[upstream project] is, of course, Ansible.
+It's popular with pretty much everyone everywhere. 
+
+Red Hat make sure the Ansible Engine product is  enterprise-ready by improving stability, security and scalability, and https://access.redhat.com/support/policy/updates/ansible-engine[supporting the lifecycle]. Subscribed systems download errata updates from the Red Hat CDN, for the 
+https://access.redhat.com/support/policy/updates/ansible-engine[lifetime of Ansible Engine]. 
+
+
+== Ansible Engine and the developer subscription 
+
+The developer subscription provides Ansible Engine. 
+
+Run the command ``subscription-manager list --consumed`` on a registered system.
+The product _Red Hat Ansible Engine_ is in the long _Provides_ list.
+
+[source,shell]
+....
+[nick@host1 ~]$ sudo subscription-manager list --consumed | grep -i ansible
+                     Red Hat Ansible Engine
+[nick@host1 ~]$ 
+....
+
+https://access.redhat.com/products/red-hat-ansible-engine[Ansible Engine] is part of the 
+https://www.redhat.com/en/technologies/management/ansible[Red Hat Ansible Automation Platform].
+A developer subscription does not entitle you to download other Automation Platform components, like Ansible Tower. 
+For that, you need a Red Hat Ansible Automation Platform subscription.
+If you want to try the whole Automation Platform, you can https://www.redhat.com/en/technologies/management/ansible/try-it[sign up for a 60 day trial subscription] for free.
+
+The limited supported version of Ansible Engine is available in Red Hat's CDN (Content Delivery Network). 
+
+
+
+
+
+== view ansible repositories
+
+Ansible repositories are configured, but not enabled. There is one major version available (2) and a couple minor versions (8 and 9).
+
+Most users ignore repositories ending in ``-source-rpms`` and ``-debug-rpms``.
+Source packages are useful to those who know how to code and compile. 
+Debug packages contain compiled programs with extra information, useful for those who know their way around a debugger.
+
+[source,shell]
+----
+[nick@host1 ~]$ sudo subscription-manager repos --list | grep ansible
+[sudo] password for nick: 
+Repo ID:   ansible-2.8-for-rhel-8-x86_64-source-rpms
+Repo URL:  https://cdn.redhat.com/content/dist/layered/rhel8/x86_64/ansible/2.8/source/SRPMS
+...
+Repo ID:   ansible-2.9-for-rhel-8-x86_64-debug-rpms
+Repo URL:  https://cdn.redhat.com/content/dist/layered/rhel8/x86_64/ansible/2.9/debug
+[nick@host1 ~]$ 
+----
+
+
+The repository ``ansible-2-for-rhel-8-x86_64-rpms`` points to the latest version. 
+
+
+
+== view DNF repository config 
+
+If you want to know more about the repo, have a look at the configuration file /etc/yum.repos.d/redhat.repo. Each repo has a section in here with a dozen attributes that influence how _dnf_ works.
+
+* The dnf command can't install ansible yet because the ``enabled`` attribute is false (0).  
+* Attribute names starting with ``ssl`` are used to authenticate to the CDN.
+* Attributes starting with ``gpg`` are used to check package integrity. 
+
+
+[source,shell]
+----
+[nick@host1 ~]$ grep -A12 ansible-2-for-rhel-8-x86_64-rpms /etc/yum.repos.d/redhat.repo 
+[ansible-2-for-rhel-8-x86_64-rpms]
+name = Red Hat Ansible Engine 2 for RHEL 8 x86_64 (RPMs)
+baseurl = https://cdn.redhat.com/content/dist/layered/rhel8/x86_64/ansible/2/os
+enabled = 0
+gpgcheck = 1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+sslverify = 1
+sslcacert = /etc/rhsm/ca/redhat-uep.pem
+sslclientkey = /etc/pki/entitlement/1234567890123456789-key.pem
+sslclientcert = /etc/pki/entitlement/1234567890123456789.pem
+metadata_expire = 86400
+enabled_metadata = 1
+
+[nick@host1 ~]$ 
+----
+
+
+== enable the ansible v2 repository 
+
+The _ansible_ package is not in the two default repos,  _AppStream_ and _BaseOS_.
+There is a package named _ansible-freeipa_ - that contains some ansible content, not the ansible engine. 
+
+[source,shell]
+----
+[nick@host1 ~]$ sudo dnf repolist 
+Updating Subscription Management repositories.
+repo id                          repo name
+ansible-2-for-rhel-8-x86_64-rpms Red Hat Ansible Engine 2 for RHEL 8 x86_64 (RPMs)
+rhel-8-for-x86_64-appstream-rpms Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+rhel-8-for-x86_64-baseos-rpms    Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+[nick@host1 ~]$ 
+[nick@host1 ~]$ sudo dnf search ansible
+[sudo] password for nick: 
+Updating Subscription Management repositories.
+Last metadata expiration check: 0:23:30 ago on Mon 01 Mar 2021 17:00:02 GMT.
+============================ Name Matched: ansible ============================
+ansible-freeipa.noarch : Roles and playbooks to deploy FreeIPA servers, replicas and clients
+[nick@host1 ~]$ 
+----
+
+
+Enable the repository ``ansible-2-for-rhel-8-x86_64-rpms``. 
+
+[source,shell]
+----
+[nick@host1 ~]$ sudo subscription-manager repos --enable=ansible-2-for-rhel-8-x86_64-rpms
+[sudo] password for nick: 
+Repository 'ansible-2-for-rhel-8-x86_64-rpms' is enabled for this system.
+[nick@host1 ~]$ 
+----
+
+Check your work by viewing available ansible packages. 
+The Ansible Engine package is now available.
+
+[source,shell]
+----
+[nick@host1 ~]$ sudo dnf search ansible
+Updating Subscription Management repositories.
+Last metadata expiration check: 0:04:49 ago on Mon 01 Mar 2021 17:24:41 GMT.
+======================== Name Exactly Matched: ansible =========================
+ansible.noarch : SSH-based configuration management, deployment, and task
+               : execution system
+======================= Name & Summary Matched: ansible ========================
+ansible-test.noarch : Tool for testing ansible plugin and module code
+============================ Name Matched: ansible =============================
+ansible-freeipa.noarch : Roles and playbooks to deploy FreeIPA servers, replicas
+                       : and clients
+[nick@host1 ~]$ 
+----
+
+
+== install ansible 
+
+Install ansible.
+
+[source,shell]
+----
+sudo dnf install ansible
+----
+
+Installing Ansible doesn't install Python. 
+RHEL 8 already has its own copy of Python (the executable is /usr/libexec/platform-python).
+Ansible uses the OS's python, not any python installed by the user. 
+
+Check your work by displaying the default configuration.
+
+[source,shell]
+----
+[nick@host1 ~]$ ansible --version
+ansible 2.9.9
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = ['/home/nick/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python3.6/site-packages/ansible
+  executable location = /usr/bin/ansible
+  python version = 3.6.8 (default, Dec  5 2019, 15:45:45) [GCC 8.3.1 20191121 (Red Hat 8.3.1-5)]
+[nick@host1 ~]$ 
+----
+
+
+This package adds a vast amount of files to the file system. 
+More than 10,000 files are related to modules, stored in /usr/lib/python3.6/site-packages/ansible/modules/. 
+Future versions of Ansible treat modules differently, to reduce this number. 
+
+[source,shell]
+----
+[nick@host1 ~]$ rpm -ql ansible | wc -l 
+17332
+[nick@host1 ~]$ 
+[nick@host1 ~]$ rpm -ql ansible
+/etc/ansible
+/etc/ansible/ansible.cfg
+/etc/ansible/hosts
+
+...(over 17,000 more)...
+
+/usr/share/man/man1/ansible-pull.1.gz
+/usr/share/man/man1/ansible-vault.1.gz
+/usr/share/man/man1/ansible.1.gz
+[nick@host1 ~]$ 
+----
+
+

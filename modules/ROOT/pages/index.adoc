@@ -7,4 +7,5 @@ My written word work in progress.
 
 * xref:fedora-on-rpi4:index.adoc[]
 * xref:red-hat-developer-subscription:index.adoc[]
+* xref:red-hat-ansible-automation-platform:index.adoc[]
 

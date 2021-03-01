@@ -15,11 +15,11 @@ Don't set it up on the control node.
 .ansible node accounts  
 ....
 .------------------------------------------------------.  
+|  host1                                               |
 |                                                      |
-|  host                                                |
 |                                                      |
 |   +-------------------+       +-------------------+  |
-|   |                   |       |                   |  |
+|   |  guest1           |       | guest2            |  |
 |   |   control node    |       |   managed node    |  |
 |   |                   | SSH   |                   |  |
 |   |              nick +------>|ansible_user       |  |
@@ -28,15 +28,14 @@ Don't set it up on the control node.
 .------------------------------------------------------.  
 ....
 
-We even set this account up on the host itself, so the _guest1_ control node can treat _host_ like a managed node. 
+We even set this account up on the host itself, so the _guest1_ control node can treat _host1_ like a managed node. 
 The concept of a guest virtual machine making changes on the host physical machine seems a little weird. 
 But that's the way many provisioning systems work.  
 
 .ansible SSH from guest to host 
 ....
 .---------------------------------.  
-|                                 |
-|  host                           |
+|  host1                          |
 |                                 |
 |   +----------+                  |
 |   |          |                  |
@@ -59,6 +58,7 @@ In a shared environment, this DIY setup would be a headache.
 In production, it would be a disaster.
 But it's fine for this self-contained development environment. 
 
+
 == SSH from guest to host 
 
 Check access. 
@@ -75,8 +75,8 @@ nick@192.168.122.1's password:
 Web console: https://host.lab.example.com:9090/ or https://10.0.1.40:9090/
 
 Last login: Mon Jun  1 17:37:25 2020 from 192.168.122.100
-[nick@host ~]$ 
-[nick@host ~]$ exit
+[nick@host1 ~]$ 
+[nick@host1 ~]$ exit
 logout
 Connection to 192.168.122.1 closed.
 [nick@guest1 ~]$
