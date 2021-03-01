@@ -45,19 +45,6 @@ swapon $SWAPFILE
 echo "$SWAPFILE swap swap defaults 0 0" >> /etc/fstab
 ....
 
-== add another account 
-
-[source,shell]
-....
-NAME=nick
-useradd $NAME
-usermod -a -G wheel $NAME
-echo 'Password;1' | passwd --stdin $NAME
-....
-
-Logout.
-Login with the new account. 
-
 
 
 == harden security  
