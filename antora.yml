@@ -20,4 +20,5 @@ version: 'dev'
 # Each value is a path to an individual navigation file, relative to the location of the antora.yml file.
 nav:
 - modules/red-hat-developer-subscription/nav.adoc 
+- modules/red-hat-ansible-automation-platform/nav.adoc 
 - modules/fedora-on-rpi4/nav.adoc 
