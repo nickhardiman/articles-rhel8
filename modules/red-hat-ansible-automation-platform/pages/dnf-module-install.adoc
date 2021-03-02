@@ -1,0 +1,174 @@
+= install a DNF module 
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 04-06-2020
+
+
+Install the DNF _virt_ module. 
+A DNF module is a collection of packages that works like a yum group. 
+
+Use the https://docs.ansible.com/ansible/latest/collections/ansible/builtin/dnf_module.html[ansible.builtin.dnf] module to install the DNF module. 
+Both DNF and Ansible contain modules, but a DNF module has nothing to do with an Ansible module. 
+
+== the DNF module virt 
+
+The virt module provides many virtualization packages. 
+
+[source,shell]
+----
+[nick@w520 ansible]$ sudo dnf module list virt
+Updating Subscription Management repositories.
+Last metadata expiration check: 0:32:33 ago on Tue 02 Mar 2021 11:52:13 GMT.
+Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+Name        Stream             Profiles              Summary                    
+virt        rhel [d][e]        common [d]            Virtualization module      
+
+Hint: [d]efault, [e]nabled, [x]disabled, [i]nstalled
+[nick@w520 ansible]$ 
+----
+
+There are two ways of using DNF to install a module. 
+For more information, see 
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/installing_managing_and_removing_user-space_components/installing-rhel-8-content_using-appstream#installing-a-module-stream_installing-rhel-8-content[4.3. Installing modular content] in the RHEL 8 https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/installing_managing_and_removing_user-space_components/index[Installing, managing, and removing user-space components] document. 
+
+* yum module install module-name
+* yum install @module-name
+
+The full module name is in the format _name:stream/profile_, so this module name is _virt:rhel/common_.
+The Fedora docs page 
+https://docs.fedoraproject.org/en-US/modularity/installing-modules/#_installing_modules[installing modules] describes what this means. 
+
+
+== how ansible.builtin.dnf handles a DNF module 
+
+The ansible.builtin.dnf module in v2.9 can't handle the _yum module install_ layout.
+But it can install a yum group with _@group_, and that also works for a module. 
+
+
+
+== install the DNF virt module 
+
+Create a playbook. 
+
+[source,shell]
+----
+[nick@w520 ~]$ cd ansible/
+[nick@w520 ansible]$ 
+[nick@w520 ansible]$ vi virt.yml 
+----
+
+Add this content. 
+
+The first task installs the module. 
+The second prints what happened. 
+Either packages were installed and there is a list in the _results_ array, or no packages were installed and there is a message in the _msg_ string. 
+
+The temporary variable __dnf_out has a https://www.ansiblejunky.com/blog/ansible-101-standards/#variables[unique prefix] of two underscores. 
+
+[source,YAML]
+----
+- hosts: localhost
+  become: yes
+  tasks:
+  - name: Install the latest version of the virt module
+    ansible.builtin.dnf:
+      name: '@virt:rhel/common'
+      state: present
+  - name: display results
+    debug:
+      var: "{{ item }}"
+    loop: 
+    - __dnf_out.msg
+    - __dnf_out.results 
+----
+
+Run the command. 
+
+This command contains a list of hosts, `localhost,`. 
+Ansible reads the inventory from the command line, not from a file. 
+
+[source,shell]
+----
+ansible-playbook \
+  --ask-become-pass \
+  --inventory localhost, \
+  virt.yml 
+----
+
+Run the command. 
+
+[source,shell]
+----
+[nick@w520 ansible]$ ansible-playbook --ask-become-pass --inventory localhost, virt.yml 
+BECOME password: 
+
+PLAY [localhost] ***************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [Install the virt module] *************************************************
+changed: [localhost]
+
+TASK [display results] *********************************************************
+ok: [localhost] => (item=__dnf_out.msg) => {
+    "__dnf_out.msg": "",
+    "ansible_loop_var": "item",
+    "item": "__dnf_out.msg"
+}
+ok: [localhost] => (item=__dnf_out.results) => {
+    "__dnf_out.results": [
+        "Module virt:rhel/common installed.",
+        "Installed: libguestfs-1:1.40.2-25.module+el8.3.0+7421+642fe24f.x86_64",
+        "Installed: libvirt-daemon-kvm-6.0.0-28.module+el8.3.0+7827+5e65edd7.x86_64",
+        "Installed: libvirt-client-6.0.0-28.module+el8.3.0+7827+5e65edd7.x86_64",
+        "Installed: libvirt-daemon-config-network-6.0.0-28.module+el8.3.0+7827+5e65edd7.x86_64"
+    ],
+    "ansible_loop_var": "item",
+    "item": "__dnf_out.results"
+}
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+[nick@w520 ansible]$ 
+----
+
+
+=== delete the DNF module 
+
+If something goes wrong, remove the module and packages with a similar playbook. 
+
+Call the new file _virt-absent.yml_.
+
+[source,YAML]
+----
+- hosts: localhost
+  become: yes 
+  tasks: 
+  - name: remove the virt module
+    ansible.builtin.dnf:
+      name: '@virt:rhel/common'
+      state: absent
+----
+
+
+== check your work 
+
+The _virsh_ utility helps a sysadmin manage virtual networks and machines from the CLI.
+The _libvirt-client_ package provides the virsh utility. 
+
+Is this package present? 
+
+We don't want to see a return code of 1 and the message "package libvirt-client is not installed". 
+
+[source,shell]
+----
+[nick@w520 ansible]$ rpm -q libvirt-client 
+libvirt-client-6.0.0-28.module+el8.3.0+7827+5e65edd7.x86_64
+[nick@w520 ansible]$ 
+[nick@w520 ansible]$ echo $?
+0
+[nick@w520 ansible]$ 
+----
+
