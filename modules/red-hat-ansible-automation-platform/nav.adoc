@@ -1,8 +1,9 @@
 * xref:ansible-automation-platform:index.adoc[]
 ** xref:introduction.adoc[]
-** xref:ansible-engine-install.adoc[]
-** xref:ansible-engine-tools.adoc[]
-** xref:ansible-guest-host.adoc[]
+** xref:engine-install.adoc[]
+** xref:engine-tools.adoc[]
+** xref:dnf-module-install.adoc[]
+** xref:login-guest-host.adoc[]
 ** xref:ansible-lint.adoc[]
-** xref:ansible-molecule.adoc[]
+** xref:molecule-install.adoc[]
 

@@ -1,12 +1,11 @@
-= ansible lint 
+= use ansible lint 
 Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 04-06-2020
 
-Use ansible-lint 
+Use ansible-lint, a checker.
 
-Ansible-lint is a checker.
-
+This utility is not included in the ansible package.
 
 
 == install 

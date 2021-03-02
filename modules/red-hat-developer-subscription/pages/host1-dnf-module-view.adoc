@@ -5,9 +5,17 @@ Nick Hardiman
 
 Manage modules with dnf.
 
+== the DNF modularity system
+
 The DNF modularity system provides more ways of building and consuming software. 
 The build side adds more binaries, packages and metadata to the DNF system.    
-For consumers, the DNF modularity system solves the problem of how to maintain older versions of a product. More information is in the https://docs.pagure.org/modularity/[fedora page],  system manual (`man 7 dnf.modularity`), and RHEL 8 
+For consumers, the DNF modularity system solves the problem of how to maintain older versions of a product. 
+
+For more information, check these out. 
+
+* https://docs.pagure.org/modularity/[fedora modularity home page] and https://docs.fedoraproject.org/en-US/modularity/[fedora docs]
+* system manual (`man 7 dnf.modularity`)
+* RHEL 8 
 https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/installing_managing_and_removing_user-space_components/introduction-to-modules_using-appstream[module chapter].
 
 A traditional approach to supporting software is to support the latest version only. 
@@ -22,6 +30,12 @@ Slow and boring beats failing fast.
 
 DNF also has a plug-in system. DNF plug-ins and DNF modules are not related. 
 
+== a module name 
+
+A module name is usually the format _name:stream_, as in nodejs:8. 
+Or it might be in the format _name:stream/profile_.
+The Fedora docs 
+https://docs.fedoraproject.org/en-US/modularity/installing-modules/#_installing_modules[installing modules] section shows four variations, along with instructions and examples. 
 
 
 == a DNF module
