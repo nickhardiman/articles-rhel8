@@ -1,4 +1,4 @@
-* xref:ansible-automation-platform:index.adoc[]
+* xref:red-hat-ansible-automation-platform:index.adoc[]
 ** xref:introduction.adoc[]
 ** xref:engine-install.adoc[]
 ** xref:engine-tools.adoc[]
