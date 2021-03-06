@@ -1,15 +1,13 @@
-= boot stages
+= watch boot stages
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 31-07-2020
 
-What happens when booting a VM, from start to login prompt.
 
-Much of the boot process doesn't apply to virtual machines. 
-Virtual machines don't have any hardware, let alone power hardware, 
-but a VM management system will emulate some parts. 
-For instance, a graphical system will display a power button to turn on a VM, and an https://en.wikipedia.org/wiki/Advanced_Configuration_and_Power_Interface[ACPI] command can turn off a VM. 
+This is what happens when booting _host1_, from power on to login prompt.
 
+A lot of messages are displayed on the monitor as the hardware and software do their work.
+If the machine is headless, these aren't visible. 
 
 == hardware powers up 
 
@@ -42,7 +40,7 @@ Many of these are driven by firmware.
 Firmware is low-level software that controls hardware. 
 
 
-=== BIOS or UEFI 
+=== BIOS or UEFI runs
 
 The dev test network uses both BIOS and UEFI. 
 The physical host machine probably uses UEFI, unless its several years old. 
@@ -57,7 +55,7 @@ Usually there's a chain of programs to run. The first program is often tiny, and
 
 
 
-=== GRUB  
+=== GRUB is next
 
 These chain-loaded programs are firmware - low-level device management software. 
 BIOS starts GRUB. 
@@ -71,7 +69,7 @@ https://www.gnu.org/software/grub/manual/grub/html_node/Images.html[boot.img] fi
 
 
 
-=== kernel 
+=== the kernel takes over
 
 The /boot/ directory contains the current kernel and a few older ones, in case the new kernel has issues. 
 
@@ -83,11 +81,20 @@ Each kernel version has a few files.
 
 
 
-
-=== systemd  
+=== systemd prepares for work
 
 After setting up the system, the kernel runs one program named _/sbin/init_. 
 This used to be a script that start the SysV init system. 
 Now it's a symlink to a compiled systemd program.
 
+
+== the difference between physical and virtual machines 
+
+The boot-up process is surprisingly similar. 
+In fact, most of the boot stages work the same on a virtual machine and a physical machine. 
+
+Some parts of the boot process doesn't apply to virtual machines. 
+For instance, there is no power switch. 
+Well, not a real one. 
+A graphical system can display a power button to turn on a VM, and an https://en.wikipedia.org/wiki/Advanced_Configuration_and_Power_Interface[ACPI] command can turn off a VM. 
 

@@ -83,10 +83,11 @@ Home labs should be kept private, with no access from the Internet.
 This machine gets the full FQDN of host1.lab.example.com. 
 Example.com is an https://www.iana.org/domains/reserved[IANA-managed reserved domain] - it can't be used on the Internet.
 
-=== SSH from workstation to host
 
-Most work is done on the command line. 
-Use SSH to connect from your workstation to your new RHEL machine. 
+=== the CLI and SSH
+
+Most work is done on the CLI (Command Line Interface). 
+Use SSH (Secure SHell) to connect from your workstation to your new RHEL machine. 
 
 [source,shell]
 ----

@@ -1,4 +1,4 @@
-= build a home lab
+= decide whether you want a home lab
 Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 31-12-2020

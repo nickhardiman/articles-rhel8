@@ -1,18 +1,14 @@
 * xref:red-hat-developer-subscription:index.adoc[]
-** setting up  
+** set up
 *** xref:introduction.adoc[]
 *** xref:developer-subscription-why.adoc[]
 *** xref:home-lab.adoc[]
+*** xref:host1-hardware.adoc[]
 *** xref:developer-subscription-sign-up.adoc[] 
-** 100 things
+** do 100 things
 *** _firmware and OS things_
 *** xref:host1-rhel8-install.adoc[]
 *** xref:boot-stages.adoc[]
-*** xref:boot-devices.adoc[]
-*** xref:boot-first-stage.adoc[]
-*** xref:boot-grub.adoc[]
-*** xref:boot-kernel.adoc[]
-*** xref:boot-systemd.adoc[]
 *** xref:host1-os.adoc[]
 *** xref:host1-shell.adoc[]
 *** xref:host1-kernel.adoc[]
@@ -50,7 +46,6 @@
 *** xref:guest2-dnsmasq-dhcp.adoc[]
 *** xref:guest2-os-setup.adoc[]
 *** xref:guest3-pxe-boot.adoc[]
-*** DHCP, TFTP, PXE boot
 *** _PKI (Public Key Infrastructure) things_
 *** xref:id-certificate-ca-create.adoc[]
 *** xref:id-certificate-ca-trust.adoc[]
@@ -105,11 +100,6 @@
 *** xref:dev-python3-module.adoc[]
 *** xref:dev-python3-virtualenv.adoc[]
 *** xref:dev-mojolicious-hello-world.adoc[]
-*** _automation things_
-*** xref:ansible-engine.adoc[]
-*** xref:ansible-guest-host.adoc[]
-*** xref:ansible-lint.adoc[]
-*** xref:ansible-molecule.adoc[]
 *** _container things_
 *** xref:container-tools.adoc[]
 *** xref:container-pull.adoc[]
@@ -124,9 +114,19 @@
 *** xref:container-registry-run.adoc[]
 *** xref:container-registry-push.adoc[]
 *** search registries with skopeo
-** more things
+** do more things
+*** xref:boot-devices.adoc[]
+*** xref:boot-first-stage.adoc[]
+*** xref:boot-grub.adoc[]
+*** xref:boot-kernel.adoc[]
+*** xref:boot-systemd.adoc[]
 *** xref:libvirt-notes.adoc[]
 *** xref:guest2-second-disk.adoc[]
 *** xref:guest4-libguestfs-tools.adoc[]
 *** xref:guest4-virt-install.adoc[]
 *** xref:guest4-os-setup.adoc[]
+*** _automation things_
+*** xref:ansible-engine.adoc[]
+*** xref:ansible-guest-host.adoc[]
+*** xref:ansible-lint.adoc[]
+*** xref:ansible-molecule.adoc[]
