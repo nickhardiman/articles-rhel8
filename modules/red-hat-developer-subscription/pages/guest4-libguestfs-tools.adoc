@@ -4,6 +4,7 @@ Nick Hardiman
 :revdate: 23-11-2020
 
 Create a new storage volume, _guest4.qcow2_.
+Base it on Red Hat's ready-made KVM image.
 Make a copy of _rhel-8.3-x86_64-kvm.qcow2_ and customize it. 
 A new virtual machine will built from this copy.
 
@@ -11,13 +12,26 @@ Before creating this VM, collect content and tools on _host1_.
 
 * xref:libvirt-storage-volume-rhel8-kvm.adoc[]
 
-
-
-Install the virt-resize and virt-customize utilities from the libguestfs-tools package.
+This process uses the _virt-filesystems_, _virt-resize_ and _virt-customize_ utilities from the _libguestfs-tools_ package.
 
 [source,shell]
 ----
-sudo dnf install libguestfs-tools
+[root@host1 images]# dnf provides virt-filesystems
+Updating Subscription Management repositories.
+Last metadata expiration check: 1:06:54 ago on Sun 07 Mar 2021 19:38:32 GMT.
+libguestfs-tools-c-1:1.38.4-10.module+el8.0.0+3075+09be6b65.x86_64 : System administration tools for virtual machines
+Repo        : rhel-8-for-x86_64-appstream-rpms
+Matched from:
+Filename    : /usr/bin/virt-filesystems
+
+...(another half dozen results for newer package versions)...
+
+libguestfs-tools-c-1:1.40.2-25.module+el8.3.0+7421+642fe24f.x86_64 : System administration tools for virtual machines
+Repo        : rhel-8-for-x86_64-appstream-rpms
+Matched from:
+Filename    : /usr/bin/virt-filesystems
+
+[root@host1 images]# 
 ----
 
 
@@ -36,9 +50,61 @@ The _guest1_ VM is a fresh install, using a kickstart file to automate the proce
 
 == examine the golden image 
 
+
+Install the _libguestfs-tools_ package. 
+
+[source,shell]
+----
+sudo dnf install libguestfs-tools
+----
+
 View the partitions inside the _rhel-8.3-x86_64-kvm.qcow2_ file. 
+
+
+== use virt-inspector
+
+The _virt-inspector_ utility can display this information. 
 The command `virt-inspector rhel-8.3-x86_64-kvm.qcow2` displays a lot of information about this file. 
-In fact, it produces a vast amount of data  - far more than required.
+In fact, it produces a vast amount of data  - far more than required here.
+It's a long XML document, mostly describing installed packages. 
+
+[source,shell]
+----
+[root@host1 images]# virt-inspector rhel-8.3-x86_64-kvm.qcow2
+<?xml version="1.0"?>
+<operatingsystems>
+  <operatingsystem>
+    <root>/dev/sda3</root>
+
+...(thousands of lines of XML)...
+
+6yrQieoAAAAASUVORK5CYII=</icon>
+  </operatingsystem>
+</operatingsystems>
+[root@host1 images]# 
+----
+
+Use XPATH to display the filesystem part of the XML document. 
+
+[source,XML]
+----
+[root@host1 images]# virt-inspector -a rhel-8.3-x86_64-kvm.qcow2 | virt-inspector --xpath '//filesystems'
+<filesystems>
+  <filesystem dev="/dev/sda2">
+    <type>vfat</type>
+    <uuid>F537-0F4F</uuid>
+  </filesystem>
+  <filesystem dev="/dev/sda3">
+    <type>xfs</type>
+    <label>root</label>
+    <uuid>fe1e8b67-e41b-44b8-bcfe-e0ec966784ac</uuid>
+  </filesystem>
+</filesystems>
+[root@host1 images]# 
+----
+
+
+== use virt-filesystems
 
 Use the _virt-filesystems_ command to display a list of partitions. 
 
@@ -52,6 +118,7 @@ Use the _virt-filesystems_ command to display a list of partitions.
 /dev/sda3
 [root@host1 images]# 
 ----
+
 
 Take a closer look at those partitions by listing file systems. 
 The root file system is _/dev/sda3_, which is nearly 10GiB in size (10629414912 bytes). 

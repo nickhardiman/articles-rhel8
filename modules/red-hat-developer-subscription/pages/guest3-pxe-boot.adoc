@@ -1,6 +1,0 @@
-= install the OS over the network
-Nick Hardiman 
-:source-highlighter: highlight.js
-:revdate: 22-02-2021
-
-
