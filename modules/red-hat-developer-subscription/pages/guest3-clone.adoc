@@ -9,8 +9,11 @@ Create another VM like guest2.
 Instead of installing from scratch, the way _guest1_ and _guest2_ were created, base it on guest2.
 Start by creating a new image file that holds the storage volume.
 
-Feel free to say _disk_ instead of _storage volume_. 
-It's not exactly accurate (there is no disk here) but it's easier to say and everyone will understand what you're talking about.
+Feel free to say _disk_, _storage volume_ or _image file_. 
+
+* _guest3_ thinks it is a disk. 
+* _host1_ thinks it is an image file. 
+* _Libvirt_ thinks it is a file containing a storage volume. 
 
 The _guest2.qcow2_ storage volume has all the files guest3 needs.
 Make a copy of guest2's storage and customize it a little.
