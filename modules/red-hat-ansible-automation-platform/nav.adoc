@@ -4,6 +4,7 @@
 ** xref:engine-tools.adoc[]
 ** xref:dnf-module-install.adoc[]
 ** xref:login-guest-host.adoc[]
+** xref:ansible-module.adoc[]
 ** xref:ansible-lint.adoc[]
 ** xref:molecule-install.adoc[]
 
