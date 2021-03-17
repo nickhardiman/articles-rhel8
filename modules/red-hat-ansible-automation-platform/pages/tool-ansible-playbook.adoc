@@ -1,0 +1,60 @@
+= write an ansible playbook 
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 17-03-2021
+
+
+ping 
+
+== ping
+
+Create a new playbook. 
+
+[source,shell]
+----
+[nick@host1 ~]$ cd ansible/
+[nick@host1 ansible]$ ls
+[nick@host1 ansible]$ vim ping-playbook.yml
+----
+
+Add this content. 
+
+[source,yaml]
+----
+--- 
+- hosts: localhost
+  tasks:
+    - ping:
+----
+
+Run 
+
+[source,shell]
+----
+[nick@host1 ansible]$ ansible-playbook ping-playbook.yml 
+[WARNING]: provided hosts list is empty, only localhost is available. Note that
+the implicit localhost does not match 'all'
+
+PLAY [localhost] ***************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [ping] ********************************************************************
+ok: [localhost]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+[nick@host1 ansible]$ 
+----
+
+
+The warning 
+No hosts in the hosts file 
+
+[source,shell]
+----
+[WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
+----
+

@@ -1,0 +1,19 @@
+= use ansible 
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 16-03-2021
+
+
+The command line tool
+
+[source,shell]
+----
+[nick@guest1 0 ~]$ ansible all --list-hosts
+  hosts (5):
+    inv_host1.lab.example.com
+    inv_host2.lab.example.com
+    inv_host3.lab.example.com
+[nick@guest1 0 ~]$ 
+----
+
+

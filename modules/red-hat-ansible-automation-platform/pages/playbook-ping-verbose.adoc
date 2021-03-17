@@ -1,0 +1,106 @@
+= view debug messages
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 17-03-2021
+
+
+Run the ping playbook. 
+Use the -v option to see what's happening behind the scenes. 
+Add four `-v`s to print all the messages. 
+
+[source,shell]
+----
+
+[nick@host1 ansible]$ man ansible-playbook
+...
+       -v, --verbose
+          verbose mode (-vvv for more, -vvvv to enable connection debugging)
+----
+
+[source,shell]
+----
+[nick@host1 ansible]$ ansible-playbook ping-playbook.yml -vvvv
+ansible-playbook 2.9.18
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = ['/home/nick/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python3.6/site-packages/ansible
+  executable location = /usr/bin/ansible-playbook
+  python version = 3.6.8 (default, Aug 18 2020, 08:33:21) [GCC 8.3.1 20191121 (Red Hat 8.3.1-5)]
+Using /etc/ansible/ansible.cfg as config file
+setting up inventory plugins
+host_list declined parsing /etc/ansible/hosts as it did not pass its verify_file() method
+script declined parsing /etc/ansible/hosts as it did not pass its verify_file() method
+auto declined parsing /etc/ansible/hosts as it did not pass its verify_file() method
+Parsed /etc/ansible/hosts inventory source with ini plugin
+[WARNING]: provided hosts list is empty, only localhost is available. Note that
+the implicit localhost does not match 'all'
+Loading callback plugin default of type stdout, v2.0 from /usr/lib/python3.6/site-packages/ansible/plugins/callback/default.py
+Skipping callback 'actionable', as we already have a stdout callback.
+Skipping callback 'counter_enabled', as we already have a stdout callback.
+Skipping callback 'debug', as we already have a stdout callback.
+Skipping callback 'dense', as we already have a stdout callback.
+Skipping callback 'dense', as we already have a stdout callback.
+Skipping callback 'full_skip', as we already have a stdout callback.
+Skipping callback 'json', as we already have a stdout callback.
+Skipping callback 'minimal', as we already have a stdout callback.
+Skipping callback 'null', as we already have a stdout callback.
+Skipping callback 'oneline', as we already have a stdout callback.
+Skipping callback 'selective', as we already have a stdout callback.
+Skipping callback 'skippy', as we already have a stdout callback.
+Skipping callback 'stderr', as we already have a stdout callback.
+Skipping callback 'unixy', as we already have a stdout callback.
+Skipping callback 'yaml', as we already have a stdout callback.
+
+PLAYBOOK: ping-playbook.yml ****************************************************
+Positional arguments: ping-playbook.yml
+verbosity: 4
+connection: smart
+timeout: 10
+become_method: sudo
+tags: ('all',)
+inventory: ('/etc/ansible/hosts',)
+forks: 5
+1 plays in ping-playbook.yml
+
+PLAY [localhost] ***************************************************************
+
+TASK [Gathering Facts] *********************************************************
+task path: /home/nick/ansible/ping-playbook.yml:2
+<127.0.0.1> ESTABLISH LOCAL CONNECTION FOR USER: nick
+<127.0.0.1> EXEC /bin/sh -c 'echo ~nick && sleep 0'
+<127.0.0.1> EXEC /bin/sh -c '( umask 77 && mkdir -p "` echo /home/nick/.ansible/tmp `"&& mkdir "` echo /home/nick/.ansible/tmp/ansible-tmp-1615971512.8575854-5285-33530299554993 `" && echo ansible-tmp-1615971512.8575854-5285-33530299554993="` echo /home/nick/.ansible/tmp/ansible-tmp-1615971512.8575854-5285-33530299554993 `" ) && sleep 0'
+Using module file /usr/lib/python3.6/site-packages/ansible/modules/system/setup.py
+<127.0.0.1> PUT /home/nick/.ansible/tmp/ansible-local-5278w1jo30vc/tmp47f9hnp9 TO /home/nick/.ansible/tmp/ansible-tmp-1615971512.8575854-5285-33530299554993/AnsiballZ_setup.py
+<127.0.0.1> EXEC /bin/sh -c 'chmod u+x /home/nick/.ansible/tmp/ansible-tmp-1615971512.8575854-5285-33530299554993/ /home/nick/.ansible/tmp/ansible-tmp-1615971512.8575854-5285-33530299554993/AnsiballZ_setup.py && sleep 0'
+<127.0.0.1> EXEC /bin/sh -c '/usr/libexec/platform-python /home/nick/.ansible/tmp/ansible-tmp-1615971512.8575854-5285-33530299554993/AnsiballZ_setup.py && sleep 0'
+<127.0.0.1> EXEC /bin/sh -c 'rm -f -r /home/nick/.ansible/tmp/ansible-tmp-1615971512.8575854-5285-33530299554993/ > /dev/null 2>&1 && sleep 0'
+ok: [localhost]
+META: ran handlers
+
+TASK [ping] ********************************************************************
+task path: /home/nick/ansible/ping-playbook.yml:4
+<127.0.0.1> ESTABLISH LOCAL CONNECTION FOR USER: nick
+<127.0.0.1> EXEC /bin/sh -c 'echo ~nick && sleep 0'
+<127.0.0.1> EXEC /bin/sh -c '( umask 77 && mkdir -p "` echo /home/nick/.ansible/tmp `"&& mkdir "` echo /home/nick/.ansible/tmp/ansible-tmp-1615971513.5736604-5383-82732077767922 `" && echo ansible-tmp-1615971513.5736604-5383-82732077767922="` echo /home/nick/.ansible/tmp/ansible-tmp-1615971513.5736604-5383-82732077767922 `" ) && sleep 0'
+Using module file /usr/lib/python3.6/site-packages/ansible/modules/system/ping.py
+<127.0.0.1> PUT /home/nick/.ansible/tmp/ansible-local-5278w1jo30vc/tmpi3iolls5 TO /home/nick/.ansible/tmp/ansible-tmp-1615971513.5736604-5383-82732077767922/AnsiballZ_ping.py
+<127.0.0.1> EXEC /bin/sh -c 'chmod u+x /home/nick/.ansible/tmp/ansible-tmp-1615971513.5736604-5383-82732077767922/ /home/nick/.ansible/tmp/ansible-tmp-1615971513.5736604-5383-82732077767922/AnsiballZ_ping.py && sleep 0'
+<127.0.0.1> EXEC /bin/sh -c '/usr/libexec/platform-python /home/nick/.ansible/tmp/ansible-tmp-1615971513.5736604-5383-82732077767922/AnsiballZ_ping.py && sleep 0'
+<127.0.0.1> EXEC /bin/sh -c 'rm -f -r /home/nick/.ansible/tmp/ansible-tmp-1615971513.5736604-5383-82732077767922/ > /dev/null 2>&1 && sleep 0'
+ok: [localhost] => {
+    "changed": false,
+    "invocation": {
+        "module_args": {
+            "data": "pong"
+        }
+    },
+    "ping": "pong"
+}
+META: ran handlers
+META: ran handlers
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+[nick@host1 ansible]$ 
+----

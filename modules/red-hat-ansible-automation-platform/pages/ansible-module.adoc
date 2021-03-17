@@ -8,6 +8,8 @@ ping, yum and unarchive
 
 == check access to all hosts 
 
+[source,shell]
+----
 [nick@guest1 0 ~]$ ansible all -m ping
 inv_host_1.example.com | SUCCESS => {
     "ansible_facts": {
@@ -19,6 +21,15 @@ inv_host_1.example.com | SUCCESS => {
     "ping": "pong"
 }
 [nick@guest1 0 ~]$ 
+----
+
+
+== gather facts  
+
+[source,shell]
+----
+ansible -m setup localhost
+----
 
 
 == update RPM packages on all hosts 

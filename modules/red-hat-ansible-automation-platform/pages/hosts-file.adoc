@@ -1,0 +1,30 @@
+= add a host to the hosts file 
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 17-03-2021
+
+
+
+No hosts in the hosts file 
+The hosts file is full of comments and empty of actual hosts. 
+
+[source,shell]
+----
+[nick@host1 ansible]$ cat /etc/ansible/hosts
+# This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
+....
+## db-[99:101]-node.example.com
+
+[nick@host1 ansible]$ 
+----
+
+Use a regular expression to ignore all lines that start with a comment or are empty. 
+
+[source,shell]
+----
+[nick@host1 ansible]$ grep -vE '^#|^$' /etc/ansible/hosts
+[nick@host1 ansible]$ 
+----
+
