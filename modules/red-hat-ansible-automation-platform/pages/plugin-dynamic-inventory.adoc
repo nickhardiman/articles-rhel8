@@ -1,0 +1,14 @@
+= list hosts with a dynamic inventory plugin 
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 18-03-2021
+
+
+https://docs.ansible.com/ansible/latest/plugins/inventory.html
+https://docs.ansible.com/ansible/latest/collections/community/libvirt/libvirt_inventory.html
+
+[source,shell]
+----
+.ansible/collections/ansible_collections/community/libvirt/plugins/inventory/libvirt.py 
+----
+

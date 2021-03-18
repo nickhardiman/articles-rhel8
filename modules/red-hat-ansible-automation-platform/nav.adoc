@@ -10,4 +10,5 @@
 ** xref:playbook-ping-verbose.adoc[]
 ** xref:ansible-lint.adoc[]
 ** xref:molecule-install.adoc[]
+** xref:plugin-dynamic-inventory.adoc[]
 
