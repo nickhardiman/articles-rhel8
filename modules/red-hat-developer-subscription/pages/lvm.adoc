@@ -200,7 +200,11 @@ Unmount the drive.
 [root@host1 ~]# 
 ----
 
-Delete everything. 
+View what's on the drive. 
+The wipefs tool can remove the table of contents for a file system, so it looks like there's nothing on the disk. 
+It's a quick way of removing an entire file system.  
+
+This `wipefs /dev/sdb` command doesn't wipe anything - it lists a few details about the file systems it finds, like the offset (the address where they are). 
 
 [source,shell]
 ----
@@ -238,7 +242,8 @@ sdb    0x0    mac
 [root@host1 ~]# 
 ----
 
-Delete everything ie. wipe disk. 
+Delete everything. 
+Adding the --all option tells wipefs to remove the indexes.  
 
 [source,shell]
 ----
