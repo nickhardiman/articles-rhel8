@@ -9,6 +9,9 @@ Configure it to answer queries from the network.
 
 Tell Bind9 to forward questions it can't answer to the home network's DNS server. 
 
+These changes turn Bind into an https://us-cert.cisa.gov/ncas/alerts/TA13-088A[open DNS resolver]. 
+That means it's not fit to be used on the Internet, because bad guys can use an open resolver to help with a DDoS (Distributed Denial of Service) attack. 
+An open DNS resolver is OK in a development network like this, which is far from Internet baddies. 
 
 .Bind9 on guest1 
 ....

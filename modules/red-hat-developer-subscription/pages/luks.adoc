@@ -13,6 +13,7 @@ Add another password for unlocking your disk.
 
 explore the current setup. 
 You will see things like this.  
+
 * one block device (your laptop's disk)
 * many mounted devices 
 

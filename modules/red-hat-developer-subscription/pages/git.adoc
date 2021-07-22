@@ -1,4 +1,4 @@
-= git
+= create a shared git repo
 Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 02-06-2020
@@ -117,12 +117,13 @@ This installs the _git-core_ package and many perl modules.
 
 Create a common group. 
 Add a few users to this group.
+These tasks are only done once. 
 
 There are plenty of commands that need elevated privileges here. 
 Rather than typing _sudo_ every time, use the root account. 
 
-These tasks are only done once. 
 
+Create a common directory. 
 
 [source,shell]
 ....
@@ -131,20 +132,12 @@ These tasks are only done once.
 [root@guest1 ~]# usermod -a -G scm nick
 [root@guest1 ~]# 
 [root@guest1 ~]# mkdir /var/git
-[root@guest1 ~]# chown root.scm /var/git/
-[root@guest1 ~]# 
 ....
 
-Create a common directory. 
 Change the group ownership.
 
 [source,shell]
 ....
-[nick@guest1 ~]$ sudo su -
-[root@guest1 ~]# groupadd scm
-[root@guest1 ~]# usermod -a -G scm nick
-[root@guest1 ~]# 
-[root@guest1 ~]# mkdir /var/git
 [root@guest1 ~]# chown root.scm /var/git/
 [root@guest1 ~]# 
 [root@guest1 ~]# exit
@@ -192,12 +185,12 @@ logout
 ....
 
 
-== create a local repository 
+== create a personal repository 
 
+Clone the new shared repo for your personal use. 
+Copy the repo to your home directory with git clone. 
 
-Copy the common repo. 
-
-A warning appears about the suspiciously empty directory. 
+This command uses SSH to connect to the git host. Some SSH security messages appear. 
 
 [source,shell]
 ....
@@ -207,7 +200,16 @@ The authenticity of host 'git1 (192.168.122.4)' can't be established.
 ECDSA key fingerprint is SHA256:nTrTxkZuJVURnVOqoC563D7F4yd3fnWOMewJBeL7bXw.
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 Warning: Permanently added 'git1,192.168.122.4' (ECDSA) to the list of known hosts.
+....
+
+A warning appears about the suspiciously empty directory. 
+
+[source,shell]
+....
 warning: You appear to have cloned an empty repository.
+[nick@guest1 ~]$ 
+[nick@guest1 ~]$ ls -a content1/
+.  ..  .git
 [nick@guest1 ~]$ 
 ....
 
@@ -215,26 +217,31 @@ warning: You appear to have cloned an empty repository.
 == create content 
 
 Create a bash script on guest1.
-Check out the tricky quoting and special characters in that echo line. 
-Check it. 
+The script is created by a one-liner command, which requires some tricky quoting and the special character \n.
 
 [source,shell]
 ....
 [nick@guest1 ~]$ cd content1/
 [nick@guest1 content1]$ echo -e '#!'"/bin/bash\necho 'hello world'\n" > hello-world.sh
 [nick@guest1 content1]$ chmod 754 ./hello-world.sh 
+....
+
+Does it work? 
+
+[source,shell]
+....
 [nick@guest1 content1]$ ./hello-world.sh 
 hello world
 [nick@guest1 content1]$ 
 ....
 
-Script works. Time to store it somewhere safe. 
+Time to store a copy somewhere safe. 
 
 
 
-== commit to both repos 
+== commit to both repositories 
 
-local 
+Commit the new file to your personal repo. 
 
 [source,shell]
 ....
@@ -246,7 +253,7 @@ local
 [nick@guest1 content1]$ 
 ....
 
-remote 
+Copy to the shared repo.
 
 [source,shell]
 ....
@@ -266,12 +273,18 @@ To git1:/var/git/content1.git
 == set up key-based login 
 
 We have to type in our account password every time the remote repository is accessed. 
+
+!!! no it doesnt
+
 That gets tiresome. 
 Git provides credential helpers for web access, but not for SSH. 
 Set up public key access so SSH won't prompt for a password. 
 
+Append your public key to the list of authorized keys. 
+
 [source,shell]
 ----
+[nick@guest1 content1]$ cd
 [nick@guest1 ~]$ cat .ssh/id_rsa.pub  >> .ssh/authorized_keys 
 [nick@guest1 ~]$ 
 ----
@@ -313,6 +326,7 @@ Must be in scm group.
 ----
 
 Copy the repo. 
+Check git clone works.
 
 
 [source,shell]
@@ -332,14 +346,21 @@ remote: Compressing objects: 100% (6/6), done.
 remote: Total 12 (delta 0), reused 0 (delta 0)
 Receiving objects: 100% (12/12), done.
 [someuser@guest1 ~]$ 
-[someuser@guest1 ~]$ 
+----
+
+Have any files appeared?
+
+[source,shell]
+----
 [someuser@guest1 ~]$ ls content1/
-hello-world.sh  post-update-test
+hello-world.sh
 [someuser@guest1 ~]$  
 ----
 
+Check git push.
+
 Add to the repo. 
-Use these commands to add a new file.
+Use these commands to configure git and add a new file.
 
 [source,shell]
 ----
