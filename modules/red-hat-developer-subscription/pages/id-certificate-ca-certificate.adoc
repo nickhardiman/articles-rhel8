@@ -11,7 +11,7 @@ The CA uses its own key pair.
 The private key signs all the server certificates. 
 The public key is contained in a CA certificate and distributed to all clients. 
 
-=== create a private key and CSR 
+== create a private key and CSR 
 
 Create the key and CSR. 
 Key size is 2048 bits. 
@@ -63,7 +63,7 @@ writing new private key to 'private/cakey.pem'
 [nick@guest1 certauth]$
 ....
 
-=== view the key file 
+== view the key file 
 
 Look at the new key file. 
 
@@ -92,7 +92,7 @@ SBCmwZZ4m5k75yYROWMJMF1MQmG34mqOi5x+zfkonWUBHERnYY+Dc6f353C7X1xM
 ....
 
 
-=== view the CSR file 
+== view the CSR file 
 
 It's PEM format again.
 
@@ -128,7 +128,7 @@ eb8n4Q==
 ....
 
 
-=== make a self-signed CA certificate
+== make a self-signed CA certificate
 
 Sign your first certificate. 
 
@@ -213,7 +213,7 @@ This file is updated.
 * index.txt contains a line describing the new signed certificate. 
 
 
-=== view the CA certificate
+== view the CA certificate
 
 The certificate is self-signed because the issuer and subject lines are the same. 
 The certificate is a CA certificate because it says _CA:TRUE_.
