@@ -50,7 +50,6 @@
 *** xref:id-certificate-ca-create.adoc[]
 *** xref:id-certificate-ca-trust.adoc[]
 *** xref:id-certificate-server.adoc[]
-*** xref:id-certificate-www.adoc[]
 *** _DNS things_
 *** xref:guest1-dnsmasq-ip-pool.adoc[]
 *** xref:guest1-dnsmasq-dhcp-dns.adoc[]
@@ -68,6 +67,7 @@
 *** xref:guest1-apache-install.adoc[]
 *** xref:guest1-apache-modules.adoc[]
 *** xref:guest1-apache-ssl.adoc[]
+*** xref:id-certificate-www.adoc[]
 *** xref:guest1-squid-install.adoc[]
 *** xref:guest2-nginx-install.adoc[]
 *** xref:guest1-haproxy.adoc[]
