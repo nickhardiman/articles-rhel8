@@ -12,6 +12,9 @@ And in the configuration file name.
 And in the engine, directives, and log files. 
 All over Apache, basically. 
 
+The server usually listens to ports 80 and 443. Those ports are for plain text and encrypted TLS traffic. 
+We're going to run a load balancer on those ports, so this web server will have to use different ports.
+Change the ports to 8080 and 8443. 
 
 
 == install 

@@ -6,6 +6,11 @@ Nick Hardiman
 Install Apache.
 Set up modules to provide information. 
 
+The server listens to port 80 by default. 
+That port is for plain text traffic.
+We're going to run a load balancer on port 80, so this web server will have to use a different port.
+Change the port from 80 to 8080.
+
 
 == install 
 
