@@ -41,7 +41,10 @@ e is 65537 (0x010001)
 
 View the new private key file. 
 
-This file is not encrypted, unlike the myca.key file.  
+This file is plaintext, unlike the myca.key file.  
+It is base64 encoded and has lines that are less than 72 characters long, so it can be sent in a mail message without being corrupted by old mail servers.
+This practice was started because line wrap and binary characters used to cause a lot of trouble, and remains today because plain text is easy to copy and paste. 
+
 
 [source,shell]
 ....
