@@ -11,6 +11,20 @@ That port is for plain text traffic.
 We're going to run a load balancer on port 80, so this web server will have to use a different port.
 Change the port from 80 to 8080.
 
+== no change for SELinux 
+
+Changing the port can cause SELinux problems. 
+The security system assumes there's something funny going on. 
+But SELinux already has port 8080 in its list. 
+The type is named _http_cache_port_t_ and is for a caching web service rather than an ordinary web service, but it still works. 
+
+[source,shell]
+----
+[root@control1 ~]# semanage port -l | grep 8080
+http_cache_port_t              tcp      8080, 8118, 8123, 10001-10010
+[root@control1 ~]# 
+----
+
 
 == install 
 

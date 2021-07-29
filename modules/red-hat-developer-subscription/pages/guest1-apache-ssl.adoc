@@ -12,9 +12,25 @@ And in the configuration file name.
 And in the engine, directives, and log files. 
 All over Apache, basically. 
 
-The server usually listens to ports 80 and 443. Those ports are for plain text and encrypted TLS traffic. 
-We're going to run a load balancer on those ports, so this web server will have to use different ports.
-Change the ports to 8080 and 8443. 
+The server usually listens to port 443 for encrypted TLS traffic. 
+We're going to run a load balancer on that port, so this web server will have to use a different port.
+Change the port to 8443. 
+
+
+== no change for SELinux
+
+Changing the port can cause SELinux problems.
+The security system assumes there's something funny going on.
+But SELinux already has port 8443 in its list.
+The entry is named _http_port_t_.
+
+[source,shell]
+----
+[root@control1 ~]# semanage port -l | grep 8443
+http_port_t                    tcp      80, 81, 443, 488, 8008, 8009, 8443, 9000
+[root@control1 ~]# 
+----
+
 
 
 == install 

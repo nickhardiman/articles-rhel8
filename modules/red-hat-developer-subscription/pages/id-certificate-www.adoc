@@ -3,10 +3,12 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 30-01-2021
 
-Apache is already running a secure server. This web site is available at _https://localhost:8443/_.
-The server uses a self-signed certificate. 
 Make changes to Apache and Bind so the web site uses the name _www.lab.example.com_ and our matching server certificate.
 Then open the firewall to make the site available to the home network. 
+
+Apache is already running a secure server. 
+This web site is available at _https://localhost:8443/_.
+The server uses a self-signed certificate. 
 
 == add a DNS entry 
 
