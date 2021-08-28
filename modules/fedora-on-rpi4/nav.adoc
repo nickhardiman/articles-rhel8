@@ -1,8 +1,11 @@
 * xref:fedora-on-rpi4:index.adoc[]
 ** errr, stuff
-*** xref:hardware.adoc[]
+*** xref:hardware-buy.adoc[]
+*** xref:hardware-examine.adoc[]
+*** xref:hardware-connect.adoc[]
+*** xref:software-os-download.adoc[]
+*** xref:software-os-boot.adoc[]
 *** xref:firmware.adoc[]
-*** xref:operating-system.adoc[]
 *** xref:bash-shell.adoc[]
 *** xref:sysadmin.adoc[]
 *** xref:grow-partition.adoc[]

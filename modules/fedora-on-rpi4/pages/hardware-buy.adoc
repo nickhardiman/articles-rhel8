@@ -1,0 +1,29 @@
+= buy hardware  
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 24-10-2020
+
+A computer system is built up of layers. There's the hardware layer at the bottom, then a layer of software that makes this hardware work, then another layer of software that makes a computer useful. The software in the middle, being halfway between hardware and software, is called firmware. 
+
+
+== buy hardware 
+
+Buying computer hardware is expensive, even at this home-hobbyist level. In fact, the first barrier to getting started with a Raspberry Pi 4 is the cash barrier. Working with the US dollar, de-facto currency of the world, expect to lay out a few hundred bucks. 
+
+You need an RPi4 - yep, so far so obvious - and you also need a fair amount of other hardware. 
+
+* *current network*. Perhaps this is your home lab.
+* *ethernet cable*. This connects the current network to the Raspberry Pi
+* *Raspberry Pi 4 model B 8GB*. Don't get the 1, 2 or 4GB versions, nor the Compute Module 4.
+* *power supply*
+* *64GB micro-SD card*. We'll be packing a lot of content on here. USB storage is _way_ faster, but ???
+* *keyboard*, *video monitor* and *mouse*. This hardware combination is so common it used to be abbreviated to KVM, until Kernel-based Virtual Machines came along and stole the acronym. 
+* *HDMI cable*. This cable needs a micro-HDMI plug on the Pi end, and probably a full size HDMI plug on the other. 
+
+No fan, no heatsink, no USB storage, no HAT.
+
+Much of this hardware is only required to get started. 
+When everything is set up, you can connect from another computer over the network to the Raspberry Pi and do everything you need on the CLI (Command Line Interface).
+
+
+
