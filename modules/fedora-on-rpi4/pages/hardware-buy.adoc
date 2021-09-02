@@ -6,41 +6,40 @@ Nick Hardiman
 A computer system is built up of layers. There's the hardware layer at the bottom, then a layer of software that makes this hardware work, then another layer of software that makes a computer useful. The software in the middle, being halfway between hardware and software, is called firmware. 
 
 
-== buy hardware 
+== hardware 
 
 image::hardware-1.jpeg[hardware,width=600,title="hardware"]
 
 Buying computer hardware is expensive, even at this home-hobbyist level. In fact, the first barrier to getting started with a Raspberry Pi 4 is the cash barrier. Working with the US dollar, de-facto currency of the world, expect to lay out a few hundred bucks. 
 
-You need an RPi4 - yep, so far so obvious - and you also need a fair amount of other hardware. 
+You need an RPi4 - yep, so far so obvious. Don't get the 1, 2 or 4GB versions, nor the Compute Module 4. You don't need optional Pi equipment like a fan, heatsink, or HAT. You do need a fair amount of other hardware, including these.
 
-* *current network*. Perhaps this is your home lab.
-* *ethernet cable*. This connects the current network to the Raspberry Pi
-* *Raspberry Pi 4 model B 8GB*. Don't get the 1, 2 or 4GB versions, nor the Compute Module 4.
-* *power supply*
-* *64GB micro-SD card*. We'll be packing a lot of content on here. USB storage is _way_ faster, but ???
+* *home network*. Perhaps this is your ISP modem.
+* *cables*. The Pi is connected to the outsde world with an ethernet cable, an HDMI cable, a USB cable and a power cable. 
 * *keyboard*, *video monitor* and *mouse*. This hardware combination is so common it used to be abbreviated to KVM, until Kernel-based Virtual Machines came along and stole the acronym. 
-* *HDMI cable*. This cable needs a micro-HDMI plug on the Pi end, and probably a full size HDMI plug on the other. 
 
-No fan, no heatsink, no USB storage, no HAT.
-
-Much of this hardware is only required to get started. 
+Much of this hardware, like the monitor and keyboard, is only required to get started. 
 When everything is set up, you can connect from another computer over the network to the Raspberry Pi and do everything you need on the CLI (Command Line Interface).
 
 
+== a working combination
+
+image::hardware-2.jpeg[hardware,width=600,title="hardware items"]
+
 .hardware shopping list 
 |===
-|type |example |description
+| # | item | price | description
 
-|ethernet cable | $10 | This connects the current network to the Raspberry Pi
-|Raspberry Pi 4 model B 8GB | $90 | Don't get the 1, 2 or 4GB versions, nor the Compute Module 4.
-|power supply | $90 | Anything that has a USB C plug and delivers 5 volts and 3 amps
-|USB stick to hold the ISO| $90 | 
-|USB stick to hold the OS| $90
-|keyboard | $90 | Any keyboard that has a USB A plug will do. Some reduced keyboards are missing useful keys such as #, / and [esc].
-|video monitor | $90 | Any HDMI monitor, such as a modern TV, is OK. 
-|mouse | $90 | Any keyboard that has a USB A plug will do. 
-|HDMI cable | $90
+| 1 | https://www.raspberrypi.org/products/raspberry-pi-4-model-b/[Raspberry Pi 4 model B 8GB] | £75 from PiHut | Don't get the 1, 2 or 4GB versions, nor the Compute Module 4.
+| 2 | https://en.wikipedia.org/wiki/Computer_monitor[video monitor] | £50 from ebay | This unbranded Chinese import (a 7 inch 1024x600 https://en.wikipedia.org/wiki/Thin-film-transistor_liquid-crystal_display[TFT LCD] screen and driver board) runs on USB power. Any HDMI monitor, such as a modern TV, is OK. 
+| 3 | HDMI cable | https://www.amazon.co.uk/[£10 from Amazon] | This short https://en.wikipedia.org/wiki/HDMI[HDMI] cable has a micro-HDMI plug on the Pi end, and mini HDMI plug on the other.
+| 4 | power supply | https://www.apple.com/uk/shop/product/MGMY3B/A/apple-5w-usb-power-adapter-folding-pins[£30 from Apple] | This UK power adapter has folding pins.  Anything that delivers 5 volts and 3 amps through a https://en.wikipedia.org/wiki/USB-C[USB-C] plug is OK. 
+| 5 | USB cable | $90 | This powers the monitor.
+| 6 | https://en.wikipedia.org/wiki/USB_flash_drive[USB flash drive] containing the OS | £90 | 
+| 7 | https://en.wikipedia.org/wiki/Ethernet_over_twisted_pair[ethernet cable] | $10 | This connects the current network to the Raspberry Pi
+| 8 | https://en.wikipedia.org/wiki/USB_flash_drive[USB flash drive] containing the install ISO | £90 | 
+| 9 | https://en.wikipedia.org/wiki/Computer_keyboard[keyboard] | https://cpc.farnell.com/raspberry-pi/rpi-keyb-uk-red-white/raspberry-pi-keyboard-red-white/dp/SC15141[£16 from Farnell] | Any keyboard that has a https://en.wikipedia.org/wiki/USB#Connectors[USB Type-A plug] will do. Some reduced keyboards are missing useful keys such as #, / and [esc].
+| 10 | https://en.wikipedia.org/wiki/Computer_mouse[mouse] | https://cpc.farnell.com/raspberry-pi/rpi-mouse-red-white/raspberry-pi-mouse-red-white/dp/SC15139[£8 from Farnell] | Any mouse that has a USB A plug will do. 
 
 |===
 
