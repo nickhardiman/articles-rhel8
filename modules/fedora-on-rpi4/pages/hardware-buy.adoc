@@ -8,6 +8,8 @@ A computer system is built up of layers. There's the hardware layer at the botto
 
 == buy hardware 
 
+image::hardware-1.jpeg[hardware,width=600,title="hardware"]
+
 Buying computer hardware is expensive, even at this home-hobbyist level. In fact, the first barrier to getting started with a Raspberry Pi 4 is the cash barrier. Working with the US dollar, de-facto currency of the world, expect to lay out a few hundred bucks. 
 
 You need an RPi4 - yep, so far so obvious - and you also need a fair amount of other hardware. 
@@ -25,5 +27,21 @@ No fan, no heatsink, no USB storage, no HAT.
 Much of this hardware is only required to get started. 
 When everything is set up, you can connect from another computer over the network to the Raspberry Pi and do everything you need on the CLI (Command Line Interface).
 
+
+.hardware shopping list 
+|===
+|type |example |description
+
+|ethernet cable | $10 | This connects the current network to the Raspberry Pi
+|Raspberry Pi 4 model B 8GB | $90 | Don't get the 1, 2 or 4GB versions, nor the Compute Module 4.
+|power supply | $90 | Anything that has a USB C plug and delivers 5 volts and 3 amps
+|USB stick to hold the ISO| $90 | 
+|USB stick to hold the OS| $90
+|keyboard | $90 | Any keyboard that has a USB A plug will do. Some reduced keyboards are missing useful keys such as #, / and [esc].
+|video monitor | $90 | Any HDMI monitor, such as a modern TV, is OK. 
+|mouse | $90 | Any keyboard that has a USB A plug will do. 
+|HDMI cable | $90
+
+|===
 
 
