@@ -27,14 +27,15 @@ When everything is set up, you can connect from another computer over the networ
 image::hardware-2.jpeg[hardware,width=600,title="hardware items"]
 
 .hardware shopping list 
+[cols="1,3,3,4"]
 |===
 | # | item | price | description
 
 | 1 | https://www.raspberrypi.org/products/raspberry-pi-4-model-b/[Raspberry Pi 4 model B 8GB] | £75 from PiHut | Don't get the 1, 2 or 4GB versions, nor the Compute Module 4.
 | 2 | https://en.wikipedia.org/wiki/Computer_monitor[video monitor] | £50 from ebay | This unbranded Chinese import (a 7 inch 1024x600 https://en.wikipedia.org/wiki/Thin-film-transistor_liquid-crystal_display[TFT LCD] screen and driver board) runs on USB power. Any HDMI monitor, such as a modern TV, is OK. 
-| 3 | HDMI cable | https://www.amazon.co.uk/[£10 from Amazon] | This short https://en.wikipedia.org/wiki/HDMI[HDMI] cable has a micro-HDMI plug on the Pi end, and mini HDMI plug on the other.
-| 4 | power supply | https://www.apple.com/uk/shop/product/MGMY3B/A/apple-5w-usb-power-adapter-folding-pins[£30 from Apple] | This UK power adapter has folding pins.  Anything that delivers 5 volts and 3 amps through a https://en.wikipedia.org/wiki/USB-C[USB-C] plug is OK. 
-| 5 | USB cable | $90 | This powers the monitor.
+| 3 | https://en.wikipedia.org/wiki/HDMI[HDMI cable]  | https://www.amazon.co.uk/[£10 from Amazon] | This short cable has a micro-HDMI plug on the Pi end, and mini-HDMI plug on the other.
+| 4 | https://en.wikipedia.org/wiki/USB_hardware#Power[USB power adapter] | https://www.apple.com/uk/shop/product/MGMY3B/A/apple-5w-usb-power-adapter-folding-pins[£30 from Apple] | This UK power adapter has folding pins.  Anything that delivers 5 volts and 3 amps through a https://en.wikipedia.org/wiki/USB-C[USB-C] plug is OK. The https://thepihut.com/products/raspberry-pi-psu-uk[official power supply] is much cheaper.
+| 5 | https://en.wikipedia.org/wiki/USB_hardware[USB cable] | $90 | This connects the Pi's https://en.wikipedia.org/wiki/USB_hardware#Connectors[USB Type-A] socket to the monitor's Micro-B socket and provides power. 
 | 6 | https://en.wikipedia.org/wiki/USB_flash_drive[USB flash drive] containing the OS | £90 | 
 | 7 | https://en.wikipedia.org/wiki/Ethernet_over_twisted_pair[ethernet cable] | $10 | This connects the current network to the Raspberry Pi
 | 8 | https://en.wikipedia.org/wiki/USB_flash_drive[USB flash drive] containing the install ISO | £90 | 
