@@ -1,4 +1,4 @@
-= download the Fedora OS (Operating System) 
+= examine the OS (Operating System) 
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 24-10-2020

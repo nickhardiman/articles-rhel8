@@ -18,6 +18,9 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:drive-os-installer.adoc[]
 . xref:firmware-boot.adoc[]
 . xref:os-boot.adoc[]
+. xref:os-install.adoc[]
+. xref:os-examine.adoc[]
+. xref:shell-bash-use.adoc[]
 
 . xref:os-download.adoc[]
 . xref:bash-shell.adoc[]

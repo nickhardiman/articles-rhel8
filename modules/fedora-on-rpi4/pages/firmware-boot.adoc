@@ -7,7 +7,7 @@ Nick Hardiman
 https://en.wikipedia.org/wiki/Firmware[Firmware] does all the work between power-on and OS starting.  
 When you boot up a computer, obscure messages start to appear to the screen after a few seconds. These are messages from the UEFI application.
 
-image::datamation-67-cover.png[magazine,height=600,float="right",title="Datamation 67 cover"]
+image::datamation-67-cover.png[magazine,height=200,float="right",title="Datamation 67 cover"]
 
 Firmware is software that controls hardware. 
 If you want to know who's responsible for the "firmware" name and if he had a sense of humor, check out Ascher Opler's article in http://bitsavers.org/magazines/Datamation/196701.pdf[Datamation magazine, volume 13 number 1]. This magazine came out half a century ago, has groovy modern art on the cover and plenty of great hardware photos inside.  
