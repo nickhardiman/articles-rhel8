@@ -38,13 +38,13 @@ image::connectors-1.jpeg[hardware,width=600,title="connector plugs"]
 
 sockets 
 
-# USB-C for power 
-# https://en.wikipedia.org/wiki/HDMI#Connectors[HDMI] micro, Type D, for video 
-# another HDMI 
-# 3.5mm audio jack 
-# https://en.wikipedia.org/wiki/USB#USB_2.0[USB 2], Type-A 
-# https://en.wikipedia.org/wiki/USB_3.0[USB 3] (SuperSpeed), Type-A
-# ethernet
+. USB-C for power 
+. https://en.wikipedia.org/wiki/HDMI#Connectors[HDMI] micro, Type D, for video 
+. another HDMI 
+. 3.5mm audio jack 
+. https://en.wikipedia.org/wiki/USB#USB_2.0[USB 2], Type-A 
+. https://en.wikipedia.org/wiki/USB_3.0[USB 3] (SuperSpeed), Type-A
+. ethernet
 
 image::connectors-2.jpeg[hardware,width=600,title="connector sockets"]
 
