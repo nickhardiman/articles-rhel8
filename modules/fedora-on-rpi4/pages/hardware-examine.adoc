@@ -3,12 +3,14 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 28-10-2021
 
-A computer system is built up of layers. There's the hardware layer at the bottom, then a layer of software that makes this hardware work, then another layer of software that makes a computer useful. The software in the middle, being halfway between hardware and software, is called firmware. 
-
 The Raspberry Pi is packed with hardware. "Hardware" in computer terms covers pretty much everything you can see, including the PCB (Printed Circuit Board), ICs (Integrated Circuits) in the middle and connectors around the edges. 
+
+image::raspberry-pi-4-top.jpeg[hardware,width=600,title="Raspberry Pi 4 model B 8GB top"]
+
 Each piece of hardware is an engineering marvel, from the copper foil tracks to the surface-mount resistors. 
 Comparing a Raspberry Pi to a server board may feel like comparing a rock to a rail gun, but that misses the nerdy engineering beauty hidden in the small details. 
 
+image::raspberry-pi-4-bottom.jpeg[hardware,width=600,title="Raspberry Pi 4 model B 8GB bottom"]
 
 == chips 
 
@@ -27,4 +29,22 @@ More chips
 * https://www.cypress.com/documentation/product-overviews/cyw43455-wiced-ieee-80211ac-wifi-bluetooth-41-connectivity-solution[Cypress CYW43455] - Wifi and bluetooth. This is hidden under the shiny silver RF shield. 
 
 
+== connectors 
+
+There's nothing like standardization to make life simpler. 
+And this is nothing like standardization. 
+
+image::connectors-1.jpeg[hardware,width=600,title="connector plugs"]
+
+sockets 
+
+# USB-C for power 
+# https://en.wikipedia.org/wiki/HDMI#Connectors[HDMI] micro, Type D, for video 
+# another HDMI 
+# 3.5mm audio jack 
+# https://en.wikipedia.org/wiki/USB#USB_2.0[USB 2], Type-A 
+# https://en.wikipedia.org/wiki/USB_3.0[USB 3] (SuperSpeed), Type-A
+# ethernet
+
+image::connectors-2.jpeg[hardware,width=600,title="connector sockets"]
 
