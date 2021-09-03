@@ -3,11 +3,8 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 24-10-2020
 
-!!! copying this
-https://fedoramagazine.org/install-fedora-on-a-raspberry-pi/
-
-The computer needs an OS. 
-Fire up the Raspberry Pi 4 with Fedora.
+done better here
+https://nickhardiman.netlify.app/articles/dev/red-hat-developer-subscription/host1-os.html
 
 == what is an OS 
 
@@ -37,33 +34,5 @@ Where does operating system software stop and application software start?
 
 Vyssotsky says "The programs which tell a computer how to switch a telephone call, or compute a payroll, or play an electronic game are called application software. There's another type of software, the programs which control the resources of the computer itself - the memory of the computer, the processing elements, and the terminals connected to the computer. This latter type of software is called an operating system. Another way of saying what an operating system is, is that it's a collection of programs which make the intricate hardware of the computer seem more simple and comprehensible from the point of view of an applications programmer, so that the applications programmers can create software more easily". 
 
-
-
-
-== download Fedora 33 Minimal
-
-!!! 24 Oct 20 Fedora 33 not here yet
-this is all temporary.
-
-* Find Fedora's https://alt.fedoraproject.org/alt/[alternate architecture images].  
-* https://kojipkgs.fedoraproject.org/compose/33/latest-Fedora-33/compose/Spins/aarch64/images/[AArch64 images]
-* Download the latest minimal image, named something like _Fedora-Minimal-33-1.2.aarch64.raw.xz_. 
-
-
-The _Fedora Minimal_ image, one of https://alt.fedoraproject.org/[Fedora’s alt downloads], contains three partitions.
-
-* the https://en.wikipedia.org/wiki/EFI_system_partition[EFI system partition]
-* boot partition
-* root partition
-
-The image contains a ready-made file system, with over 400 packages already installed. 
-This minimal image does not include popular packages like a development environment, Internet service or desktop.
-These types of software aren’t required for this work. 
-While this is the first Raspberry Pi to comfortably fit a graphical desktop, there's no need to waste a GB running one.
-
-The downloaded file is compressed and about 700MB in size. 
-When the file is uncompressed, it’s 5GB. 
-It’s an ext4 file system that’s using about half of that 5GB. 
-All that empty space is the reason the compressed download is so much smaller than the uncompressed raw image.
 
 

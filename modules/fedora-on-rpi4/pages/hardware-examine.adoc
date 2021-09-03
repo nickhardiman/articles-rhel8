@@ -14,13 +14,16 @@ image::raspberry-pi-4-bottom.jpeg[hardware,width=600,title="Raspberry Pi 4 model
 
 == chips 
 
-If you're wondering where the ARM CPU is, take a look at the light silver square - the one with a few other lines of text starting with "BROADCOM®" printed on top. 
-That covers the Broadcom BCM2711 SoC (System on Chip), which is packed with ARM cores, device controllers, GPU (Graphics Processor and other silicon machines.
+The board is choc full of chips. 
 
-See the black chip with https://www.via-labs.com/product_show.php?id=48[VIA VL805] written on it?
+If you're wondering where the ARM CPU is, take a look at the light silver square - the one with a few other lines of text starting with "BROADCOM®" printed on top. 
+If you can't see it, https://www.electronics-lab.com/project/raspberry-pi-4-look-hood-make/[electronics lab] has much better photos.
+That covers the Broadcom BCM2711 SoC (System on Chip), which is packed with ARM cores, device controllers, GPU (Graphics Processing Unit) and other silicon machines.
+
+See the black chip with https://www.via-labs.com/product_show.php?id=48[VLI VL805] written on it?
 That bridges the gap between the the PCI Express device on the SoC and the USB connectors. 
 
-More chips 
+And there's more.
 
 * https://www.maxlinear.com/product/power-management/universal-pmics/universal-pmics/mxl7704[MXL7704] - PMIC [Power Management Integrated Circuit]  
 * https://www.dialog-semiconductor.com/products/power-management/pmics/da9121[da9121]  - another PMIC 

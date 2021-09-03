@@ -3,7 +3,9 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 16-10-2020
 
-
+copy of 
+https://nickhardiman.netlify.app/articles/dev/red-hat-developer-subscription/host1-shell.html
+?
 
 When you use the CLI of a Linux machine, the system gives you a shell. 
 The shell is a pillar of developer and sysadmin worlds, up there with the toolchain, the source code repository and the IDE.  A shell is a command interpreter that waits for your commands, ready to run its https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop[REPL (Read-Eval-Print Loop)] until you stop the program. The _shell_ name comes from a nut or seed analogy - shell on the outside, kernel on the inside. 
