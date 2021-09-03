@@ -14,6 +14,8 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:hardware-buy.adoc[]
 . xref:hardware-examine.adoc[]
 . xref:hardware-connect.adoc[]
+. xref:drive-uefi.adoc[]
+. xref:drive-os-installer.adoc[]
 . xref:os-download.adoc[]
 . xref:firmware-boot.adoc[]
 . xref:os-boot.adoc[]

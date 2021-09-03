@@ -1,0 +1,6 @@
+= copy the OS installer to a USB drive   
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 28-10-2021
+
+https://fwmotion.com/blog/operating-systems/2020-09-04-installing-fedora-server-onto-pi4/
