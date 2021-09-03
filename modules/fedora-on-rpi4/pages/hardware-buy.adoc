@@ -21,6 +21,9 @@ You need an RPi4 - yep, so far so obvious. Don't get the 1, 2 or 4GB versions, n
 Much of this hardware, like the monitor and keyboard, is only required to get started. 
 When everything is set up, you can connect from another computer over the network to the Raspberry Pi and do everything you need on the CLI (Command Line Interface).
 
+Hardware in the picture is screwed to a frame and put in a cardboard box. 
+These are DIY products. 
+
 
 == a working combination
 

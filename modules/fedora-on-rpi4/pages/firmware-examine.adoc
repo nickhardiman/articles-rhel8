@@ -1,0 +1,73 @@
+= firmware  
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 24-10-2020
+
+
+
+Once the system is up and running, you can see some firmware files. 
+
+
+=== /boot/efi 
+
+The first partition contains all the files that make up the UEFI system.
+
+.UEFI partition
+[source,shell]
+----
+[root@localhost ~]# df -h /boot/efi
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/mmcblk1p1  599M   31M  569M   6% /boot/efi
+[root@localhost ~]# 
+----
+
+
+=== /lib/firmware/
+
+More firmware may be required while the OS is running. 
+A device driver may request a firmware at any time. 
+This firmware is code that is uploaded to a device to make it work. 
+The code is stored in hundreds of files in the /lib/firmware/ directory. 
+
+Most of these files are not useful on the Raspberry Pi, except for Broadcom firmware. 
+The Broadcom brcmfmac driver (the driver for the wifi chip) requests firmware. 
+
+[source,shell]
+----
+[root@localhost firmware]# dmesg | grep brcmfmac
+[   19.412655] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43455-sdio for chip BCM4345/6
+[   19.413370] usbcore: registered new interface driver brcmfmac
+[   19.553192] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43455-sdio for chip BCM4345/6
+[   19.553297] brcmfmac: brcmf_c_process_clm_blob: no clm_blob available (err=-2), device may have limited channels available
+[   19.553711] brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM4345/6 wl0: Mar  1 2015 07:29:38 version 7.45.18 (r538002) FWID 01-6a2c8ad4
+[root@localhost firmware]# 
+----
+
+=== /sys/firmware/
+
+Linux has a special file system, sysfs. 
+Kernel objects appear as files in the /sys/ directory. 
+All the firmware objects are in the /sys/firmware directory.  
+
+The /sys/firmware/devicetree/base/ directory holds nearly two thousand https://en.wikipedia.org/wiki/Device_tree[device tree] files. These hold data on everything from audio devices to thermal sensors. The _model_ file holds the computer name. 
+
+[source,shell]
+----
+[root@localhost efivars]# cat /sys/firmware/devicetree/base/model
+Raspberry Pi 4 Model B Rev 1.4[root@localhost efivars]# 
+----
+
+/sys/firmware/dmi/ files are all part of a big https://en.wikipedia.org/wiki/Desktop_Management_Interface[DMI] table of device data.  
+The _dmidecode_ command displays this table in a readable format. 
+
+/sys/firmware/efi/ holds a few EFI variables and values, such as whether this is a 32 bit or 64 bit UEFI system.
+
+[source,shell]
+----
+[root@localhost ~]#  cat /sys/firmware/efi/fw_platform_size
+64
+[root@localhost ~]# 
+----
+
+
+
