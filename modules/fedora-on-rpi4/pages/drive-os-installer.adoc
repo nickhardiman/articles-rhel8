@@ -5,6 +5,11 @@ Nick Hardiman
 
 One of the USB drives provides the OS storage. 
 The other one holds installer software. 
+All the installer software is in an ISO file. 
+An ISO file is a copy of a file system from an optical disk, like a DVD.
+If you're wondering where the name came from, ISO is an abbreviation of https://en.wikipedia.org/wiki/ISO_9660[ISO 9660], which is an abbreviation of International Standards Organization file system standard number 9660.
+
+image::usb-drive-iso.jpeg[hardware,width=600,title="USB drive to hold the ISO installer"]
 
 Prepare the installer drive by copying the installer DVD file to it. 
 First, download this DVD file from Fedora's web site. 

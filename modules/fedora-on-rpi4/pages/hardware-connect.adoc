@@ -17,4 +17,4 @@ The example setup also has a USB connection between one of the RPi's black USB 2
 
 Connect the ethernet socket to the home network. 
 
-Plug in the power adapter. Don't turn it on - there is no software to run yet. 
+Plug in the power adapter. Don't turn it on - there is no OS to run yet. 

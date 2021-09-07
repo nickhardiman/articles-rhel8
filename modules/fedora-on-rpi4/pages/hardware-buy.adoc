@@ -5,8 +5,7 @@ Nick Hardiman
 
 A computer system is built up of layers. There's the hardware layer at the bottom, then a layer of software that makes this hardware work, then another layer of software that makes a computer useful. The software in the middle, being halfway between hardware and software, is called firmware. 
 
-
-== hardware 
+== what to buy
 
 image::hardware-1.jpeg[hardware,width=600,title="hardware"]
 
@@ -21,11 +20,10 @@ You need an RPi4 - yep, so far so obvious. Don't get the 1, 2 or 4GB versions, n
 Much of this hardware, like the monitor and keyboard, is only required to get started. 
 When everything is set up, you can connect from another computer over the network to the Raspberry Pi and do everything you need on the CLI (Command Line Interface).
 
+== a working combination 
+
 Hardware in the picture is screwed to a frame and put in a cardboard box. 
 These are DIY products. 
-
-
-== a working combination
 
 image::hardware-2.jpeg[hardware,width=600,title="hardware items"]
 

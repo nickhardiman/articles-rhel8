@@ -3,6 +3,10 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 28-10-2021
 
+Have a look at all the things - the chips, cables, power supply and the rest. 
+
+== The Raspberry Pi 
+
 The Raspberry Pi is packed with hardware. "Hardware" in computer terms covers pretty much everything you can see, including the PCB (Printed Circuit Board), ICs (Integrated Circuits) in the middle and connectors around the edges. 
 
 image::raspberry-pi-4-top.jpeg[hardware,width=600,title="Raspberry Pi 4 model B 8GB top"]
@@ -50,4 +54,9 @@ sockets
 . ethernet
 
 image::connectors-2.jpeg[hardware,width=600,title="connector sockets"]
+
+
+== power supply 
+
+== USB drives 
 

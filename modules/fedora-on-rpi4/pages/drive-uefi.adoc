@@ -6,11 +6,17 @@ Nick Hardiman
 One of the USB drives provides the OS storage. 
 The other one holds installer software. 
 
+image::usb-drives.jpeg[hardware,width=600,title="USB drives"]
+
 Prepare the OS drive by copying UEFI software onto it. 
 Use a Linux workstation to prepare the drive. 
 A VM running Fedora works fine. 
 Using a Macbook is tricky. 
 Windows, dunno.
+
+Use the unlabelled USB drive.
+
+image::usb-drive-os.jpeg[hardware,width=600,title="USB drive to hold the OS"]
 
 Everything from here on down is 
 Robert's good work, not mine
