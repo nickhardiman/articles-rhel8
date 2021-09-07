@@ -18,6 +18,11 @@ Use the unlabelled USB drive.
 
 image::usb-drive-os.jpeg[hardware,width=600,title="USB drive to hold the OS"]
 
+Insert the drive into your workstation. 
+
+image::usb-workstation.jpeg[hardware,width=600,title="USB drive in workstation"]
+
+
 Everything from here on down is 
 Robert's good work, not mine
 https://fwmotion.com/blog/operating-systems/2020-09-04-installing-fedora-server-onto-pi4/
