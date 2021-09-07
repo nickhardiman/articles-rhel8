@@ -3,12 +3,12 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 16-10-2020
 
-copy of 
-https://nickhardiman.netlify.app/articles/dev/red-hat-developer-subscription/host1-shell.html
-?
-
 When you use the CLI of a Linux machine, the system gives you a shell. 
-The shell is a pillar of developer and sysadmin worlds, up there with the toolchain, the source code repository and the IDE.  A shell is a command interpreter that waits for your commands, ready to run its https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop[REPL (Read-Eval-Print Loop)] until you stop the program. The _shell_ name comes from a nut or seed analogy - shell on the outside, kernel on the inside. 
+It's one of the three big pieces of an OS - the kernel, the shell and all the utility programs.
+The _shell_ name comes from a nut or seed analogy - shell on the outside, kernel on the inside. 
+
+The shell is a pillar of developer and sysadmin worlds, up there with the toolchain, the source code repository and the IDE.  A shell is a command interpreter that waits for your commands, ready to run its https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop[REPL (Read-Eval-Print Loop)] until you stop the program. 
+
 
 
 == GNU Bash 
@@ -17,19 +17,19 @@ After logging in, you find yourself using GNU Bash, version 5.
 
 [source,shell]
 ----
-[nick@host1 ~]$ ps
+[nick@rpi4 ~]$ ps
     PID TTY          TIME CMD
-   1486 pts/0    00:00:00 bash
-   1696 pts/0    00:00:00 ps
-[nick@host1 ~]$ 
-[nick@host1 ~]$ bash --version
+   2708 pts/1    00:00:00 bash
+   2940 pts/1    00:00:00 ps
+[nick@rpi4 ~]$ 
+[nick@rpi4 ~]$ bash --version
 GNU bash, version 5.0.17(1)-release (aarch64-redhat-linux-gnu)
 Copyright (C) 2019 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 
 This is free software; you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
-[nick@host1 ~]$ 
+[nick@rpi4 ~]$ 
 ----
 
 Ths interactive command line shell is nowhere near as friendly as a GUI. 
@@ -60,15 +60,15 @@ Bash, like sh, is written in C. You can get the https://git.savannah.gnu.org/cgi
 
 == resource files 
 
-The home directory contains five configuration files. 
-They are also known as dotfiles, or hidden files - they start with "." and Bash doesn't display them.
-Four of these are used by Bash.
+The home directory contains many configuration files. 
+They are known as dotfiles, or hidden files - they start with "." and Bash doesn't display them.
 
 [source,shell]
 ---- 
-[nick@host1 ~]$ ls -a
-.  ..  .bash_history  .bash_logout  .bash_profile  .bashrc  .ssh
-[nick@host1 ~]$ 
+[nick@rpi4 ~]$ ls -d .*
+.   .bash_history  .bash_profile  .cache   .local    .ssh
+..  .bash_logout   .bashrc        .config  .mozilla
+[nick@rpi4 ~]$ 
 ----
 
 * .bash_history  - a list of all the commands you have run so far. To see the maximum number of commands this stores, run _echo $HISTSIZE_.
@@ -93,9 +93,9 @@ If you want to know what the other letters mean, run _man bash_ and look for _se
 
 [source,shell]
 ---- 
-[nick@host1 ~]$ echo $-
+[nick@rpi4 ~]$ echo $-
 himBHs
-[nick@host1 ~]$ 
+[nick@rpi4 ~]$ 
 ----
 
 Also, if it's got a prompt, it's an interactive shell.
@@ -107,38 +107,53 @@ Also, if it's got a prompt, it's an interactive shell.
 A Bash login shell is for use by a person. 
 A non-login shell is for use by a program. 
 
-run only /etc/profile
+When you login, you get a login shell.
+The /etc/profile script runs and sets up all kinds of variables, defines shortcuts, runs programs and anything else that makes life easier for the command line user.
 
-Bash non-login shells run only /etc/bashrc
+When a script runs, it doesn't need all this extra help.
+If a bash shell runs a command and exits, it doesn't need to be a login shell.
+The non-login shell provides the essentials. 
+Bash non-login shells run only /etc/bashrc, not /etc/profile.
 
 One of the shell options describes whether the bash shell is a login shell. 
-When you login, you get a login shell.
-When a script runs, it gets its own shell but there is no login. 
 
-If a bash shell runs a command and exits, it doesn't need to be a login shell.
+Check you are using a login shell. 
 
 [source,shell]
 ---- 
-[nick@host1 ~]$ shopt login_shell
+[nick@rpi4 ~]$ shopt login_shell
 login_shell    	on
-[nick@host1 ~]$ 
-[nick@host1 ~]$ bash -c 'shopt login_shell'
+[nick@rpi4 ~]$
+----
+
+Fire up a bash shell that only runs one command then exits. 
+The -c option tells bash to start a non-login shell.
+
+[source,shell]
+---- 
+[nick@rpi4 ~]$ bash -c 'shopt login_shell'
 login_shell    	off
-[nick@host1 ~]$ 
+[nick@rpi4 ~]$ 
 ----
 
 Another sign of a login shell - a peculiar one - is a hyphen added to the name.
+Check your login shell. 
 
 [source,shell]
 ---- 
-[nick@host1 ~]$ echo $0
+[nick@rpi4 ~]$ echo $0
 -bash
-[nick@host1 ~]$ 
-[nick@host1 ~]$ bash -c 'echo $0'
-bash
-[nick@host1 ~]$ 
+[nick@rpi4 ~]$ 
 ----
 
+Repeat the non-login shell trick. 
+
+[source,shell]
+----  
+[nick@rpi4 ~]$ bash -c 'echo $0'
+bash
+[nick@rpi4 ~]$ 
+----
 
 
 == getting to grips with Bash 
@@ -152,41 +167,40 @@ If you really want to find out what Bash is capable of, read the https://www.gnu
 If you just want some simple gratification, play around with these. 
 
 
-=== prompt 
+=== examine the prompt 
 
 [source,shell]
 ---- 
-[nick@host1 ~]$ 
+[nick@rpi4 ~]$ 
 ----
 
 A special set of symbols define how the prompt looks. 
 
 [source,shell]
 ---- 
-[nick@host1 ~]$ echo $PS1
+[nick@rpi4 ~]$ echo $PS1
 [\u@\h \W]\$
-[nick@host1 ~]$ 
+[nick@rpi4 ~]$ 
 ----
 
 To play around with the prompt layout, look at the man page (_man bash_) and search for _PROMPTING_. 
 It has a big list of these backslash-escaped special characters.
 
 
-=== completion 
+=== try completion 
 
 Typing long commands is annoying. 
 That's why the GNU project added  https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html[programmable completion].
 The easiest completion is typing the first few characters of a command (three usually does it) and hitting the tab key (⇥). 
 
-It's not good for all commands. 
-If you want to type _hostnamectl_, then _hos⇥_ gets you _host_. 
-Another tab displays three commands that all start with _host_.
-
 [source,shell]
 ---- 
-[nick@host1 ~]$ host⇥
-hostid       hostname     hostnamectl  
-[nick@host1 ~]$ host
+[nick@rpi4 ~]$ host⇥
+host         hostid       hostname     hostnamectl  
+[nick@rpi4 ~]$ host
 ----
 
+Try the same thing with less letters and more tabbing. 
+Entering _hos_ and hitting tab only matches _host_, so that appears on the same line.  
+Hitting tab twice more displays the list of commands that start with _host_.
 

@@ -22,11 +22,6 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:os-install.adoc[]
 . xref:os-examine.adoc[]
 . xref:shell-bash-use.adoc[]
-
-. xref:os-download.adoc[]
-. xref:bash-shell.adoc[]
-. xref:sysadmin.adoc[]
-. xref:grow-partition.adoc[]
 . xref:firmware-examine.adoc[]
 
 
@@ -175,4 +170,8 @@ Or at least, if you stand back and squint, it looks like it works.
 . DB mariadb 
 . web apache 
 . web CGI 
+
+=== stuff 
+
+. xref:grow-partition.adoc[]
 

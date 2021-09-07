@@ -15,10 +15,10 @@ The first partition contains all the files that make up the UEFI system.
 .UEFI partition
 [source,shell]
 ----
-[root@localhost ~]# df -h /boot/efi
+[nick@rpi4 ~]$ df -h /boot/efi
 Filesystem      Size  Used Avail Use% Mounted on
-/dev/mmcblk1p1  599M   31M  569M   6% /boot/efi
-[root@localhost ~]# 
+/dev/sda2       599M  7.0M  592M   2% /boot/efi
+[nick@rpi4 ~]$ 
 ----
 
 
@@ -34,13 +34,12 @@ The Broadcom brcmfmac driver (the driver for the wifi chip) requests firmware.
 
 [source,shell]
 ----
-[root@localhost firmware]# dmesg | grep brcmfmac
-[   19.412655] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43455-sdio for chip BCM4345/6
-[   19.413370] usbcore: registered new interface driver brcmfmac
-[   19.553192] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43455-sdio for chip BCM4345/6
-[   19.553297] brcmfmac: brcmf_c_process_clm_blob: no clm_blob available (err=-2), device may have limited channels available
-[   19.553711] brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM4345/6 wl0: Mar  1 2015 07:29:38 version 7.45.18 (r538002) FWID 01-6a2c8ad4
-[root@localhost firmware]# 
+[nick@rpi4 ~]$ dmesg | grep brcmfmac
+[   14.374620] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43455-sdio for chip BCM4345/6
+[   14.375456] usbcore: registered new interface driver brcmfmac
+[   17.913937] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43455-sdio for chip BCM4345/6
+[   18.014931] brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM4345/6 wl0: Sep 18 2020 02:27:58 version 7.45.221 (3a6d3a0 CY) FWID 01-bbd9282b
+[nick@rpi4 ~]$ 
 ----
 
 == /sys/firmware/
@@ -49,24 +48,32 @@ Linux has a special file system, sysfs.
 Kernel objects appear as files in the /sys/ directory. 
 All the firmware objects are in the /sys/firmware directory.  
 
-The /sys/firmware/devicetree/base/ directory holds nearly two thousand https://en.wikipedia.org/wiki/Device_tree[device tree] files. These hold data on everything from audio devices to thermal sensors. The _model_ file holds the computer name. 
+/sys/firmware/devicetree/ holds https://en.wikipedia.org/wiki/Device_tree[device tree] files. It's empty here. 
 
 [source,shell]
 ----
-[root@localhost efivars]# cat /sys/firmware/devicetree/base/model
-Raspberry Pi 4 Model B Rev 1.4[root@localhost efivars]# 
+[nick@rpi4 ~]$ ls -a /sys/firmware/devicetree/
+.  ..
+[nick@rpi4 ~]$ 
 ----
 
 /sys/firmware/dmi/ files are all part of a big https://en.wikipedia.org/wiki/Desktop_Management_Interface[DMI] table of device data.  
 The _dmidecode_ command displays this table in a readable format. 
 
-/sys/firmware/efi/ holds a few EFI variables and values, such as whether this is a 32 bit or 64 bit UEFI system.
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo dmidecode -s system-manufacturer
+Raspberry Pi Foundation
+[nick@rpi4 ~]$ 
+----
+
+/sys/firmware/efi/ holds EFI variables and values, such as whether this is a 32 bit or 64 bit UEFI system.
 
 [source,shell]
 ----
-[root@localhost ~]#  cat /sys/firmware/efi/fw_platform_size
+[nick@rpi4 ~]$ cat /sys/firmware/efi/fw_platform_size
 64
-[root@localhost ~]# 
+[nick@rpi4 ~]$ 
 ----
 
 

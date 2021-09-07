@@ -39,3 +39,8 @@ The graphical login application waits for human interaction.
 
 image::boot-8.jpeg[boot8,width=600,title="boot 8"]
 
+== oops! no USB drive!
+
+If the USB drive is missing, the firmware is clever enough to provide some troubleshooting information.
+
+image::boot-no-usb-drive.jpeg[boot-oops-1,width=600,title="boot without USB drive"]
