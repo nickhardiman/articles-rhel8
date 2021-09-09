@@ -1,5 +1,5 @@
 * xref:fedora-on-rpi4:index.adoc[]
-** errr, stuff
+** set up
 *** xref:hardware-buy.adoc[]
 *** xref:hardware-examine.adoc[]
 *** xref:hardware-connect.adoc[]
@@ -11,14 +11,16 @@
 *** xref:os-install.adoc[]
 *** xref:os-examine.adoc[]
 *** xref:shell-bash-login.adoc[]
+** essentials
 *** xref:shell-bash-use.adoc[]
 *** xref:shell-login.adoc[]
 *** xref:shell-interactive.adoc[]
+*** xref:firmware-examine.adoc[]
 *** xref:account-examine.adoc[]
 *** xref:account-add.adoc[]
-** useful?
+*** xref:dnf-update.adoc[]
+** next
 *** xref:sysadmin.adoc[]
-*** xref:grow-partition.adoc[]
 ** essentials 
 *** xref:storage.adoc[]
 *** xref:ten-more-shells.adoc[]
@@ -29,3 +31,5 @@
 *** xref:libvirt.adoc[]
 *** xref:libvirt-virsh.adoc[]
 *** xref:libvirt-virtual-machine.adoc[]
+** stuff
+*** xref:grow-partition.adoc[]

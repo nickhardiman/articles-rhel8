@@ -9,7 +9,7 @@ It's not officially supported but it does work.
 Or at least, if you stand back and squint, it looks like it works. 
 
 
-== 100 things plan 
+== set up 
 
 . xref:hardware-buy.adoc[]
 . xref:hardware-examine.adoc[]
@@ -22,17 +22,21 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:os-install.adoc[]
 . xref:os-examine.adoc[]
 . xref:shell-bash-login.adoc[]
+
+== essentials
+
+[start=12]
 . xref:shell-bash-use.adoc[]
 . xref:shell-login.adoc[]
 . xref:shell-interactive.adoc[]
 . xref:firmware-examine.adoc[]
 . xref:account-examine.adoc[]
 . xref:account-add.adoc[]
+. xref:dnf-update.adoc[]
 
+=== next 
 
-=== essentials 
-
-[start=7]
+[start=19]
 . xref:storage.adoc[]
 . xref:ten-more-shells.adoc[]
 . shell expansion  
