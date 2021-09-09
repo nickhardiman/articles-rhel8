@@ -21,14 +21,18 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:boot-os.adoc[]
 . xref:os-install.adoc[]
 . xref:os-examine.adoc[]
+. xref:shell-bash-login.adoc[]
 . xref:shell-bash-use.adoc[]
+. xref:shell-login.adoc[]
+. xref:shell-interactive.adoc[]
 . xref:firmware-examine.adoc[]
+. xref:account-examine.adoc[]
+. xref:account-add.adoc[]
 
 
 === essentials 
 
 [start=7]
-. xref:account.adoc[]
 . xref:storage.adoc[]
 . xref:ten-more-shells.adoc[]
 . shell expansion  
