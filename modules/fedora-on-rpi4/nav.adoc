@@ -1,5 +1,6 @@
 * xref:fedora-on-rpi4:index.adoc[]
 ** set up
+*** xref:home-network-setup.adoc[]
 *** xref:hardware-buy.adoc[]
 *** xref:hardware-examine.adoc[]
 *** xref:hardware-connect.adoc[]
@@ -21,10 +22,11 @@
 *** xref:dnf-update.adoc[]
 *** xref:storage-examine.adoc[]
 ** next
+*** xref:ssh-use.adoc[]
 *** xref:sysadmin.adoc[]
 *** xref:ten-more-shells.adoc[]
 *** xref:access-control.adoc[]
-*** xref:ssh.adoc[]
+*** xref:virtual-machines.adoc[]
 *** xref:log.adoc[]
 ** virtual machine 
 *** xref:libvirt.adoc[]

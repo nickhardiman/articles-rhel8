@@ -11,6 +11,7 @@ Or at least, if you stand back and squint, it looks like it works.
 
 == set up 
 
+. xref:home-network-setup.adoc[]
 . xref:hardware-buy.adoc[]
 . xref:hardware-examine.adoc[]
 . xref:hardware-connect.adoc[]
@@ -25,7 +26,7 @@ Or at least, if you stand back and squint, it looks like it works.
 
 == essentials
 
-[start=12]
+[start=13]
 . xref:shell-bash-use.adoc[]
 . xref:shell-login.adoc[]
 . xref:shell-interactive.adoc[]
@@ -37,7 +38,10 @@ Or at least, if you stand back and squint, it looks like it works.
 
 === next 
 
-[start=19]
+[start=20]
+. xref:ssh-use.adoc[]
+. xref:virtual-machines.adoc[]
+. xref:log.adoc[]
 . xref:ten-more-shells.adoc[]
 . shell expansion  
 . file descriptor 
@@ -46,8 +50,6 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:access-control.adoc[]
 . process   https://fedoramagazine.org/inspect-manage-processes-ps/
 . daemon 
-. xref:ssh.adoc[]
-. xref:log.adoc[]
 . time 
 . network 
 . host 
