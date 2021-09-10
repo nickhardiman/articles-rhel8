@@ -128,10 +128,13 @@ Packages are frequently updated, so the older the ISO file, the more packages th
 
 Reboot to swap from the current kernel to the new one. 
 
-
 [source,shell]
 ----
-sudo systemctl reboot
+[nick@rpi4 ~]$ sudo systemctl reboot
+[sudo] password for nick: 
+[nick@rpi4 ~]$ Connection to rpi4 closed by remote host.
+Connection to rpi4 closed.
+workstation:~ nick$ 
 ----
 
 

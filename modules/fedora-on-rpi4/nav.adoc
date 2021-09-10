@@ -19,10 +19,9 @@
 *** xref:account-examine.adoc[]
 *** xref:account-add.adoc[]
 *** xref:dnf-update.adoc[]
+*** xref:storage-examine.adoc[]
 ** next
 *** xref:sysadmin.adoc[]
-** essentials 
-*** xref:storage.adoc[]
 *** xref:ten-more-shells.adoc[]
 *** xref:access-control.adoc[]
 *** xref:ssh.adoc[]

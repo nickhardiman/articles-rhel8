@@ -33,11 +33,11 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:account-examine.adoc[]
 . xref:account-add.adoc[]
 . xref:dnf-update.adoc[]
+. xref:storage-examine.adoc[]
 
 === next 
 
 [start=19]
-. xref:storage.adoc[]
 . xref:ten-more-shells.adoc[]
 . shell expansion  
 . file descriptor 
