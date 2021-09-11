@@ -9,12 +9,12 @@ The variable contains odd sequences of characters that tell bash what to put whe
 You can also change the color using ANSI escape codes. 
 These are more odd-looking character strings that the terminal interprets as special commands. 
 
-
 The `infocmp` command displays a big list of control sequences, but you won't find these in that list. 
 
 Git users often https://git-scm.com/book/en/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Bash[customize the prompt] by running the _git-prompt.sh_ script.
 
-=== examine the prompt 
+
+== examine the prompt 
 
 Ever wondered why the prompt looks like this? 
 
