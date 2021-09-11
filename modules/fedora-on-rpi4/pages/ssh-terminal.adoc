@@ -4,7 +4,14 @@ Nick Hardiman
 :revdate: 01-02-2021
 
 
-tput longname
+
+== tput longname
+
+[source,shell]
+----
+[nick@rpi4 ~]$ tput longname
+xterm with 256 colors[nick@rpi4 ~]$ 
+----
 
 echo "Rows=$(tput lines) Cols=$(tput cols)"
 

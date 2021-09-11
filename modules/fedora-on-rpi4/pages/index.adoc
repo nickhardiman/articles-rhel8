@@ -35,11 +35,12 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:account-add.adoc[]
 . xref:dnf-update.adoc[]
 . xref:storage-examine.adoc[]
+. xref:ssh-use.adoc[]
+. xref:ssh-terminal.adoc[]
 
 === next 
 
 [start=20]
-. xref:ssh-use.adoc[]
 . xref:virtual-machines.adoc[]
 . xref:log.adoc[]
 . xref:ten-more-shells.adoc[]
