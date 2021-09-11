@@ -92,27 +92,6 @@ If you want to know more about dotfiles, read this great https://fedoramagazine.
 
 
 
-=== examine the prompt 
-
-Ever wondered why the prompt looks like this? 
-
-[source,shell]
----- 
-[nick@rpi4 ~]$ 
-----
-
-A special set of symbols define how the prompt looks. 
-
-[source,shell]
----- 
-[nick@rpi4 ~]$ echo $PS1
-[\u@\h \W]\$
-[nick@rpi4 ~]$ 
-----
-
-To play around with the prompt layout, look at the man page (_man bash_) and search for _PROMPTING_. 
-It has a big list of these backslash-escaped special characters.
-
 
 === try completion 
 

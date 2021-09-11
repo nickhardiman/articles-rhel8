@@ -23,6 +23,7 @@
 *** xref:storage-examine.adoc[]
 *** xref:ssh-use.adoc[]
 *** xref:ssh-terminal.adoc[]
+*** xref:shell-prompt-change.adoc[]
 ** next
 *** xref:sysadmin.adoc[]
 *** xref:ten-more-shells.adoc[]
