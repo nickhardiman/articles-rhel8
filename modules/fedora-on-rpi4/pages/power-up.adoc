@@ -1,11 +1,11 @@
-= view boot screens
+= power up and view boot screens
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 24-10-2020
 
 The stages of a normal computer start-up process look like this on the display.
 
-Power on
+Power up (or power on, or boot up)
 
 Hardware initialization, nothing to see yet.
 

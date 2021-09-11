@@ -6,6 +6,18 @@ Nick Hardiman
 Initial configuration of the OS takes a few minutes – a couple minutes waiting for boot-up, and a couple to fill out the spokes of anaconda’s text-based installer. 
 Write down your root and user passwords somewhere safe. 
 
+== power up 
+
+Insert both USB drives. 
+
+Plug in
+
+turn on
+
+wait for anaconda 
+
+== configure 
+
 I set mine up with a user named _nick_ who is an administrator (a member of the _wheel_ group). 
 
 After setup, the login prompt appears.  

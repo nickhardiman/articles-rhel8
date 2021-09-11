@@ -6,10 +6,11 @@
 *** xref:hardware-connect.adoc[]
 *** xref:drive-uefi.adoc[]
 *** xref:drive-os-installer.adoc[]
-*** xref:boot-view.adoc[]
 *** xref:boot-firmware.adoc[]
 *** xref:boot-os.adoc[]
 *** xref:os-install.adoc[]
+*** xref:power-up.adoc[]
+*** xref:shut-down.adoc[]
 *** xref:os-examine.adoc[]
 *** xref:shell-bash-login.adoc[]
 ** essentials
@@ -24,6 +25,8 @@
 *** xref:ssh-use.adoc[]
 *** xref:ssh-terminal.adoc[]
 *** xref:shell-prompt-change.adoc[]
+*** xref:vi-use.adoc[]
+*** xref:vim-use.adoc[]
 ** next
 *** xref:sysadmin.adoc[]
 *** xref:ten-more-shells.adoc[]
