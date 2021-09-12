@@ -26,14 +26,12 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:boot-firmware.adoc[]
 . xref:boot-os.adoc[]
 
-== essentials
+== the command line
 
-. xref:os-examine.adoc[]
 . xref:shell-bash-login.adoc[]
 . xref:shell-bash-use.adoc[]
 . xref:shell-login.adoc[]
 . xref:shell-interactive.adoc[]
-. xref:firmware-examine.adoc[]
 . xref:account-examine.adoc[]
 . xref:account-add.adoc[]
 . xref:dnf-update.adoc[]
@@ -43,6 +41,13 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:shell-prompt-change.adoc[]
 . xref:vi-use.adoc[]
 . xref:vim-use.adoc[]
+
+== firmware and OS 
+
+. xref:firmware-examine.adoc[]
+. xref:os-examine.adoc[]
+. xref:firmware-grub2-examine.adoc[]
+. xref:os-kernel-examine.adoc[]
 
 === next 
 

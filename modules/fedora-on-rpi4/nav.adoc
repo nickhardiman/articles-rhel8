@@ -1,23 +1,23 @@
 * xref:fedora-on-rpi4:index.adoc[]
-** set up
+** 30 things
+*** _set up_
 *** xref:home-network-setup.adoc[]
 *** xref:hardware-buy.adoc[]
 *** xref:hardware-examine.adoc[]
 *** xref:hardware-connect.adoc[]
 *** xref:drive-uefi.adoc[]
 *** xref:drive-os-installer.adoc[]
-*** xref:boot-firmware.adoc[]
-*** xref:boot-os.adoc[]
 *** xref:os-install.adoc[]
+*** _system startup and shutdown_
 *** xref:power-up.adoc[]
 *** xref:shut-down.adoc[]
-*** xref:os-examine.adoc[]
+*** xref:boot-firmware.adoc[]
+*** xref:boot-os.adoc[]
+*** _the command line_
 *** xref:shell-bash-login.adoc[]
-** essentials
 *** xref:shell-bash-use.adoc[]
 *** xref:shell-login.adoc[]
 *** xref:shell-interactive.adoc[]
-*** xref:firmware-examine.adoc[]
 *** xref:account-examine.adoc[]
 *** xref:account-add.adoc[]
 *** xref:dnf-update.adoc[]
@@ -27,7 +27,13 @@
 *** xref:shell-prompt-change.adoc[]
 *** xref:vi-use.adoc[]
 *** xref:vim-use.adoc[]
+*** _firmware and OS_
+*** xref:firmware-examine.adoc[]
+*** xref:os-examine.adoc[]
+*** xref:firmware-grub2-examine.adoc[]
+*** xref:os-kernel-examine.adoc[]
 ** next
+*** xref:virtual-machines.adoc[]
 *** xref:sysadmin.adoc[]
 *** xref:ten-more-shells.adoc[]
 *** xref:access-control.adoc[]

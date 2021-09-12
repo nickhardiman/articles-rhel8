@@ -1,4 +1,4 @@
-= firmware  
+= look at firmware files
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 24-10-2020

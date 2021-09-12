@@ -3,14 +3,30 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 10-09-2021
 
-Start with a home network with at least two boxes.
+Three types of resource are required for these exercises. 
 
-* the ISP's router, your gateway to the Internet
-* your workstation
+* storage 
+* compute 
+* network 
 
+A USB drive will provide the storage. This is where all the software is stored (except for a little firmware stored on the Pi). 
+
+The Raspberry Pi 4 will provide the compute. 
+This is the number-crunching power provided by the CPU and all the other chips.
+
+The network is the connection to the outside world. 
+The data network allows machines to talk to each other at home and out in the Internet. 
+There's another network too - the power network brings electricity from the national grid. 
+But this is page is all about the data network.
 
 
 == the home network 
+
+You bring the network. 
+This is probaby a home network with at least two boxes attached to it.
+
+* the ISP's router, your gateway to the Internet
+* your workstation
 
 There are probably also a whole load of smart devices on this home network, from phone to TV. 
 Let's ignore those.
@@ -25,6 +41,10 @@ Let's ignore those.
 |               |      |               |  
 .---------------.      .---------------.
 ....
+
+Every machine has an address. 
+The router gives every machine an IP address on the network. 
+The IP address looks something like _192.2.3.4_ or _10.2.3.4_.
 
 The network connection from router to workstation might be an ethernet cable or WIFI. 
 
