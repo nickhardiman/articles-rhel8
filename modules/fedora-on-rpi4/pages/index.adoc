@@ -17,17 +17,19 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:hardware-connect.adoc[]
 . xref:drive-uefi.adoc[]
 . xref:drive-os-installer.adoc[]
-. xref:boot-firmware.adoc[]
-. xref:boot-os.adoc[]
 . xref:os-install.adoc[]
+
+=== system startup and shutdown 
+
 . xref:power-up.adoc[]
 . xref:shut-down.adoc[]
-. xref:os-examine.adoc[]
-. xref:shell-bash-login.adoc[]
+. xref:boot-firmware.adoc[]
+. xref:boot-os.adoc[]
 
 == essentials
 
-[start=13]
+. xref:os-examine.adoc[]
+. xref:shell-bash-login.adoc[]
 . xref:shell-bash-use.adoc[]
 . xref:shell-login.adoc[]
 . xref:shell-interactive.adoc[]
@@ -44,8 +46,23 @@ Or at least, if you stand back and squint, it looks like it works.
 
 === next 
 
-[start=20]
+[start=45]
 . xref:virtual-machines.adoc[]
+. network
+. build your network
+. network-build
+. xref:libvirt.adoc[]
+. xref:libvirt-virsh.adoc[]
+. xref:libvirt-virtual-machine.adoc[]
+. libvirt-dnsmasq
+. libvirt-second-network
+. libvirt-storage-pool
+. libvirt-storage-volume
+. libvirt-second-disk
+
+== more sysadmin 
+
+[start=20]
 . xref:log.adoc[]
 . xref:ten-more-shells.adoc[]
 . shell expansion  
@@ -63,17 +80,11 @@ Or at least, if you stand back and squint, it looks like it works.
 . rpm 
 . storage 
 
-=== system startup and shutdown 
-
-[start=41]
-. shutdown 
-. boot-stages
-. boot-bios
-. boot-grub
 
 === virtual machine 
 
 [start=45]
+. xref:virtual-machines.adoc[]
 . network
 . build your network
 . network-build

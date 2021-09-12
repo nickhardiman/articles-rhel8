@@ -6,7 +6,7 @@ Nick Hardiman
 
 == virtual networks and virtual machines 
 
-The home network and host1 are physical - you can touch the cables, hit the power switch, watch the blinking lights. 
+The home network and rpi4 are physical - you can touch the cables, hit the power switch, watch the blinking lights. 
 
 This site tells you how to set up a virtual network inside host1. 
 The virtual network is made up of bridges, machines, storage volumes and other resources.
