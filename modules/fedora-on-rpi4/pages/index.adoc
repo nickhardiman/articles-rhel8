@@ -37,6 +37,7 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:dnf-update.adoc[]
 . xref:dnf-group-view.adoc[]
 . xref:storage-examine.adoc[]
+. xref:net-examine.adoc[]
 . xref:ssh-use.adoc[]
 . xref:ssh-terminal.adoc[]
 . xref:shell-prompt-change.adoc[]
@@ -50,14 +51,16 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:firmware-grub2-examine.adoc[]
 . xref:os-kernel-examine.adoc[]
 
-=== next 
+=== virtual machine 
 
-[start=45]
 . xref:libvirt-plan.adoc[]
 . xref:libvirt-install.adoc[]
 . xref:libvirt-virsh.adoc[]
-. xref:libvirt-virtual-machine.adoc[]
-. network
+. xref:virtual-machine-create.adoc[]
+. xref:libvirt-bridge-public-create.adoc[]
+
+=== next 
+
 . build your network
 . network-build
 . libvirt-dnsmasq

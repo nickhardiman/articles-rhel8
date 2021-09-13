@@ -23,6 +23,7 @@
 *** xref:dnf-update.adoc[]
 *** xref:dnf-group-view.adoc[]
 *** xref:storage-examine.adoc[]
+*** xref:net-examine.adoc[]
 *** xref:ssh-use.adoc[]
 *** xref:ssh-terminal.adoc[]
 *** xref:shell-prompt-change.adoc[]
@@ -33,6 +34,13 @@
 *** xref:os-examine.adoc[]
 *** xref:firmware-grub2-examine.adoc[]
 *** xref:os-kernel-examine.adoc[]
+*** _virtual machine_
+*** xref:libvirt-plan.adoc[]
+*** xref:libvirt-install.adoc[]
+*** xref:libvirt-virsh.adoc[]
+*** xref:virtual-machine-create.adoc[]
+*** xref:libvirt-bridge-public-create.adoc[]
+*** xref:virtual-machine-create.adoc[]
 ** next
 *** xref:virtual-machines.adoc[]
 *** xref:sysadmin.adoc[]
@@ -40,9 +48,5 @@
 *** xref:access-control.adoc[]
 *** xref:virtual-machines.adoc[]
 *** xref:log.adoc[]
-** virtual machine 
-*** xref:libvirt.adoc[]
-*** xref:libvirt-virsh.adoc[]
-*** xref:libvirt-virtual-machine.adoc[]
 ** stuff
 *** xref:grow-partition.adoc[]
