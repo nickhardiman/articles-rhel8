@@ -1,0 +1,69 @@
+= view DNF groups  
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 13-09-2021
+
+
+Installing one package often means installng more than one package - the one you want and other packages required to make it work. 
+
+
+Some parts of Fedora require many packages to work. 
+These are collected in groups.
+The DNF group "System Tools" lists packages for working with network connections, interfaces, storage and more. 
+
+List DNF groups. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ dnf group list
+Last metadata expiration check: 0:05:15 ago on Mon 13 Sep 2021 08:03:53 BST.
+Available Environment Groups:
+   Fedora Custom Operating System
+   Minimal Install
+...
+   System Tools
+   Text-based Internet
+   Window Managers
+[nick@rpi4 ~]$ 
+----
+
+Groups are listed under four headings. 
+
+* Available Environment Groups
+* Installed Environment Groups
+* Installed Groups
+* Available Groups
+
+An environment group is a special kind of group, for ??? 
+
+
+
+
+List packages in the DNF group "System Tools".
+
+[source,shell]
+----
+[nick@rpi4 ~]$ dnf group info "System Tools"
+Last metadata expiration check: 0:10:21 ago on Mon 13 Sep 2021 08:03:53 BST.
+Group: System Tools
+ Description: This group is a collection of various tools for the system, such as the client for connecting to SMB shares and tools to monitor network traffic.
+ Default Packages:
+   BackupPC
+   NetworkManager-l2tp
+   NetworkManager-libreswan
+...
+   xdelta
+   zisofs-tools
+   zsh
+ Optional Packages:
+   PackageKit-command-not-found
+   aide
+   aircrack-ng
+...
+   x3270-x11
+   xmobar
+   xsel
+   zidrav
+[nick@rpi4 ~]$ 
+----
+

@@ -35,6 +35,7 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:account-examine.adoc[]
 . xref:account-add.adoc[]
 . xref:dnf-update.adoc[]
+. xref:dnf-group-view.adoc[]
 . xref:storage-examine.adoc[]
 . xref:ssh-use.adoc[]
 . xref:ssh-terminal.adoc[]
@@ -52,13 +53,13 @@ Or at least, if you stand back and squint, it looks like it works.
 === next 
 
 [start=45]
-. xref:virtual-machines.adoc[]
+. xref:libvirt-plan.adoc[]
+. xref:libvirt-install.adoc[]
+. xref:libvirt-virsh.adoc[]
+. xref:libvirt-virtual-machine.adoc[]
 . network
 . build your network
 . network-build
-. xref:libvirt.adoc[]
-. xref:libvirt-virsh.adoc[]
-. xref:libvirt-virtual-machine.adoc[]
 . libvirt-dnsmasq
 . libvirt-second-network
 . libvirt-storage-pool

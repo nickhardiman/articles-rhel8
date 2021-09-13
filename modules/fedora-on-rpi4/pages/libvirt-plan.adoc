@@ -1,8 +1,9 @@
-= virtual machines  
+= plan the virtual network
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 20-02-2021
 
+https://docs.fedoraproject.org/en-US/quick-docs/getting-started-with-virtualization/
 
 == virtual networks and virtual machines 
 

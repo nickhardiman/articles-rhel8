@@ -21,6 +21,7 @@
 *** xref:account-examine.adoc[]
 *** xref:account-add.adoc[]
 *** xref:dnf-update.adoc[]
+*** xref:dnf-group-view.adoc[]
 *** xref:storage-examine.adoc[]
 *** xref:ssh-use.adoc[]
 *** xref:ssh-terminal.adoc[]

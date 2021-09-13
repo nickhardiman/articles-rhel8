@@ -5,6 +5,17 @@ Nick Hardiman
 
 Update packages with https://en.wikipedia.org/wiki/DNF_(software)[DNF].
 
+This procedure does not upgrade everything. If you are on an older release of Fedora, like 33, you won't end up with Fedora 34. 
+33 is the release number, and changing from one to the next can break things. 
+Upgrading the release from Fedora 33 to Fedora 34 is called a system upgrade, and there are a few ways to do it. You can use DNF to https://docs.fedoraproject.org/en-US/quick-docs/upgrading-fedora-online/[upgrade Fedora from one release to the next].
+
+For more information on DNF, see
+
+* The https://dnf.readthedocs.io/en/latest/index.html[DNF user guide] 
+* https://docs.fedoraproject.org/en-US/fedora/f34/system-administrators-guide/package-management/DNF/[Fedora docs]
+8 https://fedoraproject.org/wiki/DNF[Fedora wiki]
+* The DNF command reference page, by running `man dnf`. This page only makes sense for experienced users.
+
 == the dnf command 
 
 DNF packages are already installed. 
@@ -88,6 +99,8 @@ updates                       Fedora 33 - aarch64 - Updates
 updates-modular               Fedora Modular 33 - aarch64 - Updates
 [nick@rpi4 ~]$ 
 ----
+
+These are defined in the configuration directory /etc/yum.repos.d/.
 
 
 == update 
