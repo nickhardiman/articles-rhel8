@@ -65,7 +65,24 @@ or other application using the libvirt API.
 [nick@rpi4 ~]$ 
 ----
 
+
 == the virsh command 
+
+use _virsh_ to display the https://libvirt.org/news.html[version] of libvirt.  
+
+[source,shell]
+----
+[nick@rpi4 ~]$ virsh version
+Compiled against library: libvirt 6.6.0
+Using library: libvirt 6.6.0
+Using API: QEMU 6.6.0
+Running hypervisor: QEMU 5.1.0
+
+[nick@rpi4 ~]$ 
+----
+
+
+== view networks with virsh 
 
 Configuration files in /etc/libvirt/ can only be read by root. 
 
@@ -93,22 +110,7 @@ Using the root account shows something.
 ....
 
 
-== view resources 
-
-Some resources already exist. 
-
-use _virsh_ to display the https://libvirt.org/news.html[version] of libvirt.  
-
-[source,shell]
-----
-[nick@rpi4 ~]$ virsh version
-Compiled against library: libvirt 6.6.0
-Using library: libvirt 6.6.0
-Using API: QEMU 6.6.0
-Running hypervisor: QEMU 5.1.0
-
-[nick@rpi4 ~]$ 
-----
+== list virtual machines 
 
 List all virtual machines. 
 There are no machines defined, so virsh displays an empty table.
@@ -122,6 +124,8 @@ There are no machines defined, so virsh displays an empty table.
 [nick@rpi4 ~]$ 
 ----
 
+== list storage pools 
+
 There are no storage pools either. 
 
 [source,shell]
@@ -133,21 +137,9 @@ There are no storage pools either.
 [root@rpi4 images]# 
 ----
 
-There is one network defined. 
-
-[source,shell]
-----
-[root@rpi4 images]# virsh net-list --all
- Name      State    Autostart   Persistent
---------------------------------------------
- default   active   yes         yes
-
-[root@rpi4 images]# 
-----
 
 
-
-== XML 
+== view XML 
 
 Use virsh to display XML. 
 This XML is copied from the file /etc/libvirt/qemu/networks/autostart/default.xml.

@@ -1,12 +1,12 @@
-= create and destroy a virtual machine 
+= create a test VM 
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 21-11-2020
 
 
-Create a virtual machine to check the libvirt system works. 
-This is a short-lived VM - it's created, checked, then deleted.
-The VM and its storage volume are called _does-it-work_.
+Create a virtual machine called _does-it-work_. 
+The only purpose of this VM is to check the libvirt system works. 
+The VM is created, checked, then deleted.
 
 The _rpi4_ machine is the physical machine that hosts the _does-it-work_ guest. 
 
@@ -26,17 +26,7 @@ The _rpi4_ machine is the physical machine that hosts the _does-it-work_ guest.
 
 
 
-Grab another copy of the Fedora Minimal image and use it to create a VM. 
-This image is not an install ISO - the OS is already installed. 
 
-Use the root account. 
-
-[source,shell]
-....
-[nick@rpi4 ~]$ sudo su -
-[sudo] password for nick: 
-[root@rpi4 ~]# 
-....
 
 No VMs exist yet. 
 
@@ -52,8 +42,13 @@ No VMs exist yet.
 
 == download a ready-made file system 
 
+Grab another copy of the Fedora Minimal image and use it to create a VM. 
+This image is not an install ISO - the OS is already installed. 
+
 Fedora provides an https://alt.fedoraproject.org/alt/[alternate architecture] download to boot a virtual machine.
 Use a copy of the https://download.fedoraproject.org/pub/fedora-secondary/releases/33/Spins/aarch64/images/[Fedora Minimal image] for ARM® aarch64 Architecture.
+
+
 
 Use a web browser to copy the download URL.
  
@@ -64,15 +59,36 @@ Use a web browser to copy the download URL.
 Use a CLI to get the image. 
 
 * Use the root account. 
-* Look at the HTTP headers. You don't get the file, you get a redirect to another service. The URL https://download.fedoraproject.org/pub/fedora-secondary/releases/33/Spins/aarch64/images/Fedora-Minimal-33-1.3.aarch64.raw.xz will return a 302 code and another location for the image file.
-The  _location:_ header shows another download location.  
+
+[source,shell]
+....
+[nick@rpi4 ~]$ sudo su -
+[sudo] password for nick: 
+[root@rpi4 ~]# 
+....
+
+* Change to libvirt's images directory. 
 
 [source,shell]
 ----
 [root@rpi4 ~]# cd /var/lib/libvirt/images/
 [root@rpi4 images]# 
+----
+
+* Run a curl command. 
+
+[source,shell]
+----
 [root@rpi4 images]# FILE=https://download.fedoraproject.org/pub/fedora-secondary/releases/33/Spins/aarch64/images/Fedora-Minimal-33-1.3.aarch64.raw.xz
 [root@rpi4 images]#
+[root@rpi4 images]# curl -i $FILE 
+----
+
+* Look at the HTTP headers. You don't get the file, you get a redirect to another service. The URL https://download.fedoraproject.org/pub/fedora-secondary/releases/33/Spins/aarch64/images/Fedora-Minimal-33-1.3.aarch64.raw.xz will return a 302 code and another location for the image file.
+The  _location:_ header shows another download location.  
+
+[source,shell]
+----
 [root@rpi4 images]# curl -i $FILE 
 HTTP/2 302 
 date: Sat, 21 Nov 2020 11:06:09 GMT
@@ -91,7 +107,7 @@ x-fedora-requestid: X7j0obpARiOhchQcD-yVLQAKAgk
 [root@rpi4 images]# 
 ----
 
-* Download, telling curl to follow redirects like the one in these headers (that's what the --location option does here) and to save the file with the same name (--remote-name).
+* Use curl to download the file. Tell curl to follow redirects like the one in these headers (that's what the --location option does here) and to save the file with the same name (--remote-name).
 
 [source,shell]
 ----
@@ -102,7 +118,6 @@ x-fedora-requestid: X7j0obpARiOhchQcD-yVLQAKAgk
 [root@rpi4 images]# 
 ----
 
-
 * Extract the image from the downloaded file. This uncompresses the file from less than a GB to 5GB. The process takes a minute -  write speed on a USB drive is not great. 
 
 [source,shell]
@@ -110,7 +125,6 @@ x-fedora-requestid: X7j0obpARiOhchQcD-yVLQAKAgk
 [root@rpi4 images]# unxz  Fedora-Minimal-33-1.3.aarch64.raw.xz 
 [root@rpi4 images]# 
 ----
-
 
 *  Check SELinux. The SELinux file type is _virt_image_t_. That's fine. 
 
@@ -127,6 +141,8 @@ drwxr-xr-x. 10 root root system_u:object_r:virt_var_lib_t:s0         4096 Nov 20
 [root@rpi4 images]# 
 ----
 
+== copy the image file 
+
 Create a copy of this raw image. 
 The copy gets used by the machine, leaving the downloaded version untouched. 
 
@@ -135,7 +151,6 @@ The copy gets used by the machine, leaving the downloaded version untouched.
 [root@rpi4 images]# cp Fedora-Minimal-33-1.3.aarch64.raw does-it-work.raw
 [root@rpi4 images]# 
 ----
-
 
 
 == create the virtual machine 
@@ -270,46 +285,4 @@ The disconnection command is ``ctrl`` + ``]``
 ^]
 [root@rpi4 images]# 
 ----
-
-
-== stop the VM
-
-Usually we stop a VM with the command ``virsh shutdown guest1``. 
-This is a graceful shutdown, like running ``systemctl poweroff``.
-
-But here we want to pull the plug, using ``virsh destroy guest1``.
-Despite the dramatic _destroy_ name, this does not delete anything. 
-
-[source,shell]
-----
-[root@rpi4 images]# virsh destroy does-it-work
-Domain does-it-work destroyed
-
-[root@rpi4 images]# 
-----
-
-
-== delete the VM
-
-Delete the new VM with the command  ``virsh undefine``.
-
-[source,shell]
-----
-[root@rpi4 images]# virsh undefine --nvram does-it-work 
-Domain does-it-work has been undefined
-
-[root@rpi4 images]# 
-----
-
-Check it's gone. 
-
-[source,shell]
-....
-[root@rpi4 images]# virsh list --all
- Id   Name   State
---------------------
-
-[root@rpi4 images]# 
-....
-
 
