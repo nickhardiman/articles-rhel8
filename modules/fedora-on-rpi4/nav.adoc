@@ -38,10 +38,11 @@
 *** xref:libvirt-plan.adoc[]
 *** xref:libvirt-install.adoc[]
 *** xref:libvirt-virsh.adoc[]
+*** xref:vm-image-download.adoc[]
 *** xref:vm-does-it-work-create.adoc[]
 *** xref:vm-does-it-work-delete.adoc[]
-*** xref:virtual-machine-create.adoc[]
 *** xref:libvirt-bridge-public-create.adoc[]
+*** xref:libvirt-bridge-public-configure.adoc[]
 *** xref:vm-guest1-create.adoc[]
 ** next
 *** xref:virtual-machines.adoc[]
