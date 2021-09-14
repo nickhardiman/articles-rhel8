@@ -62,6 +62,8 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:libvirt-bridge-public-create.adoc[]
 . xref:libvirt-bridge-public-configure.adoc[]
 . xref:vm-guest1-create.adoc[]
+. xref:vm-guest2-create.adoc[]
+. xref:vm-resource-check.adoc[]
 
 === next 
 

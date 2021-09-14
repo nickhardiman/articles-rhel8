@@ -1,5 +1,5 @@
 * xref:fedora-on-rpi4:index.adoc[]
-** 30 things
+** 40 things
 *** _set up_
 *** xref:home-network-setup.adoc[]
 *** xref:hardware-buy.adoc[]
@@ -44,8 +44,9 @@
 *** xref:libvirt-bridge-public-create.adoc[]
 *** xref:libvirt-bridge-public-configure.adoc[]
 *** xref:vm-guest1-create.adoc[]
+*** xref:vm-guest2-create.adoc[]
+*** xref:vm-resource-check.adoc[]
 ** next
-*** xref:virtual-machines.adoc[]
 *** xref:sysadmin.adoc[]
 *** xref:ten-more-shells.adoc[]
 *** xref:access-control.adoc[]
