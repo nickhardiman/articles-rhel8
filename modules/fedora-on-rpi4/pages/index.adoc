@@ -41,8 +41,8 @@ Or at least, if you stand back and squint, it looks like it works.
 . xref:ssh-use.adoc[]
 . xref:ssh-terminal.adoc[]
 . xref:shell-prompt-change.adoc[]
-. xref:vi-use.adoc[]
-. xref:vim-use.adoc[]
+. xref:editor-vi-use.adoc[]
+. xref:editor-vim-use.adoc[]
 
 == firmware and OS 
 

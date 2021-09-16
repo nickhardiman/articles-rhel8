@@ -15,7 +15,9 @@ Vim was copied and updated to create https://neovim.io/[neovim].
 
 == learn vim 
 
-* https://www.apress.com/gp/book/9781484202517[Pro Vim]
+* book https://www.apress.com/gp/book/9781484202517[Pro Vim]
+* wiki https://vim.fandom.com/wiki/Vim_Tips_Wiki
+* vim help files https://vimhelp.org/
 
 == install vim
 

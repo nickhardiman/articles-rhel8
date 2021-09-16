@@ -4,12 +4,45 @@ Nick Hardiman
 :revdate: 13-09-2021
 
 
-Installing one package often means installng more than one package - the one you want and other packages required to make it work. 
+Installing one RPM package often means installing more than one package - the one you want and other packages required to make it work. 
+This is one way of installing a collection of packages. 
+
+Some packages are useful to install together, even though they don't depend on each other to work. 
+A DNF group defines a useful collection of packages.
 
 
-Some parts of Fedora require many packages to work. 
-These are collected in groups.
+== a DNF group 
+
+Fedora has dozens of DNF groups, to help with system administration, office work and container development. 
+The https://fedoraproject.org/wiki/Category:SIGs[Fedora SIGs (Special Interest Groups)] often produce their own groups, like the https://fedoraproject.org/wiki/SIGs/3DPrinting[3D Printing] group. 
+
 The DNF group "System Tools" lists packages for working with network connections, interfaces, storage and more. 
+
+Groups are listed under four headings. 
+
+* Available Environment Groups
+* Installed Environment Groups
+* Installed Groups
+* Available Groups
+
+== an environment group 
+
+An environment group is used to create a Fedora Spin.
+This type of group is designed for use by the Anaconda installer.
+It's not created to be useful for end-users.
+An environment group contains many groups. 
+
+
+=== a Fedora Spin 
+
+A https://spins.fedoraproject.org/[Fedora spin] is a themed version of Fedora.
+That usually means Fedora combined with one desktop system. 
+There are many desktop spins, including the default Gnome spin, a https://spins.fedoraproject.org/en/kde/[KDE Plasma spin], and an https://spins.fedoraproject.org/en/kde/[Xfce spin].
+A spin can also be Fedora combined with productivity tools.
+https://labs.fedoraproject.org/[Fedora Labs] provide an https://labs.fedoraproject.org/en/astronomy/[Astronomy spin], a https://labs.fedoraproject.org/en/games/[Games spin], a https://labs.fedoraproject.org/en/scientific/[Scientific spin] and others. 
+
+
+== list groups 
 
 List DNF groups. 
 
@@ -27,17 +60,8 @@ Available Environment Groups:
 [nick@rpi4 ~]$ 
 ----
 
-Groups are listed under four headings. 
 
-* Available Environment Groups
-* Installed Environment Groups
-* Installed Groups
-* Available Groups
-
-An environment group is a special kind of group, for ??? 
-
-
-
+== list packages in a group
 
 List packages in the DNF group "System Tools".
 

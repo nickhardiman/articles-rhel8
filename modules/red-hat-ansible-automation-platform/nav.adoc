@@ -11,4 +11,14 @@
 ** xref:ansible-lint.adoc[]
 ** xref:molecule-install.adoc[]
 ** xref:plugin-dynamic-inventory.adoc[]
+** _more_
+** jenkins install
+** jenkins pipeline
+** git
+** github
+** python
+** RHEL, VMware, libvirt
+** Amazon, Azure and GCP
+** cookbook
+
 
