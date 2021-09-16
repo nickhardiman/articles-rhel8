@@ -1,4 +1,4 @@
-= Red Hat Ansible Automation Platform
+= Automation with Ansible
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 01-03-2021
