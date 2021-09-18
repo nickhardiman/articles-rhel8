@@ -1,4 +1,5 @@
-* xref:red-hat-ansible-automation-platform:index.adoc[]
+* xref:index.adoc[]
+** _first attempt_
 ** xref:introduction.adoc[]
 ** xref:core-install.adoc[]
 ** xref:core-tools.adoc[]
@@ -11,12 +12,15 @@
 ** xref:ansible-lint.adoc[]
 ** xref:molecule-install.adoc[]
 ** xref:plugin-dynamic-inventory.adoc[]
-** _more_
+** _jenkins_
 ** jenkins install
 ** jenkins pipeline
-** git
+** _git_
+** git 
 ** github
+** _python_
 ** python
+** _more_
 ** RHEL, VMware, libvirt
 ** Amazon, Azure and GCP
 ** cookbook

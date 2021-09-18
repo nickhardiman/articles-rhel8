@@ -2,6 +2,8 @@ site:
   title: Nick Hardiman, tap click tap tap click
   url: https://nickhardiman.netlify.app
   start_page: articles:ROOT:index.adoc
+  keys:
+    google_analytics: 'G-7K2RCE6KXL'
 content:
   sources: 
   - url: https://github.com/nickhardiman/articles.git
