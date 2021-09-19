@@ -1,0 +1,106 @@
+= use RHSM to manage repositories
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 05-01-2021
+
+
+A developer subscription adds 149 repos.
+These are configured in the file _/etc/yum.repos.d/redhat.repo_.
+All but two are disabled (see the _Enabled: 0_ line).
+Types of repo include source, debug and binary RPM repositories.
+
+[source,shell]
+----
+[root@host1 ~]# subscription-manager repos --list
++----------------------------------------------------------+
+    Available Repositories in /etc/yum.repos.d/redhat.repo
++----------------------------------------------------------+
+Repo ID:   rhel-8-for-x86_64-highavailability-tus-source-rpms
+Repo Name: Red Hat Enterprise Linux 8 for x86_64 - High Availability - Telecommunications Update Service (Source RPMs)
+Repo URL:  https://cdn.redhat.com/content/tus/rhel8/$releasever/x86_64/highavailability/source/SRPMS
+Enabled:   0
+
+...(many more)...
+
+Repo ID:   rhel-8-for-x86_64-sap-netweaver-source-rpms
+Repo Name: Red Hat Enterprise Linux 8 for x86_64 - SAP NetWeaver (Source RPMs)
+Repo URL:  https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/sap/source/SRPMS
+Enabled:   0
+
+[root@host1 ~]# 
+----
+
+Only these two are enabled. 
+
+* rhel-8-for-x86_64-appstream-rpms
+* rhel-8-for-x86_64-baseos-rpms
+
+[source,shell]
+----
+[root@host1 ~]# subscription-manager repos --list-enabled
++----------------------------------------------------------+
+    Available Repositories in /etc/yum.repos.d/redhat.repo
++----------------------------------------------------------+
+Repo ID:   rhel-8-for-x86_64-appstream-rpms
+Repo Name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+Repo URL:  https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/appstream/os
+Enabled:   1
+
+Repo ID:   rhel-8-for-x86_64-baseos-rpms
+Repo Name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+Repo URL:  https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/baseos/os
+Enabled:   1
+
+[root@host1 ~]# 
+----
+
+== disable all repos 
+
+[source,shell]
+----
+subscription-manager repos --disable "*"
+----
+
+== enable a few repos 
+
+re-enable the two default repos. 
+
+[source,shell]
+----
+subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms 
+subscription-manager repos --enable=rhel-8-for-x86_64-appstream-rpms 
+----
+
+Enable the Ansible repo as well. 
+
+[source,shell]
+----
+subscription-manager repos --enable=ansible-2-for-rhel-8-x86_64-rpms 
+----
+
+
+== check 
+
+[source,shell]
+----
+[root@host1 ~]# subscription-manager repos --list-enabled
++----------------------------------------------------------+
+    Available Repositories in /etc/yum.repos.d/redhat.repo
++----------------------------------------------------------+
+Repo ID:   rhel-8-for-x86_64-appstream-rpms
+Repo Name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+Repo URL:  https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/appstream/os
+Enabled:   1
+
+Repo ID:   ansible-2-for-rhel-8-x86_64-rpms
+Repo Name: Red Hat Ansible Engine 2 for RHEL 8 x86_64 (RPMs)
+Repo URL:  https://cdn.redhat.com/content/dist/layered/rhel8/x86_64/ansible/2/os
+Enabled:   1
+
+Repo ID:   rhel-8-for-x86_64-baseos-rpms
+Repo Name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+Repo URL:  https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/baseos/os
+Enabled:   1
+
+[root@host1 ~]# 
+----

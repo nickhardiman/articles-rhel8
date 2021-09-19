@@ -1,5 +1,5 @@
 site:
-  title: Nick Hardiman, tap click tap tap click
+  title: NicksHomeLab, hackity hack
   url: https://nickhardiman.netlify.app
   start_page: articles:ROOT:index.adoc
   keys:
@@ -16,4 +16,3 @@ asciidoc:
   attributes:
     experimental: true 
     page-pagination: true 
-
