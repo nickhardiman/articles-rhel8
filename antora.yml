@@ -23,3 +23,4 @@ nav:
 - modules/red-hat-developer-subscription/nav.adoc 
 - modules/fedora-on-rpi4/nav.adoc 
 - modules/automation-with-ansible/nav.adoc 
+- modules/containers-with-podman/nav.adoc 
