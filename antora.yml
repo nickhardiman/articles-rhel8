@@ -29,6 +29,7 @@ nav:
 - modules/dns/nav.adoc 
 - modules/mail/nav.adoc 
 - modules/web/nav.adoc 
+- modules/time/nav.adoc 
 - modules/automation-with-ansible/nav.adoc 
 - modules/containers-with-podman/nav.adoc 
 - modules/red-hat-developer-subscription/nav.adoc 

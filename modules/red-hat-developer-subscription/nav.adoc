@@ -1,7 +1,4 @@
 * xref:index.adoc[]
-** _security things_
-** xref:aide.adoc[]
-** xref:auditd.adoc[]
 ** _storage things_
 ** xref:luks.adoc[]
 ** xref:vdo.adoc[]
