@@ -34,6 +34,8 @@ nav:
 - modules/storage/nav.adoc 
 - modules/scm/nav.adoc 
 - modules/developer/nav.adoc 
+- modules/cgroup/nav.adoc 
 - modules/automation-with-ansible/nav.adoc 
+- modules/container/nav.adoc 
 - modules/containers-with-podman/nav.adoc 
-- modules/red-hat-developer-subscription/nav.adoc 
+- modules/unsorted/nav.adoc 

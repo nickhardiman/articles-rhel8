@@ -1,0 +1,12 @@
+* xref:index.adoc[]
+** xref:boot-devices.adoc[]
+** xref:boot-first-stage.adoc[]
+** xref:boot-grub.adoc[]
+** xref:boot-kernel.adoc[]
+** xref:boot-systemd.adoc[]
+** xref:libvirt-notes.adoc[]
+** xref:guest2-second-disk.adoc[]
+** xref:guest4-libguestfs-tools.adoc[]
+** xref:guest4-virt-install.adoc[]
+** xref:guest4-os-setup.adoc[]
+
