@@ -1,6 +1,7 @@
 * xref:index.adoc[]
-
 ** xref:host1-dnf-module-view.adoc[] 
 ** xref:host1-bash-shell.adoc[]
+** xref:dev-bash-hello-world.adoc[]
+** xref:host1-more-shells.adoc[]
 ** xref:host1-cockpit.adoc[]
 ** xref:host1-cockpit-machines.adoc[]

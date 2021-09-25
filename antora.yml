@@ -20,7 +20,10 @@ version: 'dev'
 # Each value is a path to an individual navigation file, relative to the location of the antora.yml file.
 nav:
 - modules/set-up/nav.adoc 
-- modules/RHEL-on-asus-pn50/nav.adoc 
-- modules/red-hat-developer-subscription/nav.adoc 
+- modules/subscribe-update/nav.adoc 
+- modules/firmware-os/nav.adoc 
+- modules/sysadmin/nav.adoc 
+- modules/virtual-network/nav.adoc 
 - modules/automation-with-ansible/nav.adoc 
 - modules/containers-with-podman/nav.adoc 
+- modules/red-hat-developer-subscription/nav.adoc 
