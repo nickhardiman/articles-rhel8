@@ -6,3 +6,5 @@
 ** xref:host1-cockpit.adoc[]
 ** xref:host1-cockpit-machines.adoc[]
 ** xref:host1-vi.adoc[]
+** xref:journald.adoc[] 
+** xref:kexec-kdump.adoc[] 

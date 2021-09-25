@@ -1,19 +1,8 @@
 * xref:index.adoc[]
-** _web things_
-** xref:guest1-apache-install.adoc[]
-** xref:guest1-apache-modules.adoc[]
-** xref:guest1-apache-ssl.adoc[]
-** xref:id-certificate-csr-create.adoc[]
-** xref:id-certificate-csr-sign.adoc[]
-** xref:id-certificate-www.adoc[]
-** xref:guest1-squid-install.adoc[]
-** xref:guest2-nginx-install.adoc[]
-** xref:guest1-haproxy.adoc[]
 ** _infrastructure things_
 ** xref:chrony.adoc[] 
 ** xref:chrony-service.adoc[] 
-** xref:journald.adoc[] 
-** xref:kexec-kdump.adoc[] 
+
 ** _security things_
 ** xref:aide.adoc[]
 ** xref:auditd.adoc[]
