@@ -1,4 +1,4 @@
-= chrony service
+= configure the chrony service
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 27-07-2020

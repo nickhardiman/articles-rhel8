@@ -1,4 +1,4 @@
-= chrony 
+= examine chrony 
 Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 27-07-2020
