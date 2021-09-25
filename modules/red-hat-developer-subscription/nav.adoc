@@ -1,12 +1,4 @@
 * xref:index.adoc[]
-** _storage things_
-** xref:luks.adoc[]
-** xref:vdo.adoc[]
-** xref:swap.adoc[]
-** xref:lvm.adoc[]
-** xref:guest1-nfs-install.adoc[]
-** xref:guest1-nfs-firewall.adoc[]
-** xref:guest2-nfs.adoc[]
 ** _cgroup things_
 ** xref:cgroups.adoc[]
 ** xref:cgroup-apache.adoc[]
