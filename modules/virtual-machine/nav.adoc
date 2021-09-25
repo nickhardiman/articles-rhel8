@@ -1,2 +1,11 @@
 * xref:index.adoc[]
-
+** host1-vi.adoc
+** guest1-kickstart-file.adoc
+** guest1-virt-install.adoc
+** guest1-os-setup.adoc
+** guest1-enp2s0.adoc
+** guest2-kickstart-file.adoc
+** guest2-virt-install.adoc
+** guest2-dnsmasq-dhcp.adoc
+** guest2-os-setup.adoc
+** guest3-clone.adoc
