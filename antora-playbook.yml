@@ -1,7 +1,7 @@
 site:
   title: NicksHomeLab, hackity hack
-  url: https://nickhardiman.netlify.app
-  start_page: rhel-on-pn50:ROOT:index.adoc
+  url: https://rhel8-on-pn50.netlify.app
+  start_page: rhel8-on-pn50:ROOT:index.adoc
   keys:
     google_analytics: 'G-7K2RCE6KXL'
 content:
