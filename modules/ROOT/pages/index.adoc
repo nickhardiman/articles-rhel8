@@ -1,16 +1,41 @@
-= Red Hat Enterprise Linux for free
+= Red Hat Enterprise Linux 8 (for free)
 Nick Hardiman <nick@silvan.uk>
 :source-highlighter: highlight.js
 :revdate: 01-01-2021
 
-Play with toys 
+What fun can be had with a free developer subscription?
+
+[NOTE]
+====
+These docs have nothing to do with the official https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8[Product Documentation for Red Hat Enterprise Linux 8].
+====
+
+Here are over 100 things to try.
+The articles on this site cover sysadmin tasks like these.  
+
+* Install RHEL 8 on a physical machine
+* Create a network of virtual machines.
+* Add containers to VMs. 
+* Set up developer environments. 
+
+All these articles have examples to run, so you can learn by doing. Hands on a keyboard. Break it and fix it. 
+
+
+== my test machine
+
+I did all the work in my home lab using this combination of hardware and software.  
+I did have to buy the hardware. 
+The software is all included with a free https://developers.redhat.com/[Developer Subscription].
 
 image::asus-pn50.jpeg[hardware,width=600,title="ASUS PN50"]
 
 * hardware - https://www.asus.com/Displays-Desktops/Mini-PCs/PN-PB-series/Mini-PC-PN50/[ASUS PN50, with 1TB SSD and 64GB pair of SODIMMS]
 * firmware - ASUS
-* OS - https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux[Red Hat Enterprise Linux], with https://developers.redhat.com/[Developer Subscription]
+* OS software - https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux[Red Hat Enterprise Linux] 8
+* application software - all included with a https://developers.redhat.com/[Developer Subscription]
 
+
+== get in touch
 
 Something wrong? 
 https://github.com/nickhardiman/articles/issues[Open an issue on GitHub].
