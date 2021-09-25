@@ -1,14 +1,12 @@
-= Nick Hardiman's articles  
+= Red Hat Enterprise Linux for free  
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 05-01-2021
 
 
-I'm working on some pieces of writing here. 
+I'm working on some pieces of writing.
 
-* https://github.com/nickhardiman/articles/tree/main/modules/red-hat-developer-subscription/pages
-* https://github.com/nickhardiman/articles/tree/main/modules/fedora-on-rpi4/pages
-
-They are presented here. 
-
-* https://nickhardiman.netlify.app/articles/dev/index.html
+[NOTE]
+====
+These docs have nothing to do with any https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8[official RHEL docs].
+====

@@ -5,8 +5,8 @@
 ** xref:home-lab.adoc[]
 ** xref:host1-hardware.adoc[]
 ** xref:developer-subscription-sign-up.adoc[] 
-** _firmware and OS things_
 ** xref:host1-rhel8-install.adoc[]
+** _firmware and OS things_
 ** xref:boot-stages.adoc[]
 ** xref:host1-os.adoc[]
 ** xref:host1-shell.adoc[]
