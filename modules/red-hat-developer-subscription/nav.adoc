@@ -1,17 +1,4 @@
 * xref:index.adoc[]
-** _DNS things_
-** xref:guest1-dnsmasq-ip-pool.adoc[]
-** xref:guest1-dnsmasq-dhcp-dns.adoc[]
-** xref:guest1-bind9-install.adoc[]
-** xref:guest1-bind9-network.adoc[]
-** xref:guest1-bind9-zone.adoc[]
-** xref:guest1-bind9-nmcli.adoc[]
-** _mail things_
-** xref:guest1-postfix-install.adoc[]
-** xref:guest1-mailx-install.adoc[]
-** xref:guest1-postfix-configure.adoc[]
-** xref:guest2-mailx.adoc[]
-** xref:guest2-postfix-null-client.adoc[]
 ** _web things_
 ** xref:guest1-apache-install.adoc[]
 ** xref:guest1-apache-modules.adoc[]
