@@ -5,3 +5,4 @@
 ** xref:host1-more-shells.adoc[]
 ** xref:host1-cockpit.adoc[]
 ** xref:host1-cockpit-machines.adoc[]
+** xref:host1-vi.adoc[]
