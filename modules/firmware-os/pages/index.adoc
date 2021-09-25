@@ -1,4 +1,4 @@
-= skeleton
+= firmware and OS
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 25-09-2021

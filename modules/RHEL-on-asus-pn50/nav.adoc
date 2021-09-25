@@ -1,18 +1,4 @@
 * xref:index.adoc[]
-** _set up_
-** xref:introduction.adoc[]
-** xref:developer-subscription-why.adoc[]
-** xref:home-lab.adoc[]
-** xref:host1-hardware.adoc[]
-** xref:developer-subscription-sign-up.adoc[] 
-** xref:host1-rhel8-install.adoc[]
-** _firmware and OS things_
-** xref:boot-stages.adoc[]
-** xref:host1-os.adoc[]
-** xref:host1-shell.adoc[]
-** xref:host1-kernel.adoc[]
-** xref:host1-kernel-log.adoc[]
-** xref:host1-kernel-module.adoc[]
 ** _Red Hat things_
 ** xref:host1-rhsm-entitlement.adoc[]
 ** xref:host1-rhsm-syspurpose.adoc[]

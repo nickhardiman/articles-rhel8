@@ -1,2 +1,7 @@
 * xref:index.adoc[]
-
+** xref:introduction.adoc[]
+** xref:developer-subscription-why.adoc[]
+** xref:home-lab.adoc[]
+** xref:host1-hardware.adoc[]
+** xref:developer-subscription-sign-up.adoc[] 
+** xref:host1-rhel8-install.adoc[]
