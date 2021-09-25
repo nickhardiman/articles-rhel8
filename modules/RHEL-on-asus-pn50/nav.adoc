@@ -1,10 +1,5 @@
 * xref:index.adoc[]
-** _Red Hat things_
-** xref:host1-rhsm-entitlement.adoc[]
-** xref:host1-rhsm-syspurpose.adoc[]
-** xref:host1-rhsm-repo.adoc[]
-** xref:host1-insights.adoc[]
-** xref:host1-dnf-update.adoc[]
+
 ** xref:host1-dnf-module-view.adoc[] 
 ** xref:host1-bash-shell.adoc[]
 ** xref:host1-cockpit.adoc[]
