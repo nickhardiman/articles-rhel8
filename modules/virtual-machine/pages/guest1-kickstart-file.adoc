@@ -81,6 +81,7 @@ repo --name="AppStream" --baseurl=file:///run/install/repo/AppStream
 eula --agreed
 
 # accounts
+# The command "openssl passwd  -6 --salt SQXqGsYna84.3SL5" turns "Password;1" into this. 
 rootpw --iscrypted $6$SQXqGsYna84.3SL5$gJw6v23ZZ7WEITfBoZmyNDsIKeoqhS2Mwfk.KpCRloK7EfxlhL3MAlTCO33fr7QRfoG.GvBH1seWtQqz5v82q1
 user --groups=wheel --name=nick --password=$6$G3GIlnUH.JqcrAQl$I.q7gGoT37tcNnrGiHkeUTBtr8AAuoM/yy3P3FuEpJaSun6clgR8GlvKIbqOTgqNe.fIBV6xZOPiWvsduhXeC/ --iscrypted --gecos="nick"
 
@@ -131,6 +132,7 @@ pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
 # last jobs
 %post --log=/root/ks-post.log
 # subscription
+# use your Red Hat developer account
 /usr/sbin/subscription-manager register --username=nick --password='some password!' 
 /usr/sbin/subscription-manager attach --pool=123456789abcdef123456789abcdef12
 # package update

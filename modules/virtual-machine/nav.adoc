@@ -1,5 +1,4 @@
 * xref:index.adoc[]
-** xref:host1-vi.adoc[]
 ** xref:guest1-kickstart-file.adoc[]
 ** xref:guest1-virt-install.adoc[]
 ** xref:guest1-os-setup.adoc[]
