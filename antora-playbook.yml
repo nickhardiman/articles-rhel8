@@ -19,10 +19,10 @@ ui:
   bundle:
     url: https://github.com/nickhardiman/antora-ui/raw/master/build/ui-bundle.zip
     snapshot: true
-    fetch: true
   supplemental_files: ./supplemental_ui
 asciidoc:
   attributes:
     experimental: true 
     page-pagination: true 
-    
+runtime:
+  fetch: true
