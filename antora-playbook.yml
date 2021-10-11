@@ -1,5 +1,7 @@
 # categories (site, content, ui and asciidoc) are described here. 
 # https://docs.antora.org/antora/2.1/playbook/playbook-schema/
+# An demo site example is here. 
+# https://gitlab.com/antora/demo/docs-site/-/blob/main/antora-playbook.yml
 site:
   title: Nick's Home Lab, hackity hack
   url: https://rhel8-on-pn50.netlify.app
