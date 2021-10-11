@@ -15,7 +15,7 @@ title: RHEL 8 on an ASUS PN50
 # The value cannot be empty.
 # To ensure portability between host platforms, letters used in the version value should be lowercase.
 version: 'dev'
-
+start_page: ROOT:index.adoc
 # https://docs.antora.org/antora/2.3/component-navigation/#nav-key
 # nav:
 # Each value is a path to an individual navigation file, relative to the location of the antora.yml file.
