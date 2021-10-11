@@ -4,6 +4,7 @@
 # The value cannot contain a space, a forward slash (/), or HTML special characters (&, <, or >). 
 # The value cannot be empty.
 name: rhel8-on-pn50
+title: RHEL 8 on an ASUS PN50
 
 # https://docs.antora.org/antora/2.3/component-name-and-version/#version-key
 # version:
