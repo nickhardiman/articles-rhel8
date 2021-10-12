@@ -10,8 +10,18 @@ What fun can be had with a free developer subscription?
 These docs have nothing to do with the official https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8[Product Documentation for Red Hat Enterprise Linux 8].
 ====
 
-Here are over 100 things to try.
-The articles on this site cover sysadmin tasks like these.  
+== this site 
+
+components 
+
+* https://nickhardiman.netlify.app/fedora-on-rpi4/dev/index.html[Fedora on a Raspberry Pi 4]
+* https://nickhardiman.netlify.app/infrastructure-as-code/dev/index.html[Infrastructure as code]
+* https://nickhardiman.netlify.app/rhel8-on-pn50/dev/index.html[RHEL 8 on an ASUS PN50]
+* https://nickhardiman.netlify.app/ocp4-on-pn50/dev/index.html[OCP4 on an ASUS PN50]
+
+== this component 
+
+Articles cover sysadmin tasks like these.  
 
 * Install RHEL 8 on a physical machine
 * Create a network of virtual machines.
