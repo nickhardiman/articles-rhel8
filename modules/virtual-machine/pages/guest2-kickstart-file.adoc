@@ -6,7 +6,7 @@ Nick Hardiman
 Create a kickstart file for the virtual machine _guest2_.
 This machine will be built using a *fresh install* build process, as opposed to a golden image build process. 
 
-This is a similar to xref:guest1-kickstart-file.adoc[].
+This procedure is similar to xref:guest1-kickstart-file.adoc[].
 
 
 == create a kickstart file
@@ -24,7 +24,7 @@ This kickstart config file goes in the _libvirt_ directory, along with bridge sc
 ....
 
 Search the   
-https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/performing_an_advanced_rhel_installation/kickstart-commands-and-options-reference_installing-rhel-as-an-experienced-user[list of commands] to find an explanation of each line. . 
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/performing_an_advanced_rhel_installation/kickstart-commands-and-options-reference_installing-rhel-as-an-experienced-user[list of commands] to find an explanation of each line. 
 
 This kickstart file is different to the file for guest1 (xref:guest1-kickstart-file.adoc[]).
 
