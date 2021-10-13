@@ -32,7 +32,6 @@ nav:
 - modules/web/nav.adoc 
 - modules/time/nav.adoc 
 - modules/storage/nav.adoc 
-- modules/scm/nav.adoc 
 - modules/developer/nav.adoc 
 - modules/cgroup/nav.adoc 
 - modules/container/nav.adoc 
