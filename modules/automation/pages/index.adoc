@@ -1,6 +1,0 @@
-= automation
-Nick Hardiman 
-:source-highlighter: highlight.js
-:revdate: 01-03-2021
-
-It's all Ansible. 

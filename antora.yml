@@ -35,6 +35,5 @@ nav:
 - modules/scm/nav.adoc 
 - modules/developer/nav.adoc 
 - modules/cgroup/nav.adoc 
-- modules/automation/nav.adoc 
 - modules/container/nav.adoc 
 - modules/unsorted/nav.adoc 
