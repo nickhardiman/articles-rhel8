@@ -122,7 +122,7 @@ No news is good news.
 
 [source,shell]
 ....
-[root@host1 libvirt]# ksvalidator guest1.ks 
+[root@host1 libvirt]# ksvalidator guest2.ks 
 [root@host1 libvirt]# 
 ....
 
