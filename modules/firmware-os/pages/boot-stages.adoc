@@ -42,8 +42,8 @@ Firmware is low-level software that controls hardware.
 
 === BIOS or UEFI runs
 
-The dev test network uses both BIOS and UEFI. 
 The physical host machine probably uses UEFI, unless its several years old. 
+
 Guest virtual machines get an open source product called https://seabios.org/SeaBIOS[SeaBIOS] by default. 
 The QEMU hypervisor includes this BIOS. 
 
