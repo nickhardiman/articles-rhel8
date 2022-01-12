@@ -48,5 +48,5 @@ image::asus-pn50.jpeg[hardware,width=600,title="ASUS PN50"]
 == get in touch
 
 Something wrong? 
-https://github.com/nickhardiman/articles/issues[Open an issue on GitHub].
+https://github.com/nickhardiman/articles-rhel8/issues[Open an issue on GitHub].
 

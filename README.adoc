@@ -1,12 +1,12 @@
-= Red Hat Enterprise Linux for free  
+= Red Hat Enterprise Linux 8 for free  
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 05-01-2021
 
 
-I'm working on some pieces of writing.
+I signed up for a https://developers.redhat.com/articles/getting-red-hat-developer-subscription-what-rhel-users-need-know[free developer subscription] and squeezed all the goodness out of it. 
 
 [NOTE]
 ====
-These docs have nothing to do with any https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8[official RHEL docs].
+These docs have nothing to do with any https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8[official RHEL 8 docs].
 ====

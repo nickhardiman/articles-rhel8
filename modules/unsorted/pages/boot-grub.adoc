@@ -12,6 +12,9 @@ https://www.gnu.org/software/grub/manual/grub/html_node/Images.html[boot.img] fi
 * The second program is a much bigger *core image*. This provides the framework to search for the _/boot/grub2_ directory and load the rest of GRUB from there. The core.img file is built from kernel module code by a utility called grub2-mkimage. 
 * The _/boot/grub2_ directory contains a lot of code and configuration files. The core.img program runs the _/boot/grub2/i386-pc/normal.mod_ module, and that sets up everything required to complete the booting process. These modules display the boot menu, handle interaction, load kernel files into memory, and start the kernel stage. 
 
+
+=== partition 
+
 The core image is stored in its own small disk partition, called the https://en.wikipedia.org/wiki/BIOS_boot_partition[BIOS boot partition].
 In this output, it's the Number 1 partition, marked with the flag _bios_grub_.
 
@@ -34,6 +37,11 @@ Number  Start   End     Size    File system  Name     Flags
 
 [nick@guest3 ~]$ 
 ----
+
+
+=== config 
+
+The /boot/efi/EFI/redhat/grub.cfg file, which GRUB previously used on UEFI systems, is now a symbolic link to the /boot/grub2/grub.cfg file.
 
 
 == kernel 
