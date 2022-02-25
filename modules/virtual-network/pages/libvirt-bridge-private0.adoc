@@ -63,39 +63,6 @@ The current enp1s0 interface on the guest connects to the virbr0 interface on th
 ....
 
 
-=== behind the scenes 
-
-Libvirt adds config, services and devices behind the scenes to make each network function.
-Libvirt creates a dnsmasq configuration file, _/var/lib/libvirt/dnsmasq/(network).conf_. 
-Dnsmasq handles DNS and DHCP queries. 
-Libvirt adds a firewall zone (try running ``sudo firewall-cmd --list-all --zone=libvirt``). 
-And it creates network interfaces.
-
-For the _default_ network, libvirt creates a bridge interface named _virbr0_ and a NIC named _virbr0-nic_. 
-Every time a VM starts, libvirt also creates a https://en.wikipedia.org/wiki/TUN/TAP[TAP] interface named something like _tap0_.  
-
-The libvirt bridge _virbr0_ doesn't look like a real bridge - it doesn't connect two paths. 
-A simple network bridge does connect two network interfaces, but 
-virbr0 is a forwarding bridge.
-It uses a forwarding database of layer 2 addresses (ethernet MAC addresses) to send packets to many destinations. 
-View the forwarding database with the command ``bridge fdb``.
-When an IP packet passes through virbr0 destined for the Internet, IP masquerading and forwarding get it to the outside world. 
-When a packet is destined for a virtual machine, it's sent to the VM's TAP interface where the machine emulator https://www.qemu.org/[QEMU] picks it up. 
-
-Most of these components are duplicated for the _private_ network. 
-There is no IP masquerading and forwarding, so there is no communication with the outside world. 
-
-Only the default network exists.
-
-[source,shell]
-....
-[root@host1 libvirt]# virsh net-list --all
- Name      State    Autostart   Persistent
---------------------------------------------
- default   active   yes         yes
-
-[root@host1 libvirt]# 
-....
 
 
 == create the libvirt network privbr0
@@ -107,15 +74,18 @@ Create an XML file defining the interface.
 Run the command ``vim net-privbr0.xml``.
 
 Add XML. 
-This markup is copied from the 
+
+This markup is based on the 
 https://libvirt.org/formatnetwork.html#examplesPrivate[libvirt example].
 
 .net-privbr0.xml
 [source,XML]
 ----
 <network>
-  <name>privbr0</name>
+  <name>private0</name>
   <bridge name="privbr0"/>
+  <mac address='52:54:00:00:01:01'/>
+  <domain name='private0.example.com' localOnly='yes'/>
   <ip address="192.168.152.1" netmask="255.255.255.0">
     <dhcp>
       <range start="192.168.152.2" end="192.168.152.254"/>
@@ -135,7 +105,7 @@ No news is good news.
 
 [source,shell]
 ----
-[root@host1 libvirt]# xmllint --noout  ./net-ocp3.xml 
+[root@host1 libvirt]# xmllint --noout  ./net-privbr0.xml 
 [root@host1 libvirt]# 
 ----
 
