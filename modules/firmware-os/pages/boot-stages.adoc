@@ -26,11 +26,11 @@ https://en.wikipedia.org/wiki/Switched-mode_power_supply[SMPS (Switched-Mode Pow
 
 Plenty of software runs before any user application runs. 
 
-. xref:boot-devices.adoc[] - firmware initializes hardware
-. xref:boot-first-stage.adoc[] - UEFI (The default libvirt machine setup defaults to the older BIOS system)
-. xref:boot-grub.adoc[] 
-. xref:boot-kernel.adoc[] 
-. xref:boot-systemd.adoc[] 
+. xref:unsorted:boot-devices.adoc[] - firmware initializes hardware
+. xref:unsorted:boot-first-stage.adoc[] - UEFI (The default libvirt machine setup defaults to the older BIOS system)
+. xref:unsorted:boot-grub.adoc[] 
+. xref:unsorted:boot-kernel.adoc[] 
+. xref:unsorted:boot-systemd.adoc[] 
 
 
 === firmware initializes hardware 
