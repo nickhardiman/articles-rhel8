@@ -10,7 +10,7 @@ A new virtual machine will built from this copy.
 
 Before creating this VM, collect content and tools on _host1_.
 
-* xref:libvirt-storage-volume-rhel8-kvm.adoc[]
+* xref:virtual-network:libvirt-storage-volume-rhel8-kvm.adoc[]
 
 This process uses the _virt-filesystems_, _virt-resize_ and _virt-customize_ utilities from the _libguestfs-tools_ package.
 

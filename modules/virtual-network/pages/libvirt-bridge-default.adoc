@@ -84,7 +84,7 @@ This is how the default network is configured.
 
 
 
-===  permissions 
+==  permissions 
 
 Only required for non-root? 
 
