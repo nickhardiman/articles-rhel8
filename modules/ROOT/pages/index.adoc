@@ -1,11 +1,9 @@
-= Red Hat Enterprise Linux 8 (for free)
+= Err, where am I? 
 Nick Hardiman <nick@silvan.uk>
 :source-highlighter: highlight.js
 :revdate: 01-01-2021
 
 
-
-== Err, where am I? 
 
 image::nick-headshot-2019-small.jpg[title="Nick Hardiman",float="right"]
 
@@ -50,19 +48,6 @@ Articles cover sysadmin tasks like these.
 
 All these articles have examples to run, so you can learn by doing. Hands on a keyboard. Break it and fix it. 
 
-
-== my test machine
-
-I did all the work in my home lab using this combination of hardware and software.  
-I did have to buy the hardware. 
-The software is all included with a free https://developers.redhat.com/[Developer Subscription].
-
-image::asus-pn50.jpeg[hardware,width=600,title="ASUS PN50"]
-
-* hardware - https://www.asus.com/Displays-Desktops/Mini-PCs/PN-PB-series/Mini-PC-PN50/[ASUS PN50, with 1TB SSD and 64GB pair of SODIMMS]
-* firmware - ASUS
-* OS software - https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux[Red Hat Enterprise Linux] 8
-* application software - all included with a https://developers.redhat.com/[Developer Subscription]
 
 
 == get in touch
