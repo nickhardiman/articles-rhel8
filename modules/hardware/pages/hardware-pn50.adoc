@@ -1,0 +1,19 @@
+= Asus PN50
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 03-06-2022
+
+== my test machine
+
+I did all the work in my home lab using this combination of hardware and software.  
+I did have to buy the hardware. 
+The software is all included with a free https://developers.redhat.com/[Developer Subscription].
+
+image::asus-pn50.jpeg[hardware,width=600,title="ASUS PN50"]
+
+* hardware - https://www.asus.com/Displays-Desktops/Mini-PCs/PN-PB-series/Mini-PC-PN50/[ASUS PN50, with 1TB SSD and 64GB pair of SODIMMS]
+* firmware - ASUS
+* OS software - https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux[Red Hat Enterprise Linux] 8
+* application software - all included with a https://developers.redhat.com/[Developer Subscription]
+
+
