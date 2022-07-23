@@ -22,7 +22,7 @@ start_page: ROOT:index.adoc
 nav:
 - modules/why/nav.adoc 
 - modules/hardware/nav.adoc 
-- modules/subscribe-update/nav.adoc 
+- modules/install-subscribe/nav.adoc 
 - modules/firmware-os/nav.adoc 
 - modules/sysadmin/nav.adoc 
 - modules/virtual-network/nav.adoc 
