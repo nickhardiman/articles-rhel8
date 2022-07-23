@@ -1,5 +1,5 @@
 
-= find out about a Red Hat Developer Subscription
+= why sign up for a Red Hat Developer Subscription
 Nick Hardiman
 :source-highlighter: highlight.js
 

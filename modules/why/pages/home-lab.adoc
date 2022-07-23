@@ -1,19 +1,41 @@
-= decide whether you want a home lab
+= why a home lab
 Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 31-12-2020
 
 
-Find a machine that can run RHEL 8. 
-Use an on-premise physical machine, not a cloud virtual machine.
-You can install RHEL 8 in a virtual machine on your Mac or Windows box, or fire up a VM using a cloud provider.
-But then you will miss out on some bare metal advantages. 
-Some of these docs describe how to install virtual networks and machines. 
-Installing a VM on top of a VM is trickier and slows performance. 
 
 When you run your own home lab, the entire technology stack is under your control. That’s a good thing, because you’ve got the freedom to tear anything down. And it’s a bad thing, because the responsibility to make it work again rests only on you. Expect both reward and frustration.
 
 If you’re happy with that extra load on your life, you can move on to picking your home lab hardware. 
+
+
+== places where RHEL can go 
+
+* a physical machine, like a server
+* a cloud virtual machine
+* a virtual machine on your Mac or Windows box
+
+== a home lab 
+
+A home lab doesn't have to be about computers. A scientist wouldn't fill a lab with PC hardware and networking equipment.
+
+* a collection of physical machines. These could be big second-hand servers stripped from data centers, or small mini-PCs based on laptop parts. 
+* a collection of network components, like a small unmanaged ethernet switch, a pair of powerline sockets and an SFP transceiver.
+* an expensive hobby. 
+* in a basement, in a car garage, or in a closet. 
+* accessed remotely, using a separate workstation. 
+* an electricity bill multiplier, consuming a tiny 100 watts from USB plugs or a monster 100 amps from its own house circuits.
+* cooled by silent fins  or cooled by roaring fans. 
+
+
+== uses
+
+* learn about how to build infrastructure
+* experiment with architecture
+* troubleshoot architectural issues
+* practice upgrades
+* test new devices
 
 
 == resource requirements 

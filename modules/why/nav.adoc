@@ -1,4 +1,5 @@
 * xref:index.adoc[]
 ** xref:introduction.adoc[]
-** xref:developer-subscription-why.adoc[]
+** xref:rhel.adoc[]
+** xref:developer-subscription.adoc[]
 ** xref:home-lab.adoc[]
