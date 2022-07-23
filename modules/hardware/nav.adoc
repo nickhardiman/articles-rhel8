@@ -1,4 +1,5 @@
 * xref:index.adoc[]
+** xref:host1-hardware.adoc[]
 ** xref:hardware-physical.adoc[]
 ** xref:hardware-network.adoc[]
 ** xref:hardware-workstation.adoc[]
