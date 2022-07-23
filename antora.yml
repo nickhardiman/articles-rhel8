@@ -4,6 +4,7 @@
 # The value cannot contain a space, a forward slash (/), or HTML special characters (&, <, or >). 
 # The value cannot be empty.
 name: rhel
+
 title: Red Hat Enterprise Linux
 
 # https://docs.antora.org/antora/2.3/component-name-and-version/#version-key
@@ -15,7 +16,9 @@ title: Red Hat Enterprise Linux
 # The value cannot be empty.
 # To ensure portability between host platforms, letters used in the version value should be lowercase.
 version: '8'
+
 start_page: ROOT:index.adoc
+
 # https://docs.antora.org/antora/2.3/component-navigation/#nav-key
 # nav:
 # Each value is a path to an individual navigation file, relative to the location of the antora.yml file.
