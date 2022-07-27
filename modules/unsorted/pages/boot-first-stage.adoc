@@ -1,4 +1,4 @@
-= boot first stage (BIOS or UEFI)
+=  first stage boot loader (BIOS or UEFI)
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 18-08-2020

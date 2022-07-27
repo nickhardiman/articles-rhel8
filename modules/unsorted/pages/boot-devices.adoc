@@ -4,8 +4,6 @@ Nick Hardiman
 :revdate: 18-08-2020
 
 
-
-
 == firmware initializes hardware 
 
 The host machine is made up of many physical devices, like memory, network interface and communication bus. 
