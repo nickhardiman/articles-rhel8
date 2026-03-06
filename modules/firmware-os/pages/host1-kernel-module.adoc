@@ -11,6 +11,11 @@ https://tldp.org/LDP/lkmpg/2.6/lkmpg.pdf[The Linux Kernel Module Programming Gui
  this 2013 article 
 https://www.thegeekstuff.com/2013/07/write-linux-kernel-module/[How to Write Your Own Linux Kernel Module with a Simple Example].
 
+also
+How to write your first Linux Kernel Module
+https://medium.com/dvt-engineering/how-to-write-your-first-linux-kernel-module-cf284408beeb
+packaging a kernel module is complicated
+https://rpmfusion.org/Packaging/KernelModules/Kmods1
 
 
 == install packages  
